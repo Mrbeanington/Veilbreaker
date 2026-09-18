@@ -1,0 +1,27 @@
+{
+  "name": "veilbreak",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@9.12.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "typecheck": "pnpm -r --if-present run typecheck",
+    "lint": "eslint .",
+    "format": "prettier --check .",
+    "test": "vitest run",
+    "build": "pnpm -r --if-present run build",
+    "verify-client-only": "node scripts/verify-client-only.mjs",
+    "ci": "pnpm typecheck && pnpm lint && pnpm test && pnpm build && pnpm verify-client-only"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.12.0",
+    "@vitest/coverage-v8": "^2.1.2",
+    "eslint": "^9.12.0",
+    "prettier": "^3.3.3",
+    "typescript": "^5.6.2",
+    "typescript-eslint": "^8.8.0",
+    "vitest": "^2.1.2"
+  }
+}

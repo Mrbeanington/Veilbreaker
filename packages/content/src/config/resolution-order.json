@@ -1,0 +1,19 @@
+{
+  "tiers": [
+    { "id": "pre-turn-effects", "order": 1, "displayName": "Pre-turn effects" },
+    { "id": "transformation-triggers", "order": 2, "displayName": "Transformation triggers" },
+    { "id": "instant-defensive-reactions", "order": 3, "displayName": "Instant defensive reactions" },
+    { "id": "priority-abilities", "order": 4, "displayName": "Priority abilities" },
+    { "id": "control-effects", "order": 5, "displayName": "Control effects" },
+    { "id": "standard-attacks-support", "order": 6, "displayName": "Standard attacks/support" },
+    { "id": "delayed-effects", "order": 7, "displayName": "Delayed effects" },
+    { "id": "damage-over-time", "order": 8, "displayName": "Damage-over-time" },
+    { "id": "healing-over-time", "order": 9, "displayName": "Healing-over-time" },
+    { "id": "death-checks", "order": 10, "displayName": "Death checks" },
+    { "id": "death-triggered-effects", "order": 11, "displayName": "Death-triggered effects" },
+    { "id": "post-turn-effects", "order": 12, "displayName": "Post-turn effects" },
+    { "id": "cooldown-reduction", "order": 13, "displayName": "Cooldown reduction" },
+    { "id": "resource-generation", "order": 14, "displayName": "Resource generation" },
+    { "id": "next-turn", "order": 15, "displayName": "Next turn" }
+  ]
+}

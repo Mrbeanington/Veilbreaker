@@ -1,0 +1,39 @@
+import { z } from "zod";
+import { archetypeTagSchema, idSchema, knowledgeLevelSchema, resourceSchema } from "./common";
+
+// spec/03 "Categories": rarity is not power — Core characters can counter
+// Secret and Legendary characters.
+export const characterRaritySchema = z.enum(["CORE", "RARE", "SECRET", "LEGENDARY"]);
+export type CharacterRarity = z.infer<typeof characterRaritySchema>;
+
+// spec/02 "Core models": CharacterDefinition (versioned). `version` bumps
+// whenever the definition's shape or values change under a new
+// BalanceVersion (see config.ts); old replays keep resolving against the
+// version they recorded (spec/02 "Balance versioning").
+export const characterDefinitionSchema = z
+  .object({
+    id: idSchema,
+    version: z.number().int().min(1),
+    displayName: z.string().min(1),
+    rarity: characterRaritySchema,
+    tags: z.array(archetypeTagSchema).min(1),
+    baseHp: z.number().int().positive(),
+    abilityIds: z.array(idSchema).min(1).max(8),
+    passiveId: idSchema.optional(),
+    resources: z.array(resourceSchema).default([]),
+    transformationIds: z.array(idSchema).default([]),
+    // CLAUDE.md non-negotiable #8: "Powerful is acceptable. Uncounterable is
+    // not." A Cheater breaks exactly one standard combat rule (spec/01
+    // "Cheaters") and must document which one, and its counterplay.
+    isCheater: z.boolean().default(false),
+    cheaterRuleBreak: z.string().optional(),
+    counterplay: z.string().optional(),
+    knowledgeLevel: knowledgeLevelSchema.default("PUBLIC"),
+    artSpecId: idSchema.optional(),
+  })
+  .refine((c) => !c.isCheater || (!!c.cheaterRuleBreak && !!c.counterplay), {
+    message:
+      "A Cheater character must document cheaterRuleBreak and counterplay (CLAUDE.md non-negotiables #8 and spec/01 'Cheaters').",
+    path: ["cheaterRuleBreak"],
+  });
+export type CharacterDefinition = z.infer<typeof characterDefinitionSchema>;

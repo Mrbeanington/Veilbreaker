@@ -1,0 +1,9 @@
+{
+  "generation": {
+    "perLivingCharacter": 1,
+    "mode": "random"
+  },
+  "poolCap": 10,
+  "carryover": true,
+  "initiativePlayerSkipsTurnOneGeneration": true
+}
