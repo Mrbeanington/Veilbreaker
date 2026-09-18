@@ -145,9 +145,20 @@ export type TriggerEvent = z.infer<typeof triggerEventSchema>;
 export const triggerRelationSchema = z.enum(["self", "ally", "enemy", "any"]);
 export type TriggerRelation = z.infer<typeof triggerRelationSchema>;
 
+// phase-04-first-five.md forced this: Malachar's "whenever ANY character
+// dies, *I* gain a Soul" passive needs its effect to land on the trigger
+// holder, not on whoever the event is about — the two are different
+// characters whenever `relation` isn't "self". Defaults to "subject"
+// (Phase 03's only behavior, unchanged) so every existing passive/status
+// keeps working without this field. See docs/DECISIONS.md ADR-011 and
+// OQ-31(a).
+export const triggerEffectTargetSchema = z.enum(["subject", "self"]);
+export type TriggerEffectTarget = z.infer<typeof triggerEffectTargetSchema>;
+
 export const triggerSchema = z.object({
   event: triggerEventSchema,
   relation: triggerRelationSchema.default("self"),
   condition: conditionSchema.optional(),
+  effectTarget: triggerEffectTargetSchema.default("subject"),
 });
 export type Trigger = z.infer<typeof triggerSchema>;

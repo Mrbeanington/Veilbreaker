@@ -37,3 +37,17 @@ export const characterDefinitionSchema = z
     path: ["cheaterRuleBreak"],
   });
 export type CharacterDefinition = z.infer<typeof characterDefinitionSchema>;
+
+// phase-04-first-five.md: the first real characters with resources (Malachar's
+// Souls, Moonshot's Bases/Strikes, Whiskers' Nine Lives, Patient Zero's
+// Outbreak Progress) are also the first thing that needs to turn a
+// CharacterDefinition's resource list into the starting values a real match
+// begins with — engine's `createBattle` takes those as a plain
+// `Record<string, number>` (CreateBattleCharacterInput.resources) rather than
+// reading CharacterDefinition itself, so whatever assembles a real roster
+// into a battle (a future UI, a scenario test, packages/ai's bots) needs this
+// exact conversion. One small, shared place for it now avoids every call site
+// re-deriving "start every resource at its own startingValue" by hand.
+export function defaultResourcesFor(character: CharacterDefinition): Record<string, number> {
+  return Object.fromEntries(character.resources.map((resource) => [resource.id, resource.startingValue]));
+}

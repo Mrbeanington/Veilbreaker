@@ -327,6 +327,24 @@ describe("applyEffect — resurrect", () => {
     expect(result.state.characters.b1?.alive).toBe(false);
     expect(result.events[0]?.type).toBe("resurrectionBlocked");
   });
+
+  it("soul consecration also blocks the revive (spec/03 'Consecration must block ... resurrection', ADR-011)", () => {
+    const consecratedAlive = applyEffect(
+      stateWith([character("b1")]),
+      { kind: "applyStatus", statusId: "status.soul-consecration" },
+      ctx({ sourceId: "b1", targetIds: ["b1"] }),
+      createRng(1),
+    ).state.characters.b1!;
+    const dead = { ...consecratedAlive, alive: false, currentHp: 0 };
+    const result = applyEffect(
+      stateWith([character("a1"), dead]),
+      { kind: "resurrect" },
+      ctx({ sourceId: "a1", targetIds: ["b1"] }),
+      createRng(1),
+    );
+    expect(result.state.characters.b1?.alive).toBe(false);
+    expect(result.events[0]?.type).toBe("resurrectionBlocked");
+  });
 });
 
 describe("applyEffect — modifyRandomOutcome + randomOutcome", () => {
@@ -433,6 +451,24 @@ describe("applyEffect — retargetQueuedAction (OQ-07 Cheater retargeting)", () 
     expect(result.queuedRetargets).toEqual([{ queuedCharacterId: "b1", newTargetIds: ["a1"] }]);
     expect(result.events[0]?.type).toBe("queuedActionRetargeted");
   });
+
+  it("defaults queuedCharacterId to the ability's own target and newTargetIds to the caster (Mister Whiskers' Paw Swap, ADR-011)", () => {
+    const state = stateWith([character("a1"), character("b1")]);
+    const result = applyEffect(
+      state,
+      { kind: "retargetQueuedAction" },
+      ctx({ sourceId: "a1", targetIds: ["b1"] }),
+      createRng(1),
+    );
+    expect(result.queuedRetargets).toEqual([{ queuedCharacterId: "b1", newTargetIds: ["a1"] }]);
+  });
+
+  it("is a no-op when there is no target to default from", () => {
+    const state = stateWith([character("a1")]);
+    const result = applyEffect(state, { kind: "retargetQueuedAction" }, ctx({ sourceId: "a1", targetIds: [] }), createRng(1));
+    expect(result.queuedRetargets).toBeUndefined();
+    expect(result.events).toHaveLength(0);
+  });
 });
 
 describe("applyEffect — modifyResource", () => {
@@ -456,6 +492,52 @@ describe("applyEffect — modifyResource", () => {
       createRng(1),
     );
     expect(result.state.characters.a1?.resources[testResource.id]).toBe(0); // clamped to min
+  });
+});
+
+describe("applyEffect — effect-level target: { side: 'self' } (ADR-011, Malachar's Borrowed Life)", () => {
+  it("heal lands on the caster even though the ability's own targets are the enemy", () => {
+    const hurtCaster = { ...character("a1", 50) };
+    const result = applyEffect(
+      stateWith([hurtCaster, character("b1")]),
+      {
+        kind: "sequence",
+        effects: [
+          { kind: "damage", amount: 20 },
+          { kind: "heal", healingClass: "lifeTransfer", amount: 20, target: { side: "self", scope: "single", count: 1, includeSelf: true, filterTags: [] } },
+        ],
+      },
+      ctx({ sourceId: "a1", targetIds: ["b1"] }),
+      createRng(1),
+    );
+    expect(result.state.characters.b1?.currentHp).toBe(80); // took the damage
+    expect(result.state.characters.a1?.currentHp).toBe(70); // healed itself, not the enemy
+  });
+
+  it("modifyResource lands on the caster even though the ability's own targets are the enemy", () => {
+    const result = applyEffect(
+      stateWith([character("a1"), character("b1")]),
+      {
+        kind: "modifyResource",
+        resourceId: testResource.id,
+        amount: 1,
+        target: { side: "self", scope: "single", count: 1, includeSelf: true, filterTags: [] },
+      },
+      ctx({ sourceId: "a1", targetIds: ["b1"], resourceLibrary: { [testResource.id]: testResource } }),
+      createRng(1),
+    );
+    expect(result.state.characters.a1?.resources[testResource.id]).toBe(1);
+    expect(result.state.characters.b1?.resources[testResource.id]).toBeUndefined();
+  });
+
+  it("without a self override, both fall back to the ability's own targetIds (unchanged Phase 01-03 behavior)", () => {
+    const result = applyEffect(
+      stateWith([character("a1"), character("b1")]),
+      { kind: "heal", healingClass: "heal", amount: 10 },
+      ctx({ sourceId: "a1", targetIds: ["b1"] }),
+      createRng(1),
+    );
+    expect(result.state.characters.b1?.currentHp).toBe(100); // already full — but it's the one targeted, not a1
   });
 });
 

@@ -8,25 +8,25 @@ import type { TargetRule } from "../schemas/common";
 // countdown, expiry, and dispel (packages/engine/src/statuses.ts).
 //
 // A status also gets a *mechanical hook* — something that actually checks
-// for it during resolution — only where phase-02-combat-primitives.md's
-// deliverables name a concrete behavior: the damage pipeline (invulnerable,
-// reflect, counter, damage reduction, shield, damage amplification,
-// weakness), the heal handler (anti-heal, healing reduction, healing
-// amplification), action legality (stun, silence), targeting (taunt,
-// untargetable), the cooldown-reduction tier (cooldown increase/reduction),
-// and DoT/HoT ticking (bleed, burn, poison). See docs/DECISIONS.md for the
-// full list and rationale.
+// for it during resolution — only where a phase's deliverables name a
+// concrete behavior: the damage pipeline (invulnerable, reflect, counter,
+// damage reduction, shield, damage amplification, weakness), the heal
+// handler (anti-heal, healing reduction, healing amplification), action
+// legality (stun, silence), targeting (taunt, untargetable), the
+// cooldown-reduction tier (cooldown increase/reduction), DoT/HoT ticking
+// (bleed, burn, poison, infection), and — for Death Prevention, Ability
+// Lock, Energy Lock, Energy Cost Increase, and Resurrection Lock — a direct
+// check in damage.ts/actions.ts/effects.ts. Soul Consecration's hook is two
+// small checks elsewhere (a `hasStatus` condition gating Malachar's Souls
+// passive, and effects.ts's resurrect handler) rather than anything in this
+// file. See docs/DECISIONS.md for the full list and rationale.
 //
 // The rest are real, valid StatusDefinitions — nameable, applicable,
 // stackable, dispellable, and visible in the battle log like any other
 // status — but their unique mechanic has no engine hook yet, either because
-// spec/06's own text says so (Infection, Soul Consecration, Death
-// Prevention) or because it needs a per-status parameter (which ability,
-// which energy family) the current single-`magnitude` ActiveStatus model
-// can't express without a character actually needing it (Ability Lock,
-// Energy Lock, Energy Cost Increase — TODO(phase-03)), or because spec
-// names the status without defining a concrete mechanic at all (Curse, Fear,
-// Petrification, Mark, Stealth, Exposed, Resurrection Lock — TODO(phase-03)).
+// spec names the status without defining a concrete mechanic at all (Curse,
+// Fear, Petrification, Mark, Stealth, Exposed), or because no character kit
+// has needed one yet.
 
 function status(
   overrides: Partial<StatusDefinition> & Pick<StatusDefinition, "id" | "displayName" | "tooltip">,
@@ -212,16 +212,23 @@ export const WEAKNESS = status({
   tooltip: "Reduces normal and piercing damage this character deals by a flat amount.",
 });
 
-// ---- Data-only for now — see file header (spec/06 + parameter limits) -----
-
+// spec/06 named Infection as data-only through Phase 03 ("no concrete
+// mechanic yet"); phase-04-first-five.md's Patient Zero is the real character
+// kit that finally needs one. It turns out to need zero new engine code: DoT
+// ticking (packages/engine/src/statuses.ts, computeTicks) already reads
+// tickBehavior generically off whichever status has it, the same way
+// Bleed/Burn/Poison do above. See docs/DECISIONS.md ADR-011 and OQ-29.
 export const INFECTION = status({
   id: "status.infection",
   displayName: "Infection",
-  duration: { turns: 3, permanent: false },
+  duration: { turns: 4, permanent: false },
   stackRule: "stackAndRefresh",
   maxStacks: 5,
-  tooltip: "TODO(phase-03): spreads and worsens over time.",
+  tickBehavior: "damageOverTime",
+  tooltip: "Deals damage at the start of each turn, per stack, and worsens the more it spreads.",
 });
+
+// ---- Data-only for now — see file header (spec/06 + parameter limits) -----
 
 export const CURSE = status({
   id: "status.curse",
@@ -249,7 +256,7 @@ export const PETRIFICATION = status({
 export const ENERGY_LOCK = status({
   id: "status.energy-lock",
   displayName: "Energy Lock",
-  tooltip: "TODO(phase-03): needs a per-application energy-family parameter.",
+  tooltip: "Abilities that require the locked energy family cannot be used.",
 });
 
 export const ENERGY_COST_INCREASE = status({
@@ -257,7 +264,7 @@ export const ENERGY_COST_INCREASE = status({
   displayName: "Energy Cost Increase",
   stackRule: "stack",
   maxStacks: 3,
-  tooltip: "TODO(phase-03): needs cost-solver integration.",
+  tooltip: "This character's ability costs are increased.",
 });
 
 export const MARK = status({
@@ -287,16 +294,22 @@ export const DEATH_PREVENTION = status({
   defaultTarget: selfTarget,
   duration: { turns: 0, permanent: true },
   dispellable: false,
-  tooltip: "TODO(phase-03): needs death-check integration (Aurelia: cannot fall below 1 HP).",
+  tooltip: "The next lethal hit instead leaves this character at 1 HP, then this is consumed.",
 });
 
 export const RESURRECTION_LOCK = status({
   id: "status.resurrection-lock",
   displayName: "Resurrection Lock",
   dispellable: false,
-  tooltip: "TODO(phase-03): needs the resurrection system.",
+  tooltip: "This character cannot be resurrected while defeated.",
 });
 
+// phase-04-first-five.md "Consecration must block souls, resurrection,
+// thralls, and corpse use": this file only needs to make it a real,
+// applicable status — the four blocks themselves live where the thing
+// they're blocking lives (a `hasStatus` check in whichever soul-collecting
+// passive would otherwise award a Soul for this death, and a direct check
+// in effects.ts's resurrect handler). See docs/DECISIONS.md ADR-011.
 export const SOUL_CONSECRATION = status({
   id: "status.soul-consecration",
   displayName: "Soul Consecration",
@@ -304,13 +317,13 @@ export const SOUL_CONSECRATION = status({
   defaultTarget: selfTarget,
   duration: { turns: 0, permanent: true },
   dispellable: false,
-  tooltip: "TODO(phase-03): Father Bell / soul-collection mechanic.",
+  tooltip: "This death cannot generate Souls, be resurrected, be turned into a Thrall, or have its abilities commanded.",
 });
 
 export const ABILITY_LOCK = status({
   id: "status.ability-lock",
   displayName: "Ability Lock",
-  tooltip: "TODO(phase-03): needs a per-application ability-id parameter.",
+  tooltip: "The locked ability cannot be used.",
 });
 
 export const STATUS_LIBRARY: Record<string, StatusDefinition> = Object.fromEntries(

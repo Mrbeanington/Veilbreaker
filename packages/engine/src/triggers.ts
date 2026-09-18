@@ -163,12 +163,13 @@ export function evaluateEvent(
       if (source.trigger.condition && !evaluateCondition(conditionState, source.trigger.condition, conditionCtx)) continue;
       if (source.condition && !evaluateCondition(conditionState, source.condition, conditionCtx)) continue;
 
+      const effectTargetIds = source.trigger.effectTarget === "self" ? [holderId] : [gameEvent.subjectId];
       const result = applyEffect(
         currentState,
         { kind: "sequence", effects: source.effects },
         {
           sourceId: holderId,
-          targetIds: [gameEvent.subjectId],
+          targetIds: effectTargetIds,
           teams: deps.teams,
           turn: deps.turn,
           statusLibrary: deps.statusLibrary,

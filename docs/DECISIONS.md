@@ -86,6 +86,91 @@ Format: `ADR-NNN — Title — Status (Proposed/Accepted/Superseded) — Date`, 
 12. **`hasTag` and `secretScript` conditions still always return `false`** (`conditions.ts`): tags live on `CharacterDefinition`, which no engine runtime references yet (no roster exists before Phase 04); no secret script is registered in this file's own registry below. Both are honestly false rather than silently wrong — logged as OQ-31 alongside the other conditions-system gaps.
 **Consequences:** Every one of phase-03-advanced-systems.md's eleven acceptance-criteria items has a passing, purpose-built test (`triggers.test.ts`, `snapshot.test.ts`, `rng-modifiers.test.ts`, plus additions to `damage.test.ts`, `effects.test.ts`, and `resolver.test.ts`) — 179 tests total, up from 124. `onMatchStart` is defined in the schema but never fired by `createBattle` (no passives exist to react to it before a roster does); `onTurnStart`/`onTurnEnd` fire once per living character at the very start/end of `resolveTurn`, which is a reasonable interpretation but not the only possible one. Both logged as OQ-31.
 
+## ADR-011 — First five prototypes: small engine extensions three real character kits forced (Phase 04) — Accepted (2026-09-18)
+**Context:** phase-04-first-five.md's five characters (Tortuga Rex, Mister Whiskers, Patient Zero,
+Moonshot Maddox, Malachar) are the first real content built on top of Phases 01–03's engine. Several
+of spec/03's named mechanics turned out to need small, generically reusable engine changes to express
+at all — not because the spec's ambiguous, but because no prior phase's acceptance criteria exercised
+these specific shapes. Each is the "simplest option that keeps the system reusable," per CLAUDE.md's
+session protocol.
+**Decision, by subsystem:**
+1. **`Trigger.effectTarget: "subject" | "self"`, default `"subject"`** (`packages/content/src/schemas/
+   condition.ts`; consumed by `packages/engine/src/triggers.ts`'s `evaluateEvent`). Every reactive
+   effect previously landed on `gameEvent.subjectId` — whoever the event was *about* — never on the
+   trigger's own holder. That's fine for "when I take damage, do X to myself" (holder == subject), but
+   makes Malachar's passive ("whenever ANYONE dies, *I* gain a Soul") structurally impossible whenever
+   `relation` isn't `"self"`. `effectTarget: "self"` redirects the effect's `targetIds` to the holder
+   instead. This is exactly OQ-31(a)'s predicted next step ("revisit once retaliation-style Legends are
+   designed") arriving on schedule. Default preserves every one of Phase 03's 179 tests unchanged.
+2. **Consecration also blocks resurrection at the engine level** (`packages/engine/src/effects.ts`'s
+   `resurrect` case): `hasStatus(target, SOUL_CONSECRATION.id)` now blocks a revive exactly like
+   `RESURRECTION_LOCK` already did. This is spec/03's fourth Consecration rule ("cannot ... be
+   resurrected"), implemented once, generically, for any future resurrection-capable character — not
+   specific to Malachar or Father Bell (neither of whom casts `resurrect` this phase).
+3. **`retargetQueuedAction`'s `queuedCharacterId`/`newTargetIds` are now optional**, defaulting to
+   `ctx.targetIds[0]` and `[ctx.sourceId]` respectively (`packages/content/src/schemas/effect.ts`,
+   `packages/engine/src/effects.ts`). Static ability content can't hardcode a real match's actual
+   enemy ids, so a real Cheater ability (Mister Whiskers' Paw Swap) couldn't use this effect kind at
+   all under Phase 03's schema, which required both fields as literal, pre-authored ids. The default
+   reads as "redirect whichever enemy this ability targeted, onto me."
+4. **An effect's own optional `target` field is now honored when it's `{ side: "self", ... }`**, for
+   the `heal` and `modifyResource` effect kinds only (`packages/engine/src/effects.ts`,
+   `resolveEffectTargets`). Every effect in one ability previously shared the ability's own resolved
+   `targetIds` unconditionally, which made a cross-target ability — Malachar's Borrowed Life ("deal 20
+   damage **to an enemy**, restore 20 HP **to himself**") — inexpressible. Full per-effect targeting
+   (ally/random/lowestHp/...) would need threading a `BattleState` and `RngState` into `EffectContext`
+   to re-run real targeting logic, a much larger change than any current content needs; `"self"` is
+   trivially resolvable from `ctx.sourceId` alone, so that's the only side this phase implements.
+   Logged as OQ-36 for the rest.
+5. **Infection is now a real, ticking status** (`packages/content/src/data/statuses.ts`): just
+   `tickBehavior: "damageOverTime"`, no new engine code, since DoT ticking already reads that field
+   generically off any status (the same mechanism Bleed/Burn/Poison already used). Resolves OQ-29's
+   Infection blocker now that Patient Zero is a real character needing it.
+6. **`defaultResourcesFor(character): Record<string, number>`** (`packages/content/src/schemas/
+   character.ts`) — the first characters with resources are also the first thing needing to turn
+   `CharacterDefinition.resources`' `startingValue`s into the plain map `createBattle` actually takes
+   (`CreateBattleCharacterInput.resources`). One small shared function instead of every future call
+   site (a real UI, `packages/ai`'s bots, this phase's own scenario tests) re-deriving it by hand.
+7. **`composePrompt`/`missingIdentityAnchors`** (`packages/content/src/schemas/art.ts`) — spec/04's own
+   required deliverable ("Build a prompt-composer function that takes bible + shot type + global
+   language and returns the prompt, then validate that authored prompts include the bible's identity
+   anchors"). `CharacterArtSpec`/`CharacterVisualBible` were also restructured to match spec/04's
+   documented schema shape (splash/portrait/battleAvatar/abilityIcon/transformation/
+   secretSilhouette/legendReveal prompts; face/body/clothing/weapons/markings/species/age/silhouette/
+   signature-props identity anchors) — the versions Phase 00 shipped were a simpler placeholder with
+   no prior ADR recorded for the simplification, and nothing outside this phase's own new character
+   data consumed the old shape, so there was nothing to preserve compatibility with.
+8. **Malachar's "corpse" mechanics are approximations, not literal corpse-targeting** — see
+   `docs/design/characters/malachar.md` for the full reasoning. In short: `TargetRule`-based targeting
+   can never select a dead character (`targeting.ts` always filters to `alive`), and a Condition's
+   `"enemy"`/`"ally"` refs only ever resolve to a *living* character (`conditions.ts`) — so nothing in
+   the engine can express "target/query this specific corpse" yet. Corpse Command becomes a
+   Souls-fueled bonus-damage strike; Raise the Forgotten summons a Thrall from nothing rather than a
+   named body; You Belong to Me fields a slot-occupying `Summon` (a real "temporary fourth fighter,"
+   per spec/03's coverage list) instead of resurrecting a specific enemy onto Malachar's team. All
+   three, plus Souls itself, are gated by Consecration through the *same* shared Souls economy rather
+   than four independently-tracked blocks, since there's no way to identify which specific corpse a
+   later spend would have used. Logged as OQ-36.
+9. **A `PassiveDefinition`'s single trigger slot means a character can react to exactly one event
+   type through its passive.** Where a design seemed to need two standing reactive hooks (e.g., "gain
+   Bases per ability used" *and* "check Strikes on any change"), the simpler option was chosen instead
+   of adding a second passive slot or an innate-status-seeding mechanism: Moonshot Maddox's strikeout
+   check and his per-ability base-advance both live in one `onAbilityUsed` passive, checked in a fixed
+   order (strikeout first). This is a design choice available to future characters too, not a hidden
+   limitation — see `docs/design/characters/moonshot-maddox.md`.
+**Consequences:** All five kits are fully data-driven — zero custom scripts registered this phase (see
+the registry below, unchanged). 213 pre-existing tests still pass unmodified except one assertion that
+legitimately needed updating (statuses.test.ts's exact DoT list, now including Infection); 41 new
+tests were added across `effects.test.ts`, `triggers.test.ts`, `art.test.ts`, `coverage.test.ts`,
+`tooltip.test.ts`, and five new `packages/engine/src/scenarios/*.scenario.test.ts` files (one scripted
+multi-turn battle suite per character). New open questions: OQ-34 (Transformation.trigger is
+never automatically evaluated by the engine — every transform is fired explicitly by an ability/
+passive/status effect), OQ-35 (no ability can target a dead character through the normal action
+pipeline — blocks a literal "resurrect a chosen ally" cast), OQ-36 (per-effect TargetRule overrides
+only support `"self"`; Malachar's corpse-identity mechanics are approximated for the same underlying
+reason).
+
 ## Custom script registry
 | Script id | Character | Why components couldn't express it | Added in phase |
 |---|---|---|---|
+| _(none)_ | — | Phase 04's five kits (Tortuga Rex, Mister Whiskers, Patient Zero, Moonshot Maddox, Malachar) needed engine extensions (ADR-011), not custom scripts — every mechanic stayed expressible as data. | — |

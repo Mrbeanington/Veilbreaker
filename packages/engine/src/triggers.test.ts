@@ -33,7 +33,16 @@ function stateWith(passiveByCharacter: Record<string, string>): EffectState {
   };
 }
 
-function passive(overrides: Partial<PassiveDefinition> & Pick<PassiveDefinition, "id" | "trigger" | "effects">): PassiveDefinition {
+// `trigger` only requires `event` here — `relation` and `effectTarget` both
+// have schema defaults, and passiveDefinitionSchema.parse below fills them
+// in, so fixtures written before `effectTarget` existed don't all need
+// updating just to keep satisfying the (stricter) parsed output type.
+type PartialTrigger = Partial<PassiveDefinition["trigger"]> & Pick<PassiveDefinition["trigger"], "event">;
+
+function passive(
+  overrides: Partial<Omit<PassiveDefinition, "trigger">> &
+    Pick<PassiveDefinition, "id" | "effects"> & { trigger: PartialTrigger },
+): PassiveDefinition {
   return passiveDefinitionSchema.parse({
     displayName: overrides.id,
     description: "test fixture",
@@ -161,5 +170,34 @@ describe("evaluateEvent — recursion guard", () => {
       createRng(1),
     );
     expect(result.events.some((e) => e.type === "recursionGuardTripped")).toBe(true);
+  });
+});
+
+describe("evaluateEvent — Trigger.effectTarget (ADR-011, OQ-31a)", () => {
+  it("defaults to 'subject': effects land on whoever the event is about", () => {
+    const p = passive({
+      id: "test.effect-target.default",
+      trigger: { event: "onDeath", relation: "any" },
+      effects: [{ kind: "applyStatus", statusId: "status.taunt" }],
+    });
+    const state = stateWith({ a1: p.id });
+    // a1 holds the passive, b1 is who died — a "subject" target means b1
+    // (the corpse), not a1 (the holder), receives the effect.
+    const result = evaluateEvent(state, { event: "onDeath", subjectId: "b1" }, deps({ [p.id]: p }), createRng(1));
+    expect(result.events.find((e) => e.type === "statusApplied")?.targetId).toBe("b1");
+  });
+
+  it("'self' redirects the effect onto the trigger holder instead", () => {
+    // Malachar's shape exactly: "whenever ANY character dies, *I* gain a
+    // Soul" — the effect must land on the passive holder, not the corpse.
+    const p = passive({
+      id: "test.effect-target.self",
+      trigger: { event: "onDeath", relation: "any", effectTarget: "self" },
+      effects: [{ kind: "modifyResource", resourceId: "resource.souls", amount: 1 }],
+    });
+    const state = stateWith({ a1: p.id });
+    const result = evaluateEvent(state, { event: "onDeath", subjectId: "b1" }, deps({ [p.id]: p }), createRng(1));
+    const resourceEvent = result.events.find((e) => e.type === "resourceChanged");
+    expect(resourceEvent?.targetId).toBe("a1");
   });
 });

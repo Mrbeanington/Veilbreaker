@@ -21,6 +21,7 @@ describe("STATUS_LIBRARY", () => {
 
   it("tags exactly the DoT statuses with tickBehavior: damageOverTime", () => {
     const dots = Object.values(STATUS_LIBRARY).filter((d) => d.tickBehavior === "damageOverTime");
-    expect(dots.map((d) => d.id).sort()).toEqual(["status.bleed", "status.burn", "status.poison"]);
+    // Infection joined this list in Phase 04 (Patient Zero) — see docs/DECISIONS.md ADR-011.
+    expect(dots.map((d) => d.id).sort()).toEqual(["status.bleed", "status.burn", "status.infection", "status.poison"]);
   });
 });

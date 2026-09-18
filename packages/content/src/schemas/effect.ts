@@ -88,7 +88,13 @@ export type Effect =
   // targets for later tiers this same turn. `queuedCharacterId` names whose
   // queued action to modify — not a TargetRule, since this isn't about who
   // receives the effect, it's a reference into the turn's action queue.
-  | { kind: "retargetQueuedAction"; queuedCharacterId: string; newTargetIds: string[] }
+  // Both fields are optional (phase-04-first-five.md, Mister Whiskers' Paw
+  // Swap): static content data can't know which real enemy id a match will
+  // actually have, so when omitted, `queuedCharacterId` falls back to the
+  // ability's own resolved first target and `newTargetIds` to the caster —
+  // "redirect whichever enemy I targeted into attacking me instead." See
+  // docs/DECISIONS.md ADR-011.
+  | { kind: "retargetQueuedAction"; queuedCharacterId?: string; newTargetIds?: string[] }
   | { kind: "randomOutcome"; outcome: RandomOutcome }
   | { kind: "conditional"; condition: Condition; ifTrue: Effect[]; ifFalse?: Effect[] }
   | { kind: "sequence"; effects: Effect[] };
@@ -177,8 +183,8 @@ export const effectSchema: z.ZodType<Effect, z.ZodTypeDef, unknown> = z.lazy(() 
     }),
     z.object({
       kind: z.literal("retargetQueuedAction"),
-      queuedCharacterId: idSchema,
-      newTargetIds: z.array(idSchema),
+      queuedCharacterId: idSchema.optional(),
+      newTargetIds: z.array(idSchema).optional(),
     }),
     z.object({ kind: z.literal("randomOutcome"), outcome: randomOutcomeSchema }),
     z.object({

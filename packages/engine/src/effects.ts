@@ -7,9 +7,10 @@ import type {
   StatusDefinition,
   Summon,
   SummonRuntimeState,
+  TargetRule,
   Transformation,
 } from "@veilbreak/content";
-import { RESURRECTION_LOCK } from "@veilbreak/content";
+import { RESURRECTION_LOCK, SOUL_CONSECRATION } from "@veilbreak/content";
 import { createEmptyPool, richestFamily } from "./energy";
 import { resolveDamage, resolveHeal } from "./damage";
 import { applyStatusToCharacter, dispelCharacter, hasStatus, removeStatusFromCharacter } from "./statuses";
@@ -62,6 +63,22 @@ function conditionStateOf(state: EffectState, ctx: EffectContext): ConditionStat
 }
 
 /**
+ * phase-04-first-five.md forced this: an ability's effects all share the one
+ * TargetRule the ability itself resolved (`ctx.targetIds`) — fine for a
+ * simple attack, but Malachar's Borrowed Life ("deal 20 damage [to an enemy]
+ * and restore 20 HP [to himself]") needs one effect in the same cast to land
+ * on the caster instead. Rather than threading a full BattleState + RNG into
+ * EffectContext so every effect could re-run real targeting (ally/random/
+ * lowestHp/...), this narrowly recognizes `target: { side: "self", ... }` on
+ * the effect itself — trivially resolvable from `ctx.sourceId` alone — and
+ * falls back to the ability's shared targets otherwise. See docs/DECISIONS.md
+ * ADR-011 and OQ-36 for why the other TargetRule sides aren't supported here.
+ */
+function resolveEffectTargets(target: TargetRule | undefined, ctx: EffectContext): string[] {
+  return target?.side === "self" ? [ctx.sourceId] : ctx.targetIds;
+}
+
+/**
  * Applies one Effect (packages/content/src/schemas/effect.ts) to battle
  * state. Phase 03 completes the interpreter: transformInto, summon, erase,
  * resurrect, modifyRandomOutcome, retargetQueuedAction, modifyResource, and
@@ -96,7 +113,7 @@ export function applyEffect(
     case "heal": {
       let characters = state.characters;
       const events: AppliedEvent[] = [];
-      for (const targetId of ctx.targetIds) {
+      for (const targetId of resolveEffectTargets(effect.target, ctx)) {
         const result = resolveHeal(characters, ctx.sourceId, targetId, effect.amount, effect.healingClass);
         characters = result.characters;
         events.push(...result.events);
@@ -159,7 +176,7 @@ export function applyEffect(
       const definition = ctx.resourceLibrary[effect.resourceId];
       let characters = state.characters;
       const events: AppliedEvent[] = [];
-      for (const targetId of ctx.targetIds) {
+      for (const targetId of resolveEffectTargets(effect.target, ctx)) {
         const target = characters[targetId];
         if (!target) continue;
         const current = target.resources[effect.resourceId] ?? definition?.startingValue ?? 0;
@@ -331,7 +348,11 @@ export function applyEffect(
       for (const targetId of ctx.targetIds) {
         const target = characters[targetId];
         if (!target || target.alive) continue;
-        if (hasStatus(target, RESURRECTION_LOCK.id)) {
+        // spec/03 "Consecration must block ... resurrection": Father Bell's
+        // effect isn't built until his own phase, but the rule itself is
+        // general (any consecrated death, by anyone) so it lives here next
+        // to the equivalent Resurrection Lock check rather than waiting.
+        if (hasStatus(target, RESURRECTION_LOCK.id) || hasStatus(target, SOUL_CONSECRATION.id)) {
           events.push({ type: "resurrectionBlocked", sourceId: ctx.sourceId, targetId });
           continue;
         }
@@ -363,17 +384,25 @@ export function applyEffect(
     }
 
     case "retargetQueuedAction": {
+      // Both fields default from context when content omits them (see the
+      // Effect union's doc comment): static ability data can't hardcode a
+      // real match's actual enemy ids.
+      const queuedCharacterId = effect.queuedCharacterId ?? ctx.targetIds[0];
+      if (!queuedCharacterId) {
+        return { state, events: [], nextRngState: rngState };
+      }
+      const newTargetIds = effect.newTargetIds ?? [ctx.sourceId];
       return {
         state,
         events: [
           {
             type: "queuedActionRetargeted",
             sourceId: ctx.sourceId,
-            payload: { queuedCharacterId: effect.queuedCharacterId, newTargetIds: effect.newTargetIds },
+            payload: { queuedCharacterId, newTargetIds },
           },
         ],
         nextRngState: rngState,
-        queuedRetargets: [{ queuedCharacterId: effect.queuedCharacterId, newTargetIds: effect.newTargetIds }],
+        queuedRetargets: [{ queuedCharacterId, newTargetIds }],
       };
     }
 
