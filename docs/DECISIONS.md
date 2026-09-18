@@ -50,6 +50,11 @@ Format: `ADR-NNN — Title — Status (Proposed/Accepted/Superseded) — Date`, 
 5. Only `turnModel: "simultaneous"` actually resolves (`resolveTurn(state, actionsA, actionsB, deps)` takes both players' actions together). `"alternating"` exists as a schema value (OQ-01) but has no resolver implementation yet — logged as a new open question rather than built speculatively ahead of any content that needs it.
 **Consequences:** Phase 01's engine is real and tested, but a character/ability with a non-attack effect (a status, a transformation trigger, a summon) will throw at resolve time until Phase 02/03 extends `applyEffect`. That's intentional — it surfaces missing engine support immediately instead of a mechanic quietly doing nothing.
 
+## ADR-008 — CI workflows let `packageManager` in package.json set the pnpm version — Accepted (2026-09-18)
+**Context:** GitHub Actions CI had been failing since the very first Phase 00 push (both `ci.yml` and the new `deploy.yml`), silently — `pnpm run ci` was only ever verified locally, and no one checked Actions until setting up Pages surfaced it.
+**Decision:** `pnpm/action-setup@v4` now refuses to run when both its own `version` input and `package.json`'s `packageManager: "pnpm@9.12.0"` field are set ("Multiple versions of pnpm specified"). Removed the `version: 9` input from both workflows; the action now reads the version from `packageManager` alone, which was already the source of truth locally.
+**Consequences:** Local `pnpm run ci` passing is not sufficient evidence that GitHub Actions CI passes — check `gh run list` (or the Actions tab) after every push until this project has a habit of doing so automatically. This was two full phases (00 and 01) landing on `main` with red CI; nothing caught it because nothing looked.
+
 ## Custom script registry
 | Script id | Character | Why components couldn't express it | Added in phase |
 |---|---|---|---|
