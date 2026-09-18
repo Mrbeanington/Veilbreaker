@@ -3,6 +3,7 @@ import {
   COUNTER,
   DAMAGE_AMPLIFICATION,
   DAMAGE_REDUCTION,
+  DEATH_PREVENTION,
   HEALING_AMPLIFICATION,
   HEALING_REDUCTION,
   INVULNERABLE,
@@ -12,9 +13,17 @@ import {
   type CharacterRuntimeState,
   type DamageType,
   type HealingClass,
+  type SummonRuntimeState,
 } from "@veilbreak/content";
-import { getEffectiveMagnitude, hasStatus, setStatusMagnitude } from "./statuses";
+import { getEffectiveMagnitude, hasStatus, removeStatusFromCharacter, setStatusMagnitude } from "./statuses";
+import { findAbsorbingSummon } from "./summons";
 import type { AppliedEvent } from "./types";
+
+export interface DamageResolution {
+  characters: Record<string, CharacterRuntimeState>;
+  summons: Record<string, SummonRuntimeState>;
+  events: AppliedEvent[];
+}
 
 export interface CharacterMapResult {
   characters: Record<string, CharacterRuntimeState>;
@@ -33,13 +42,49 @@ function getOrThrow(
   return character;
 }
 
+function addStat(
+  characters: Record<string, CharacterRuntimeState>,
+  characterId: string,
+  key: "damageDealt" | "damageReceived" | "healingDone",
+  amount: number,
+): Record<string, CharacterRuntimeState> {
+  const character = characters[characterId];
+  if (!character || amount <= 0) return characters;
+  return { ...characters, [characterId]: { ...character, stats: { ...character.stats, [key]: character.stats[key] + amount } } };
+}
+
+/**
+ * spec/02 death, resurrection, and death-adjacent rules + phase-03-advanced
+ * -systems.md "death prevention (floor at 1 HP)": Aurelia's kind of passive
+ * — the killing blow is clamped to 1 HP instead, and the status is consumed
+ * (one save per application, not a standing immunity).
+ */
+function applyHp(
+  characters: Record<string, CharacterRuntimeState>,
+  targetId: string,
+  amount: number,
+): { characters: Record<string, CharacterRuntimeState>; events: AppliedEvent[] } {
+  const target = getOrThrow(characters, targetId, "applyHp");
+  const rawNewHp = Math.max(0, target.currentHp - amount);
+  if (rawNewHp > 0 || !hasStatus(target, DEATH_PREVENTION.id)) {
+    return { characters: { ...characters, [targetId]: { ...target, currentHp: rawNewHp } }, events: [] };
+  }
+  const saved = removeStatusFromCharacter({ ...target, currentHp: 1 }, DEATH_PREVENTION.id);
+  return {
+    characters: { ...characters, [targetId]: saved },
+    events: [{ type: "deathPrevented", targetId, payload: { wouldHaveTakenHpTo: rawNewHp } }],
+  };
+}
+
 /**
  * spec/01 "Damage language" + phase-02-combat-primitives.md "damage
  * pipeline": invulnerable → reflect/counter → amplification/weakness →
  * damage reduction → shield → HP. See the DamageType doc comment in
  * @veilbreak/content for exactly which stages each damage type skips.
+ * Summon-unaware — see `resolveDamage` below for the absorption check that
+ * wraps this.
  */
-export function resolveDamage(
+function resolveDamageToCharacter(
   characters: Record<string, CharacterRuntimeState>,
   sourceId: string,
   targetId: string,
@@ -69,8 +114,14 @@ export function resolveDamage(
   if (damageType !== "affliction" && hasStatus(target, REFLECT.id)) {
     const source = nextCharacters[sourceId];
     if (source?.alive) {
-      const reflectedHp = Math.max(0, source.currentHp - rawAmount);
-      nextCharacters = { ...nextCharacters, [sourceId]: { ...source, currentHp: reflectedHp } };
+      const reflected = applyHp(nextCharacters, sourceId, rawAmount);
+      nextCharacters = addStat(
+        addStat(reflected.characters, sourceId, "damageReceived", rawAmount),
+        targetId,
+        "damageDealt",
+        rawAmount,
+      );
+      events.push(...reflected.events);
       events.push({ type: "damageReflected", sourceId: targetId, targetId: sourceId, payload: { amount: rawAmount } });
     }
     events.push({ type: "damageAvoided", sourceId, targetId, payload: { reason: "reflect", damageType } });
@@ -80,8 +131,14 @@ export function resolveDamage(
     const counterAmount = getEffectiveMagnitude(target, COUNTER.id);
     const source = nextCharacters[sourceId];
     if (source?.alive && counterAmount > 0) {
-      const counteredHp = Math.max(0, source.currentHp - counterAmount);
-      nextCharacters = { ...nextCharacters, [sourceId]: { ...source, currentHp: counteredHp } };
+      const countered = applyHp(nextCharacters, sourceId, counterAmount);
+      nextCharacters = addStat(
+        addStat(countered.characters, sourceId, "damageReceived", counterAmount),
+        targetId,
+        "damageDealt",
+        counterAmount,
+      );
+      events.push(...countered.events);
       events.push({ type: "counterDamage", sourceId: targetId, targetId: sourceId, payload: { amount: counterAmount } });
     }
     // The target still takes their own damage below — Counter adds to it,
@@ -124,12 +181,65 @@ export function resolveDamage(
   }
 
   // 6. HP.
-  const finalTarget = getOrThrow(nextCharacters, targetId, "resolveDamage");
-  const newHp = Math.max(0, finalTarget.currentHp - amount);
-  nextCharacters = { ...nextCharacters, [targetId]: { ...finalTarget, currentHp: newHp } };
+  const applied = applyHp(nextCharacters, targetId, amount);
+  nextCharacters = addStat(addStat(applied.characters, targetId, "damageReceived", amount), sourceId, "damageDealt", amount);
+  events.push(...applied.events);
   events.push({ type: "damageDealt", sourceId, targetId, payload: { amount, damageType } });
 
   return { characters: nextCharacters, events };
+}
+
+/**
+ * phase-03-advanced-systems.md "Summons": an attached (non-slot) summon
+ * absorbs damage meant for its owner before the owner's own defensive
+ * statuses ever see it — see docs/DECISIONS.md for why this runs first.
+ * Overflow beyond the summon's remaining HP continues into the normal
+ * pipeline against the owner.
+ */
+export function resolveDamage(
+  characters: Record<string, CharacterRuntimeState>,
+  summons: Record<string, SummonRuntimeState>,
+  sourceId: string,
+  targetId: string,
+  rawAmount: number,
+  damageType: DamageType,
+): DamageResolution {
+  if (damageType === "affliction") {
+    const result = resolveDamageToCharacter(characters, sourceId, targetId, rawAmount, damageType);
+    return { characters: result.characters, summons, events: result.events };
+  }
+
+  const absorbingSummon = findAbsorbingSummon(summons, targetId);
+  if (!absorbingSummon) {
+    const result = resolveDamageToCharacter(characters, sourceId, targetId, rawAmount, damageType);
+    return { characters: result.characters, summons, events: result.events };
+  }
+
+  const absorbed = Math.min(rawAmount, absorbingSummon.currentHp);
+  const remainingSummonHp = absorbingSummon.currentHp - absorbed;
+  const summonAlive = remainingSummonHp > 0;
+  const nextSummons = {
+    ...summons,
+    [absorbingSummon.instanceId]: { ...absorbingSummon, currentHp: remainingSummonHp, alive: summonAlive },
+  };
+  const events: AppliedEvent[] = [
+    {
+      type: "damageAbsorbedBySummon",
+      sourceId,
+      targetId,
+      payload: { summonInstanceId: absorbingSummon.instanceId, absorbed, summonRemainingHp: remainingSummonHp },
+    },
+  ];
+  if (!summonAlive) {
+    events.push({ type: "summonDestroyed", targetId: absorbingSummon.instanceId, payload: { ownerCharacterId: targetId } });
+  }
+
+  const overflow = rawAmount - absorbed;
+  if (overflow <= 0) {
+    return { characters, summons: nextSummons, events };
+  }
+  const rest = resolveDamageToCharacter(characters, sourceId, targetId, overflow, damageType);
+  return { characters: rest.characters, summons: nextSummons, events: [...events, ...rest.events] };
 }
 
 /**
@@ -166,8 +276,10 @@ export function resolveHeal(
 
   const currentHp =
     healingClass === "setHp" ? Math.min(target.maxHp, Math.max(0, amount)) : Math.min(target.maxHp, target.currentHp + amount);
+  const actuallyHealed = currentHp - target.currentHp;
 
-  const nextCharacters = { ...characters, [targetId]: { ...target, currentHp } };
+  let nextCharacters: Record<string, CharacterRuntimeState> = { ...characters, [targetId]: { ...target, currentHp } };
+  nextCharacters = addStat(nextCharacters, sourceId, "healingDone", Math.max(0, actuallyHealed));
   return {
     characters: nextCharacters,
     events: [{ type: "healed", sourceId, targetId, payload: { amount, healingClass } }],

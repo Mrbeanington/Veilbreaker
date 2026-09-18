@@ -9,6 +9,7 @@ export type {
   BattleTeam,
   CharacterRuntimeState,
   PlayerAction,
+  SummonRuntimeState,
 } from "@veilbreak/content";
 
 export {
@@ -48,13 +49,46 @@ export {
   type ApplyStatusParams,
 } from "./statuses";
 
-export { resolveDamage, resolveHeal, type CharacterMapResult } from "./damage";
+export { resolveDamage, resolveHeal, type CharacterMapResult, type DamageResolution } from "./damage";
 
 export { resolveTargets, type ResolveTargetsResult } from "./targeting";
 
-export { validateAction, type ActionValidationError } from "./actions";
+export { evaluateCondition, type ConditionContext, type ConditionState } from "./conditions";
 
-export { applyEffect, type EffectContext, type EffectResult, type EffectState } from "./effects";
+export { snapshotBattleState, restoreFromSnapshot, type BattleStateSnapshot } from "./snapshot";
+
+export {
+  consumeRngModifier,
+  queueRngModifier,
+  selectRandomOutcomeBranch,
+} from "./rng-modifiers";
+
+export {
+  createSummonRuntimeState,
+  decrementSummonDurations,
+  findAbsorbingSummon,
+  nextSummonInstanceId,
+} from "./summons";
+
+export { applyTransformation } from "./transformations";
+
+export {
+  deriveGameEvents,
+  evaluateEvent,
+  type GameEvent,
+  type TriggerDeps,
+  type TriggerResult,
+} from "./triggers";
+
+export { getEffectiveCost, validateAction, type ActionValidationError } from "./actions";
+
+export {
+  applyEffect,
+  type EffectContext,
+  type EffectResult,
+  type EffectState,
+  type QueuedRetarget,
+} from "./effects";
 
 export {
   COOLDOWN_REDUCTION_TIER_ID,
@@ -66,6 +100,7 @@ export {
   RESOURCE_GENERATION_TIER_ID,
   resolveTurn,
   STANDARD_RESOLUTION_TIER_ID,
+  type CreateBattleCharacterInput,
   type CreateBattleConfig,
   type CreateBattleTeamInput,
   type ResolveTurnDeps,

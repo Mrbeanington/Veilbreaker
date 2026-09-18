@@ -45,16 +45,50 @@ export const activeStatusSchema = z.object({
   remainingTurns: z.number().int().min(0).nullable(),
   stacks: z.number().int().min(1),
   magnitude: z.number().int().default(0),
+  // phase-03-advanced-systems.md's Ability Lock / Energy Lock need a
+  // per-application parameter (which ability, which family) that a single
+  // numeric magnitude can't carry — logged as a gap in OQ-29. A generic
+  // optional string is the smallest addition that unblocks both without a
+  // bespoke field per status.
+  param: z.string().optional(),
 });
 export type ActiveStatus = z.infer<typeof activeStatusSchema>;
 
+// phase-03-advanced-systems.md "RNG manipulation ... implemented as
+// modifiers on RandomOutcome": a one-shot instruction consumed the next time
+// its owner's ability rolls a `randomOutcome` effect. Branches are read in
+// author order, worst to best (docs/DECISIONS.md) — "min"/"max" mean the
+// first/last branch, not a numeric value, since a RandomOutcome branch has
+// no inherent numeric ordering of its own.
+export const rngModifierSchema = z.object({
+  mode: z.enum(["forceOutcome", "guaranteeMin", "guaranteeMax", "reroll", "weightBoost"]),
+  branchIndex: z.number().int().min(0).optional(),
+  weightMultiplier: z.number().positive().optional(),
+});
+export type RngModifier = z.infer<typeof rngModifierSchema>;
+
+// Match-long cumulative counters, read by Condition variants like
+// damageDealtAtLeast/killCountAtLeast (packages/content/src/schemas/
+// condition.ts) — these need to accumulate across the whole match, not just
+// the current turn.
+export const characterStatsSchema = z.object({
+  damageDealt: z.number().int().min(0).default(0),
+  damageReceived: z.number().int().min(0).default(0),
+  healingDone: z.number().int().min(0).default(0),
+  kills: z.number().int().min(0).default(0),
+  deaths: z.number().int().min(0).default(0),
+});
+export type CharacterStats = z.infer<typeof characterStatsSchema>;
+
 // spec/02 "Core models": BattleState is the engine's single source of truth
 // for a match in progress. Phase 00 shipped this as a foundational skeleton
-// (OQ-25) since resolution logic was out of scope; Phase 01 (the resolver)
-// added current/max HP, per-ability cooldowns, and whether the character is
-// still alive. Phase 02 ("Combat primitives") adds `statuses`. Transformation
-// stage and live resource values are still out of scope — Phase 03
-// ("Advanced systems").
+// (OQ-25); Phase 01 added current/max HP, per-ability cooldowns, and
+// alive; Phase 02 added `statuses`. Phase 03 ("Advanced systems") adds
+// everything transformations, triggers, and Cheater hooks read or write:
+// live resource values, the current ability kit and passive (both of which
+// a Transformation's `changes` can swap), ability-use history (for
+// "last-turn" / sequence-tracking conditions), match-long stats, and any
+// pending one-shot RNG modifier.
 export const characterRuntimeStateSchema = z.object({
   characterId: idSchema,
   currentHp: z.number().int().min(0),
@@ -64,8 +98,38 @@ export const characterRuntimeStateSchema = z.object({
   // entry here (or a value of 0) is off cooldown.
   cooldowns: z.record(idSchema, z.number().int().min(0)).default({}),
   statuses: z.array(activeStatusSchema).default([]),
+  resources: z.record(idSchema, z.number().int()).default({}),
+  abilityIds: z.array(idSchema).default([]),
+  passiveId: idSchema.optional(),
+  // Most recent last; capped in length by the engine, not the schema.
+  abilityHistory: z.array(idSchema).default([]),
+  stats: characterStatsSchema.default({
+    damageDealt: 0,
+    damageReceived: 0,
+    healingDone: 0,
+    kills: 0,
+    deaths: 0,
+  }),
+  pendingRngModifiers: z.array(rngModifierSchema).default([]),
 });
 export type CharacterRuntimeState = z.infer<typeof characterRuntimeStateSchema>;
+
+// phase-03-advanced-systems.md "Summons": a summon is tracked separately from
+// the 3-a-side team roster (spec/02: attached summons, temporary fourth
+// units, absorption counters, totems/relics all share this shape).
+// `instanceId` is engine-generated (not a content id), since a character can
+// summon the same SummonDefinition more than once in a match.
+export const summonRuntimeStateSchema = z.object({
+  instanceId: z.string().min(1),
+  summonId: idSchema,
+  ownerCharacterId: idSchema,
+  occupiesSlot: z.boolean(),
+  currentHp: z.number().int().min(0),
+  maxHp: z.number().int().positive(),
+  alive: z.boolean(),
+  remainingTurns: z.number().int().min(0).nullable(),
+});
+export type SummonRuntimeState = z.infer<typeof summonRuntimeStateSchema>;
 
 // Team membership and turn order (OQ-02: "within a player, order follows the
 // ally slot 1→3"), kept separate from the live `characters` record on
@@ -88,6 +152,7 @@ export const battleStateSchema = z.object({
   // ability can target across team lines, so lookup does not go through a
   // specific team first.
   characters: z.record(idSchema, characterRuntimeStateSchema),
+  summons: z.record(z.string(), summonRuntimeStateSchema).default({}),
   energyPools: z.record(idSchema, energyPoolSchema),
   // spec/01 OQ-02: "Initiative alternates each turn (a coin-flip seeded from
   // RNG decides turn 1)." Whoever holds it resolves first within each tier.

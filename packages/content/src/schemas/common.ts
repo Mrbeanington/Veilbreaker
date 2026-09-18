@@ -78,7 +78,13 @@ export const costSchema = z.object({
 export type Cost = z.infer<typeof costSchema>;
 
 // spec/02 "Resource": custom counters such as Souls, Bases, Tails, Tide,
-// Feedback, Fouls, Verse stage.
+// Feedback, Fouls, Verse stage. phase-03-advanced-systems.md: "generic named
+// counters with min/max, display hint, and optional 'track' mode" —
+// `displayHint` is free-form UI guidance (e.g. "pips", "bar", "number"),
+// bundled with the resource's own definition rather than hard-coded per
+// resource id in the (not-yet-built) UI. `trackMode: true` marks a resource
+// the UI should keep persistently visible during a match (Malachar's Souls,
+// a boss's stage counter), as opposed to one only shown on hover/inspect.
 export const resourceSchema = z.object({
   id: idSchema,
   displayName: z.string().min(1),
@@ -86,6 +92,8 @@ export const resourceSchema = z.object({
   min: z.number().int().default(0),
   max: z.number().int().optional(),
   visibleToOpponent: z.boolean().default(true),
+  displayHint: z.string().optional(),
+  trackMode: z.boolean().default(false),
 });
 export type Resource = z.infer<typeof resourceSchema>;
 

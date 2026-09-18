@@ -11,6 +11,7 @@ import {
   removeStatusFromCharacter,
   setStatusMagnitude,
 } from "./statuses";
+import { testCharacter } from "./test-support";
 
 const STUN = STATUS_LIBRARY["status.stun"]!;
 const SILENCE = STATUS_LIBRARY["status.silence"]!;
@@ -19,7 +20,7 @@ const BLEED = STATUS_LIBRARY["status.bleed"]!;
 const CURSE = STATUS_LIBRARY["status.curse"]!; // dispellable: false
 
 function fresh(): CharacterRuntimeState {
-  return { characterId: "c1", currentHp: 100, maxHp: 100, alive: true, cooldowns: {}, statuses: [] };
+  return testCharacter({ characterId: "c1" });
 }
 
 // None of the 32 library statuses use stackRule "none" (every one either

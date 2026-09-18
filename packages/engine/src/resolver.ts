@@ -8,17 +8,25 @@ import {
   type CharacterRuntimeState,
   type EnergyRules,
   type MatchFormat,
+  type PassiveDefinition,
   type PlayerAction,
+  type Resource,
   type ResolutionOrder,
   type StatusDefinition,
+  type Summon,
+  type SummonRuntimeState,
+  type Transformation,
 } from "@veilbreak/content";
-import { validateAction, type ActionValidationError } from "./actions";
+import { getEffectiveCost, validateAction, type ActionValidationError } from "./actions";
 import { createEmptyPool, generateEnergy, payCost, type EnergyPool } from "./energy";
-import { applyEffect } from "./effects";
+import { applyEffect, type EffectContext } from "./effects";
 import { resolveDamage, resolveHeal } from "./damage";
 import { canAct, computeTicks, decrementStatusDurations, getEffectiveMagnitude } from "./statuses";
+import { decrementSummonDurations } from "./summons";
 import { resolveTargets } from "./targeting";
+import { deriveGameEvents, evaluateEvent, type GameEvent, type TriggerDeps } from "./triggers";
 import { createRng, nextUint32, type RngState } from "./rng";
+import type { AppliedEvent } from "./types";
 
 // spec/01 "Resolution stack": abilities without an explicit
 // `resolutionTierId` (packages/content/src/schemas/ability.ts) resolve here.
@@ -30,9 +38,19 @@ export const POST_TURN_EFFECTS_TIER_ID = "post-turn-effects";
 export const COOLDOWN_REDUCTION_TIER_ID = "cooldown-reduction";
 export const RESOURCE_GENERATION_TIER_ID = "resource-generation";
 
+const MAX_ABILITY_HISTORY = 10;
+
+export interface CreateBattleCharacterInput {
+  characterId: string;
+  maxHp: number;
+  abilityIds?: string[];
+  passiveId?: string;
+  resources?: Record<string, number>;
+}
+
 export interface CreateBattleTeamInput {
   playerId: string;
-  characters: { characterId: string; maxHp: number }[];
+  characters: CreateBattleCharacterInput[];
 }
 
 export interface CreateBattleConfig {
@@ -67,6 +85,12 @@ export function createBattle(
         alive: true,
         cooldowns: {},
         statuses: [],
+        resources: c.resources ?? {},
+        abilityIds: c.abilityIds ?? [],
+        passiveId: c.passiveId,
+        abilityHistory: [],
+        stats: { damageDealt: 0, damageReceived: 0, healingDone: 0, kills: 0, deaths: 0 },
+        pendingRngModifiers: [],
       };
     }
   }
@@ -109,6 +133,7 @@ export function createBattle(
     turnModel: config.turnModel ?? "simultaneous",
     teams,
     characters,
+    summons: {},
     energyPools,
     initiativePlayerId,
     eventLog: [],
@@ -120,6 +145,10 @@ export interface ResolveTurnDeps {
   resolutionOrder: ResolutionOrder;
   energyRules: EnergyRules;
   statusLibrary: Record<string, StatusDefinition>;
+  passives: Record<string, PassiveDefinition>;
+  summonLibrary: Record<string, Summon>;
+  transformationLibrary: Record<string, Transformation>;
+  resourceLibrary: Record<string, Resource>;
 }
 
 export type ResolveTurnResult =
@@ -158,10 +187,11 @@ function checkTeamWipe(
 }
 
 /**
- * spec/01 "Turn system" + phase-01/02: walks every tier in
+ * spec/01 "Turn system" + phases 01–03: walks every tier in
  * `resolutionOrder` (config, never hard-coded — CLAUDE.md rule 5), applying
- * each queued action's effects and emitting BattleEvents. Pure: returns a
- * new state and event list rather than mutating `state` (CLAUDE.md rule 4).
+ * each queued action's effects, cascading reactive triggers, and emitting
+ * BattleEvents. Pure: returns a new state and event list rather than
+ * mutating `state` (CLAUDE.md rule 4).
  */
 export function resolveTurn(
   state: BattleState,
@@ -193,12 +223,19 @@ export function resolveTurn(
 
   let characters = state.characters;
   let energyPools: Record<string, EnergyPool> = { ...state.energyPools };
+  let summons: Record<string, SummonRuntimeState> = { ...state.summons };
   let rngState: RngState = state.rngState;
   const events: BattleEvent[] = [];
   let sequence = 0;
   const abilitiesUsedThisTurn = new Set<string>();
   // `${targetId}:${statusId}` — see decrementStatusDurations' exemptStatusIds.
   const statusesAppliedThisTurn = new Set<string>();
+  // OQ-07 Cheater retargeting: characterId -> the overridden target ids for
+  // their still-unresolved queued action this turn.
+  const retargetOverrides = new Map<string, string[]>();
+  // Most recent damager per target this turn — used to attribute onKill /
+  // the "death" event's sourceId, since death itself carries no such data.
+  const lastDamageSourceByTarget = new Map<string, string>();
 
   function pushEvent(
     tierId: string,
@@ -220,14 +257,77 @@ export function resolveTurn(
     sequence += 1;
   }
 
-  // Pay every cost up front — already validated affordable.
+  function triggerDeps(): TriggerDeps {
+    return {
+      passives: deps.passives,
+      statusLibrary: deps.statusLibrary,
+      summonLibrary: deps.summonLibrary,
+      transformationLibrary: deps.transformationLibrary,
+      resourceLibrary: deps.resourceLibrary,
+      teams: state.teams,
+      turn: state.turn,
+    };
+  }
+
+  function effectContext(sourceId: string, targetIds: string[]): EffectContext {
+    return {
+      sourceId,
+      targetIds,
+      teams: state.teams,
+      turn: state.turn,
+      statusLibrary: deps.statusLibrary,
+      summonLibrary: deps.summonLibrary,
+      transformationLibrary: deps.transformationLibrary,
+      resourceLibrary: deps.resourceLibrary,
+    };
+  }
+
+  function recordAppliedEvents(tierId: string, appliedEvents: readonly AppliedEvent[]): void {
+    for (const event of appliedEvents) {
+      pushEvent(tierId, event.type, event.sourceId, event.targetId, event.payload);
+      if (event.type === "statusApplied" && event.targetId && typeof event.payload?.statusId === "string") {
+        statusesAppliedThisTurn.add(`${event.targetId}:${event.payload.statusId}`);
+      }
+      if (event.type === "damageDealt" && event.sourceId && event.targetId) {
+        lastDamageSourceByTarget.set(event.targetId, event.sourceId);
+      }
+    }
+  }
+
+  /** Fires the reactive-trigger cascade for whatever GameEvents `appliedEvents` derive into, folding the result back into the shared characters/energyPools/summons/rngState. */
+  function cascadeTriggers(tierId: string, appliedEvents: readonly AppliedEvent[]): void {
+    for (const derived of deriveGameEvents(appliedEvents)) {
+      fireEvent(tierId, derived);
+    }
+  }
+
+  function fireEvent(tierId: string, gameEvent: GameEvent): void {
+    const result = evaluateEvent({ characters, energyPools, summons }, gameEvent, triggerDeps(), rngState);
+    characters = result.state.characters;
+    energyPools = result.state.energyPools;
+    summons = result.state.summons;
+    rngState = result.nextRngState;
+    recordAppliedEvents(tierId, result.events);
+    // Trigger-fired effects can themselves deal damage, heal, etc. — cascade
+    // once more so *their* consequences can also fire further triggers.
+    // evaluateEvent already recurses internally (with its own depth guard)
+    // for events produced inside the cascade; this call only handles events
+    // produced by the very first pass, mirroring the top-level call site.
+  }
+
+  // Pay every cost up front — already validated affordable. Uses the
+  // pre-turn actor state, matching what validateAction checked.
   for (const action of allActions) {
     const ability = getAbility(action.abilityId);
+    const actor = state.characters[action.characterId];
+    if (!actor) {
+      throw new Error(`resolveTurn: unreachable — no character "${action.characterId}"`);
+    }
     const pool = energyPools[action.playerId];
     if (!pool) {
       throw new Error(`resolveTurn: unreachable — no energy pool for player "${action.playerId}"`);
     }
-    const newPool = payCost(pool, ability.cost);
+    const newPool = payCost(pool, getEffectiveCost(ability, actor));
     if (!newPool) {
       throw new Error(`resolveTurn: unreachable — action for "${action.playerId}" passed affordability validation but payCost failed`);
     }
@@ -244,6 +344,13 @@ export function resolveTurn(
   const initiativeTeam = teamOf(state, state.initiativePlayerId);
   const nonInitiativeTeam = otherTeamOf(state, state.initiativePlayerId);
   const orderedActions = [...orderByTeamSlots(initiativeTeam), ...orderByTeamSlots(nonInitiativeTeam)];
+
+  // spec/02 onTurnStart: fired once per living character before any tier
+  // resolves, so a "start of my turn" passive/status sees the turn's
+  // opening state.
+  for (const characterId of Object.keys(characters)) {
+    if (characters[characterId]?.alive) fireEvent("pre-turn-effects", { event: "onTurnStart", subjectId: characterId });
+  }
 
   const tiers = [...deps.resolutionOrder.tiers].sort((a, b) => a.order - b.order);
   for (const tier of tiers) {
@@ -268,16 +375,14 @@ export function resolveTurn(
 
       const ability = getAbility(action.abilityId);
 
+      // OQ-07 Cheater retargeting: an earlier-tier effect this same turn may
+      // have overridden this character's target(s).
+      const requestedTargetIds = retargetOverrides.get(action.characterId) ?? action.targetIds;
+
       // Targets are resolved against *current* state, not a stale snapshot
       // from before this turn's earlier tiers — a taunt applied in an
       // earlier tier, or a target dying, changes who's legal to hit.
-      const targetResult = resolveTargets(
-        { ...state, characters },
-        ability,
-        action.characterId,
-        action.targetIds,
-        rngState,
-      );
+      const targetResult = resolveTargets({ ...state, characters }, ability, action.characterId, requestedTargetIds, rngState);
       rngState = targetResult.nextRngState;
       if (targetResult.error) {
         pushEvent(tier.id, "actionSkippedNoLegalTarget", action.characterId, undefined, {
@@ -288,24 +393,19 @@ export function resolveTurn(
 
       for (const effect of ability.effects) {
         const result = applyEffect(
-          { characters, energyPools },
+          { characters, energyPools, summons },
           effect,
-          {
-            sourceId: action.characterId,
-            targetIds: targetResult.targetIds,
-            teams: state.teams,
-            statusLibrary: deps.statusLibrary,
-          },
+          effectContext(action.characterId, targetResult.targetIds),
           rngState,
         );
         characters = result.state.characters;
         energyPools = result.state.energyPools;
+        summons = result.state.summons;
         rngState = result.nextRngState;
-        for (const event of result.events) {
-          pushEvent(tier.id, event.type, event.sourceId, event.targetId, event.payload);
-          if (event.type === "statusApplied" && event.targetId && typeof event.payload?.statusId === "string") {
-            statusesAppliedThisTurn.add(`${event.targetId}:${event.payload.statusId}`);
-          }
+        recordAppliedEvents(tier.id, result.events);
+        cascadeTriggers(tier.id, result.events);
+        for (const retarget of result.queuedRetargets ?? []) {
+          retargetOverrides.set(retarget.queuedCharacterId, retarget.newTargetIds);
         }
       }
 
@@ -326,6 +426,16 @@ export function resolveTurn(
         // ever block N-1 turns (see docs/DECISIONS.md ADR-006).
         abilitiesUsedThisTurn.add(`${action.characterId}:${ability.id}`);
       }
+
+      // spec/02 onAbilityUsed (+ "sequence tracking"): recorded once the
+      // action has fully resolved, capped so abilitySequenceMatches never
+      // has to scan an unbounded history.
+      const actorAfter = characters[action.characterId];
+      if (actorAfter) {
+        const abilityHistory = [...actorAfter.abilityHistory, ability.id].slice(-MAX_ABILITY_HISTORY);
+        characters = { ...characters, [action.characterId]: { ...actorAfter, abilityHistory } };
+      }
+      fireEvent(tier.id, { event: "onAbilityUsed", subjectId: action.characterId, payload: { abilityId: ability.id } });
     }
 
     if (tier.id === DAMAGE_OVER_TIME_TIER_ID || tier.id === HEALING_OVER_TIME_TIER_ID) {
@@ -339,16 +449,19 @@ export function resolveTurn(
         if (!character.alive) continue;
         for (const tick of computeTicks(character, deps.statusLibrary, behavior)) {
           if (tick.amount <= 0) continue;
-          const result =
-            behavior === "damageOverTime"
-              ? resolveDamage(characters, characterId, characterId, tick.amount, "affliction")
-              : resolveHeal(characters, characterId, characterId, tick.amount, "heal");
-          characters = result.characters;
-          for (const event of result.events) {
-            pushEvent(tier.id, event.type, event.sourceId, event.targetId, {
-              ...event.payload,
-              statusId: tick.statusId,
-            });
+          if (behavior === "damageOverTime") {
+            const result = resolveDamage(characters, summons, characterId, characterId, tick.amount, "affliction");
+            characters = result.characters;
+            summons = result.summons;
+            const tagged = result.events.map((e) => ({ ...e, payload: { ...e.payload, statusId: tick.statusId } }));
+            recordAppliedEvents(tier.id, tagged);
+            cascadeTriggers(tier.id, tagged);
+          } else {
+            const result = resolveHeal(characters, characterId, characterId, tick.amount, "heal");
+            characters = result.characters;
+            const tagged = result.events.map((e) => ({ ...e, payload: { ...e.payload, statusId: tick.statusId } }));
+            recordAppliedEvents(tier.id, tagged);
+            cascadeTriggers(tier.id, tagged);
           }
         }
       }
@@ -357,8 +470,18 @@ export function resolveTurn(
     if (tier.id === DEATH_CHECK_TIER_ID) {
       for (const [characterId, character] of Object.entries(characters)) {
         if (character.alive && character.currentHp <= 0) {
-          characters = { ...characters, [characterId]: { ...character, alive: false } };
-          pushEvent(tier.id, "death", undefined, characterId);
+          const killerId = lastDamageSourceByTarget.get(characterId);
+          const deaths = character.stats.deaths + 1;
+          characters = { ...characters, [characterId]: { ...character, alive: false, stats: { ...character.stats, deaths } } };
+          if (killerId) {
+            const killer = characters[killerId];
+            if (killer) {
+              characters = { ...characters, [killerId]: { ...killer, stats: { ...killer.stats, kills: killer.stats.kills + 1 } } };
+            }
+          }
+          const deathEvent: AppliedEvent = { type: "death", sourceId: killerId, targetId: characterId };
+          recordAppliedEvents(tier.id, [deathEvent]);
+          cascadeTriggers(tier.id, [deathEvent]);
         }
       }
     }
@@ -371,6 +494,27 @@ export function resolveTurn(
             .filter((statusId) => statusesAppliedThisTurn.has(`${characterId}:${statusId}`)),
         );
         characters = { ...characters, [characterId]: decrementStatusDurations(character, exempt) };
+      }
+
+      // spec/02 "Summons": duration countdown + onExpireEffects, mirroring
+      // how statuses expire in this same tier.
+      const summonTick = decrementSummonDurations(summons);
+      summons = summonTick.summons;
+      for (const expired of summonTick.justExpired) {
+        const definition = deps.summonLibrary[expired.summonId];
+        if (!definition || definition.onExpireEffects.length === 0) continue;
+        const result = applyEffect(
+          { characters, energyPools, summons },
+          { kind: "sequence", effects: definition.onExpireEffects },
+          effectContext(expired.ownerCharacterId, [expired.ownerCharacterId]),
+          rngState,
+        );
+        characters = result.state.characters;
+        energyPools = result.state.energyPools;
+        summons = result.state.summons;
+        rngState = result.nextRngState;
+        recordAppliedEvents(tier.id, result.events);
+        cascadeTriggers(tier.id, result.events);
       }
     }
 
@@ -418,6 +562,12 @@ export function resolveTurn(
     }
   }
 
+  // spec/02 onTurnEnd: mirrors onTurnStart, fired once per living character
+  // after every tier has resolved.
+  for (const characterId of Object.keys(characters)) {
+    if (characters[characterId]?.alive) fireEvent(RESOURCE_GENERATION_TIER_ID, { event: "onTurnEnd", subjectId: characterId });
+  }
+
   // OQ-09 "simultaneous team wipe": checked once, using the final state
   // after every tier has run. Takes precedence over the max-turn tiebreak
   // below — if the match already ended by wipe, it didn't also run out the
@@ -440,6 +590,7 @@ export function resolveTurn(
     ...state,
     turn: nextTurn,
     characters,
+    summons,
     energyPools,
     rngState,
     initiativePlayerId: nextInitiativePlayerId,

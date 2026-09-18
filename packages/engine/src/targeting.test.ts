@@ -10,12 +10,13 @@ import {
 import { resolveTargets } from "./targeting";
 import { applyStatusToCharacter } from "./statuses";
 import { createRng } from "./rng";
+import { testCharacter } from "./test-support";
 
 const TAUNT = STATUS_LIBRARY["status.taunt"]!;
 const UNTARGETABLE = STATUS_LIBRARY["status.untargetable"]!;
 
 function character(id: string, hp = 100): CharacterRuntimeState {
-  return { characterId: id, currentHp: hp, maxHp: 100, alive: true, cooldowns: {}, statuses: [] };
+  return testCharacter({ characterId: id, currentHp: hp });
 }
 
 function battleState(characters: CharacterRuntimeState[]): BattleState {
@@ -30,6 +31,7 @@ function battleState(characters: CharacterRuntimeState[]): BattleState {
       { playerId: "playerB", characterIds: ["b1", "b2", "b3"] },
     ],
     characters: Object.fromEntries(characters.map((c) => [c.characterId, c])),
+    summons: {},
     energyPools: {
       playerA: { MIGHT: 0, FOCUS: 0, SPIRIT: 0, CHAOS: 0 },
       playerB: { MIGHT: 0, FOCUS: 0, SPIRIT: 0, CHAOS: 0 },

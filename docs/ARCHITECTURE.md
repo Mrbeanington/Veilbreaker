@@ -125,6 +125,16 @@ in `docs/DECISIONS.md` for where real behavior needed a decision this pseudocode
 (exact damage-type interactions, the status stacking/duration model, taunt redirect vs. rejection,
 cooldown timing).
 
+**Phase 03** adds a reactive layer on top: `packages/engine/src/triggers.ts` (`evaluateEvent`)
+scans every character's passive and active statuses' `triggerTiming` against each game event —
+`resolveTurn` calls it after every effect application (and at turn start/end), feeding it whatever
+`deriveGameEvents` maps that effect's own `BattleEvent`s into, recursively, up to a depth-5 guard.
+`packages/engine/src/{conditions,transformations,summons,snapshot,rng-modifiers}.ts` round out the
+remaining deliverables. See ADR-010 in `docs/DECISIONS.md` for the twelve decisions this needed —
+notably that reactive effects target the event's subject rather than a resolved `TargetRule`
+(OQ-31), and that erasure's entire "bypasses death triggers" mechanism is just `deriveGameEvents`
+never mapping an `"erased"` event to `onDeath`.
+
 ## Tech stack — ADR-001/ADR-002 status
 
 Both accepted as proposed, with one addition (see `docs/DECISIONS.md` ADR-003): workspace packages

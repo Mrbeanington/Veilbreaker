@@ -26,6 +26,7 @@ export interface ApplyStatusParams {
   durationTurns?: number;
   stacks?: number;
   magnitude?: number;
+  param?: string;
 }
 
 export function applyStatusToCharacter(
@@ -41,6 +42,7 @@ export function applyStatusToCharacter(
         : statusDef.duration.turns;
   const magnitude = params.magnitude ?? 0;
   const requestedStacks = params.stacks ?? 1;
+  const param = params.param;
 
   const existingIndex = character.statuses.findIndex((s) => s.statusId === statusDef.id);
   if (existingIndex === -1) {
@@ -49,6 +51,7 @@ export function applyStatusToCharacter(
       remainingTurns,
       stacks: Math.min(statusDef.maxStacks, requestedStacks),
       magnitude,
+      param,
     };
     return { ...character, statuses: [...character.statuses, fresh] };
   }
@@ -65,13 +68,14 @@ export function applyStatusToCharacter(
       // expires or is dispelled.
       return character;
     case "refresh":
-      updated = { ...existing, remainingTurns, magnitude };
+      updated = { ...existing, remainingTurns, magnitude, param };
       break;
     case "stack":
       updated = {
         ...existing,
         stacks: Math.min(statusDef.maxStacks, existing.stacks + requestedStacks),
         magnitude,
+        param,
       };
       break;
     case "stackAndRefresh":
@@ -79,6 +83,7 @@ export function applyStatusToCharacter(
         ...existing,
         stacks: Math.min(statusDef.maxStacks, existing.stacks + requestedStacks),
         magnitude,
+        param,
         remainingTurns,
       };
       break;

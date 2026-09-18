@@ -3,44 +3,71 @@ import type {
   CharacterRuntimeState,
   Effect,
   EnergyPool,
+  Resource,
   StatusDefinition,
+  Summon,
+  SummonRuntimeState,
+  Transformation,
 } from "@veilbreak/content";
+import { RESURRECTION_LOCK } from "@veilbreak/content";
 import { createEmptyPool, richestFamily } from "./energy";
 import { resolveDamage, resolveHeal } from "./damage";
-import { applyStatusToCharacter, dispelCharacter, removeStatusFromCharacter } from "./statuses";
-import { pickWeighted, type RngState } from "./rng";
+import { applyStatusToCharacter, dispelCharacter, hasStatus, removeStatusFromCharacter } from "./statuses";
+import { evaluateCondition, type ConditionState } from "./conditions";
+import { createSummonRuntimeState, nextSummonInstanceId } from "./summons";
+import { applyTransformation } from "./transformations";
+import { consumeRngModifier, queueRngModifier, selectRandomOutcomeBranch } from "./rng-modifiers";
+import type { RngState } from "./rng";
 import type { AppliedEvent } from "./types";
 
 export interface EffectState {
   characters: Record<string, CharacterRuntimeState>;
   energyPools: Record<string, EnergyPool>;
+  summons: Record<string, SummonRuntimeState>;
 }
 
 export interface EffectContext {
   sourceId: string;
   targetIds: string[];
   teams: [BattleTeam, BattleTeam];
+  turn: number;
   statusLibrary: Record<string, StatusDefinition>;
+  summonLibrary: Record<string, Summon>;
+  transformationLibrary: Record<string, Transformation>;
+  resourceLibrary: Record<string, Resource>;
+}
+
+export interface QueuedRetarget {
+  queuedCharacterId: string;
+  newTargetIds: string[];
 }
 
 export interface EffectResult {
   state: EffectState;
   events: AppliedEvent[];
   nextRngState: RngState;
+  // OQ-07 / spec/01 Cheaters "change targets after actions are selected":
+  // only ever populated by `retargetQueuedAction`. resolver.ts reads this
+  // and applies it to its own action-queue override map — applyEffect stays
+  // pure and never mutates a queue it doesn't own.
+  queuedRetargets?: QueuedRetarget[];
 }
 
 function ownerOf(teams: [BattleTeam, BattleTeam], characterId: string): string | undefined {
   return teams.find((team) => team.characterIds.includes(characterId))?.playerId;
 }
 
+function conditionStateOf(state: EffectState, ctx: EffectContext): ConditionState {
+  return { teams: ctx.teams, turn: ctx.turn, characters: state.characters };
+}
+
 /**
  * Applies one Effect (packages/content/src/schemas/effect.ts) to battle
- * state. Phase 02 scope: damage (all three types), heal (all three
- * classes), applyStatus/removeStatus (the generic status engine —
- * statuses.ts), modifyCooldown, modifyEnergy, drainEnergy, sequence, and
- * randomOutcome. `summon`, `transformInto`, and `modifyResource` still throw
- * — those belong to Phase 03 ("Advanced systems"), which is also when
- * per-character resource tracking is added to CharacterRuntimeState.
+ * state. Phase 03 completes the interpreter: transformInto, summon, erase,
+ * resurrect, modifyRandomOutcome, retargetQueuedAction, modifyResource, and
+ * conditional join Phase 01/02's damage/heal/applyStatus/removeStatus/
+ * modifyCooldown/modifyEnergy/drainEnergy/sequence/randomOutcome. Every
+ * Effect kind the schema defines is now implemented.
  */
 export function applyEffect(
   state: EffectState,
@@ -51,17 +78,19 @@ export function applyEffect(
   switch (effect.kind) {
     case "damage": {
       let characters = state.characters;
+      let summons = state.summons;
       const events: AppliedEvent[] = [];
       for (const targetId of ctx.targetIds) {
         // The schema defaults damageType to "normal" at parse time, but the
         // hand-written Effect union still marks it optional (a raw literal
         // built without going through the schema, as tests sometimes do,
         // shouldn't be forced to spell it out every time).
-        const result = resolveDamage(characters, ctx.sourceId, targetId, effect.amount, effect.damageType ?? "normal");
+        const result = resolveDamage(characters, summons, ctx.sourceId, targetId, effect.amount, effect.damageType ?? "normal");
         characters = result.characters;
+        summons = result.summons;
         events.push(...result.events);
       }
-      return { state: { ...state, characters }, events, nextRngState: rngState };
+      return { state: { ...state, characters, summons }, events, nextRngState: rngState };
     }
 
     case "heal": {
@@ -91,13 +120,14 @@ export function applyEffect(
             durationTurns: effect.durationTurns,
             stacks: effect.stacks,
             magnitude: effect.magnitude,
+            param: effect.param,
           }),
         };
         events.push({
           type: "statusApplied",
           sourceId: ctx.sourceId,
           targetId,
-          payload: { statusId: effect.statusId, magnitude: effect.magnitude ?? 0 },
+          payload: { statusId: effect.statusId, magnitude: effect.magnitude ?? 0, param: effect.param },
         });
       }
       return { state: { ...state, characters }, events, nextRngState: rngState };
@@ -125,23 +155,25 @@ export function applyEffect(
       return { state: { ...state, characters }, events, nextRngState: rngState };
     }
 
-    case "modifyCooldown": {
+    case "modifyResource": {
+      const definition = ctx.resourceLibrary[effect.resourceId];
       let characters = state.characters;
       const events: AppliedEvent[] = [];
       for (const targetId of ctx.targetIds) {
         const target = characters[targetId];
         if (!target) continue;
-        const current = target.cooldowns[effect.abilityId] ?? 0;
-        const next = Math.max(0, effect.mode === "set" ? effect.amount : current + effect.amount);
-        characters = {
-          ...characters,
-          [targetId]: { ...target, cooldowns: { ...target.cooldowns, [effect.abilityId]: next } },
-        };
+        const current = target.resources[effect.resourceId] ?? definition?.startingValue ?? 0;
+        const min = definition?.min ?? 0;
+        const max = definition?.max;
+        let next = current + effect.amount;
+        next = Math.max(min, next);
+        if (max !== undefined) next = Math.min(max, next);
+        characters = { ...characters, [targetId]: { ...target, resources: { ...target.resources, [effect.resourceId]: next } } };
         events.push({
-          type: "cooldownModified",
+          type: "resourceChanged",
           sourceId: ctx.sourceId,
           targetId,
-          payload: { abilityId: effect.abilityId, turnsRemaining: next },
+          payload: { resourceId: effect.resourceId, value: next, delta: next - current },
         });
       }
       return { state: { ...state, characters }, events, nextRngState: rngState };
@@ -174,6 +206,28 @@ export function applyEffect(
         ],
         nextRngState: rngState,
       };
+    }
+
+    case "modifyCooldown": {
+      let characters = state.characters;
+      const events: AppliedEvent[] = [];
+      for (const targetId of ctx.targetIds) {
+        const target = characters[targetId];
+        if (!target) continue;
+        const current = target.cooldowns[effect.abilityId] ?? 0;
+        const next = Math.max(0, effect.mode === "set" ? effect.amount : current + effect.amount);
+        characters = {
+          ...characters,
+          [targetId]: { ...target, cooldowns: { ...target.cooldowns, [effect.abilityId]: next } },
+        };
+        events.push({
+          type: "cooldownModified",
+          sourceId: ctx.sourceId,
+          targetId,
+          payload: { abilityId: effect.abilityId, turnsRemaining: next },
+        });
+      }
+      return { state: { ...state, characters }, events, nextRngState: rngState };
     }
 
     case "drainEnergy": {
@@ -214,42 +268,173 @@ export function applyEffect(
       return { state: { ...state, energyPools }, events, nextRngState: rngState };
     }
 
-    case "sequence": {
-      let currentState = state;
-      let allEvents: AppliedEvent[] = [];
-      let nextState = rngState;
-      for (const sub of effect.effects) {
-        const result = applyEffect(currentState, sub, ctx, nextState);
-        currentState = result.state;
-        allEvents = allEvents.concat(result.events);
-        nextState = result.nextRngState;
+    case "summon": {
+      const definition = ctx.summonLibrary[effect.summonId];
+      if (!definition) {
+        throw new Error(`applyEffect: unknown summon "${effect.summonId}" — is it registered in the summon library?`);
       }
-      return { state: currentState, events: allEvents, nextRngState: nextState };
+      const instanceId = nextSummonInstanceId(state.summons, ctx.sourceId, effect.summonId);
+      const runtime = createSummonRuntimeState(definition, ctx.sourceId, instanceId);
+      const summons = { ...state.summons, [instanceId]: runtime };
+      return {
+        state: { ...state, summons },
+        events: [{ type: "summonCreated", sourceId: ctx.sourceId, payload: { summonId: effect.summonId, instanceId } }],
+        nextRngState: rngState,
+      };
     }
 
-    case "randomOutcome": {
-      const weightedBranches = effect.outcome.branches.map((branch) => ({
-        weight: branch.weight,
-        value: branch.effects,
-      }));
-      const draw = pickWeighted(rngState, weightedBranches);
-      let currentState = state;
-      let allEvents: AppliedEvent[] = [];
-      let nextState = draw.nextState;
-      for (const sub of draw.value) {
-        const result = applyEffect(currentState, sub, ctx, nextState);
-        currentState = result.state;
-        allEvents = allEvents.concat(result.events);
-        nextState = result.nextRngState;
+    case "transformInto": {
+      const transformation = ctx.transformationLibrary[effect.transformationId];
+      if (!transformation) {
+        throw new Error(`applyEffect: unknown transformation "${effect.transformationId}"`);
       }
-      return { state: currentState, events: allEvents, nextRngState: nextState };
+      const source = state.characters[ctx.sourceId];
+      if (!source) {
+        throw new Error(`applyEffect: unreachable — unknown source character "${ctx.sourceId}"`);
+      }
+      const transformed = applyTransformation(source, transformation);
+      const characters = { ...state.characters, [ctx.sourceId]: transformed };
+      return {
+        state: { ...state, characters },
+        events: [
+          {
+            type: "transformed",
+            sourceId: ctx.sourceId,
+            payload: { transformationId: effect.transformationId, toStageId: transformation.toStageId },
+          },
+        ],
+        nextRngState: rngState,
+      };
+    }
+
+    case "erase": {
+      // spec/02 "erasure that bypasses death triggers": sets alive=false
+      // directly, emitting "erased" rather than "death" — resolver.ts's
+      // death-checks tier only fires "death" for a character it *itself*
+      // finds at <=0 HP with alive still true, so an already-erased
+      // character is silently skipped there, and the trigger system never
+      // sees an onDeath event for them.
+      let characters = state.characters;
+      const events: AppliedEvent[] = [];
+      for (const targetId of ctx.targetIds) {
+        const target = characters[targetId];
+        if (!target?.alive) continue;
+        characters = { ...characters, [targetId]: { ...target, currentHp: 0, alive: false } };
+        events.push({ type: "erased", sourceId: ctx.sourceId, targetId });
+      }
+      return { state: { ...state, characters }, events, nextRngState: rngState };
+    }
+
+    case "resurrect": {
+      let characters = state.characters;
+      const events: AppliedEvent[] = [];
+      for (const targetId of ctx.targetIds) {
+        const target = characters[targetId];
+        if (!target || target.alive) continue;
+        if (hasStatus(target, RESURRECTION_LOCK.id)) {
+          events.push({ type: "resurrectionBlocked", sourceId: ctx.sourceId, targetId });
+          continue;
+        }
+        const percent = effect.healthPercent ?? 50;
+        const currentHp = Math.max(1, Math.round((percent / 100) * target.maxHp));
+        characters = { ...characters, [targetId]: { ...target, alive: true, currentHp } };
+        events.push({ type: "resurrected", sourceId: ctx.sourceId, targetId, payload: { healthPercent: percent } });
+      }
+      return { state: { ...state, characters }, events, nextRngState: rngState };
+    }
+
+    case "modifyRandomOutcome": {
+      let characters = state.characters;
+      const events: AppliedEvent[] = [];
+      for (const targetId of ctx.targetIds) {
+        const target = characters[targetId];
+        if (!target) continue;
+        characters = {
+          ...characters,
+          [targetId]: queueRngModifier(target, {
+            mode: effect.mode,
+            branchIndex: effect.branchIndex,
+            weightMultiplier: effect.weightMultiplier,
+          }),
+        };
+        events.push({ type: "rngModifierQueued", sourceId: ctx.sourceId, targetId, payload: { mode: effect.mode } });
+      }
+      return { state: { ...state, characters }, events, nextRngState: rngState };
+    }
+
+    case "retargetQueuedAction": {
+      return {
+        state,
+        events: [
+          {
+            type: "queuedActionRetargeted",
+            sourceId: ctx.sourceId,
+            payload: { queuedCharacterId: effect.queuedCharacterId, newTargetIds: effect.newTargetIds },
+          },
+        ],
+        nextRngState: rngState,
+        queuedRetargets: [{ queuedCharacterId: effect.queuedCharacterId, newTargetIds: effect.newTargetIds }],
+      };
+    }
+
+    case "conditional": {
+      const isTrue = evaluateCondition(conditionStateOf(state, ctx), effect.condition, {
+        selfId: ctx.sourceId,
+        sourceId: ctx.sourceId,
+        targetId: ctx.targetIds[0],
+      });
+      const branch = isTrue ? effect.ifTrue : (effect.ifFalse ?? []);
+      return applySequence(state, branch, ctx, rngState);
+    }
+
+    case "sequence":
+      return applySequence(state, effect.effects, ctx, rngState);
+
+    case "randomOutcome": {
+      // spec/01 "RNG manipulation": a pending modifier queued on the roller
+      // (modifyRandomOutcome, above) is consumed here — one-shot, cleared
+      // whether or not this roll used it.
+      const source = state.characters[ctx.sourceId];
+      let characters = state.characters;
+      let modifier;
+      if (source) {
+        const consumed = consumeRngModifier(source);
+        modifier = consumed.modifier;
+        characters = { ...characters, [ctx.sourceId]: consumed.character };
+      }
+      const { branch, nextRngState } = selectRandomOutcomeBranch(effect.outcome.branches, modifier, rngState);
+      return applySequence({ ...state, characters }, branch.effects, ctx, nextRngState);
     }
 
     default:
-      throw new Error(
-        `applyEffect: effect kind "${effect.kind}" is not implemented until a later phase ` +
-          `(Phase 02 supports damage, heal, applyStatus, removeStatus, modifyCooldown, modifyEnergy, ` +
-          `drainEnergy, sequence, and randomOutcome).`,
-      );
+      // Every Effect kind the schema defines is implemented above — this is
+      // unreachable unless the schema grows a new kind this file hasn't
+      // caught up with yet.
+      throw new Error(`applyEffect: unhandled effect kind "${(effect as Effect).kind}"`);
   }
+}
+
+function applySequence(
+  state: EffectState,
+  effects: readonly Effect[],
+  ctx: EffectContext,
+  rngState: RngState,
+): EffectResult {
+  let currentState = state;
+  let allEvents: AppliedEvent[] = [];
+  let allRetargets: QueuedRetarget[] = [];
+  let nextState = rngState;
+  for (const sub of effects) {
+    const result = applyEffect(currentState, sub, ctx, nextState);
+    currentState = result.state;
+    allEvents = allEvents.concat(result.events);
+    if (result.queuedRetargets) allRetargets = allRetargets.concat(result.queuedRetargets);
+    nextState = result.nextRngState;
+  }
+  return {
+    state: currentState,
+    events: allEvents,
+    nextRngState: nextState,
+    ...(allRetargets.length > 0 ? { queuedRetargets: allRetargets } : {}),
+  };
 }

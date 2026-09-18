@@ -1,6 +1,16 @@
-import type { Ability, BattleState, PlayerAction } from "@veilbreak/content";
+import {
+  ABILITY_LOCK,
+  ENERGY_COST_INCREASE,
+  ENERGY_LOCK,
+  type Ability,
+  type BattleState,
+  type CharacterRuntimeState,
+  type Cost,
+  type EnergyFamily,
+  type PlayerAction,
+} from "@veilbreak/content";
 import { canAfford } from "./energy";
-import { canAct } from "./statuses";
+import { canAct, getActiveStatus, getEffectiveMagnitude } from "./statuses";
 import { resolveTargets } from "./targeting";
 import { createRng } from "./rng";
 
@@ -13,9 +23,34 @@ export type ActionValidationError =
   | { code: "characterCannotAct"; characterId: string }
   | { code: "characterNotOnPlayersTeam"; characterId: string; playerId: string }
   | { code: "unknownAbility"; abilityId: string }
+  | { code: "abilityLocked"; characterId: string; abilityId: string }
   | { code: "abilityOnCooldown"; characterId: string; abilityId: string; turnsRemaining: number }
+  | { code: "energyFamilyLocked"; characterId: string; abilityId: string; family: EnergyFamily }
   | { code: "cannotAfford"; characterId: string; abilityId: string }
   | { code: "invalidTarget"; reason: string };
+
+function isEnergyFamily(value: string): value is EnergyFamily {
+  return value === "MIGHT" || value === "FOCUS" || value === "SPIRIT" || value === "CHAOS";
+}
+
+function costRequiresFamily(cost: Cost, family: EnergyFamily): boolean {
+  switch (family) {
+    case "MIGHT":
+      return cost.might > 0;
+    case "FOCUS":
+      return cost.focus > 0;
+    case "SPIRIT":
+      return cost.spirit > 0;
+    case "CHAOS":
+      return cost.chaos > 0;
+  }
+}
+
+/** spec/01 Cheaters "change ability costs": Energy Cost Increase adds its effective magnitude onto the NEUTRAL component, the one component any family can pay — a flat surcharge regardless of the ability's own cost mix. */
+export function getEffectiveCost(ability: Ability, actor: CharacterRuntimeState): Cost {
+  const increase = getEffectiveMagnitude(actor, ENERGY_COST_INCREASE.id);
+  return increase <= 0 ? ability.cost : { ...ability.cost, neutral: ability.cost.neutral + increase };
+}
 
 export function validateAction(
   state: BattleState,
@@ -51,6 +86,14 @@ export function validateAction(
     return errors;
   }
 
+  // spec/01 Cheaters "lock an ability": Ability Lock's `param` names the
+  // specific abilityId it blocks (see ActiveStatus.param, OQ-29's resolution
+  // this phase) — every other ability stays usable.
+  const abilityLock = getActiveStatus(actor, ABILITY_LOCK.id);
+  if (abilityLock?.param === action.abilityId) {
+    errors.push({ code: "abilityLocked", characterId: action.characterId, abilityId: action.abilityId });
+  }
+
   const cooldownRemaining = actor.cooldowns[action.abilityId] ?? 0;
   if (cooldownRemaining > 0) {
     errors.push({
@@ -61,8 +104,23 @@ export function validateAction(
     });
   }
 
+  const effectiveCost = getEffectiveCost(ability, actor);
+
+  // spec/01 Cheaters "steal energy" / Energy Lock: blocks casting any
+  // ability that needs the locked family, even though the pool itself is
+  // shared per-player — the lock targets the character, not the pool.
+  const energyLock = getActiveStatus(actor, ENERGY_LOCK.id);
+  if (energyLock?.param && isEnergyFamily(energyLock.param) && costRequiresFamily(effectiveCost, energyLock.param)) {
+    errors.push({
+      code: "energyFamilyLocked",
+      characterId: action.characterId,
+      abilityId: action.abilityId,
+      family: energyLock.param,
+    });
+  }
+
   const pool = state.energyPools[action.playerId];
-  if (!pool || !canAfford(pool, ability.cost)) {
+  if (!pool || !canAfford(pool, effectiveCost)) {
     errors.push({ code: "cannotAfford", characterId: action.characterId, abilityId: action.abilityId });
   }
 

@@ -1,12 +1,14 @@
 import { describe, expect, it } from "vitest";
 import {
   abilitySchema,
+  passiveDefinitionSchema,
   defaultMatchFormat,
   defaultResolutionOrder,
   STATUS_LIBRARY,
   type Ability,
   type EnergyRules,
   type MatchFormat,
+  type PassiveDefinition,
   type ResolutionOrder,
 } from "@veilbreak/content";
 import { createBattle, resolveTurn, type CreateBattleTeamInput } from "./resolver";
@@ -117,10 +119,32 @@ const hasteSelf = ability({
   effects: [{ kind: "applyStatus", statusId: "status.cooldown-reduction", durationTurns: 5, magnitude: 1 }],
 });
 
+// Phase 03 fixtures — Cheater hooks (spec/01) and death extensions (spec/02).
+const priorityLockStrike30 = ability({
+  id: "test.priority-lock-strike30",
+  resolutionTierId: "priority-abilities",
+  effects: [{ kind: "applyStatus", statusId: "status.ability-lock", param: "test.strike-30", durationTurns: 3 }],
+});
+
+const priorityRetargetToA2 = ability({
+  id: "test.priority-retarget",
+  resolutionTierId: "priority-abilities",
+  target: { side: "self", scope: "single", count: 1, includeSelf: true, filterTags: [] },
+  effects: [{ kind: "retargetQueuedAction", queuedCharacterId: "b1", newTargetIds: ["a2"] }],
+});
+
+const eraseAbility = ability({
+  id: "test.erase-ability",
+  effects: [{ kind: "erase" }],
+});
+
 const abilities: Record<string, Ability> = {
   [strike30.id]: strike30,
   [priorityStrike20.id]: priorityStrike20,
   [selfHealCooldown2.id]: selfHealCooldown2,
+  [priorityLockStrike30.id]: priorityLockStrike30,
+  [priorityRetargetToA2.id]: priorityRetargetToA2,
+  [eraseAbility.id]: eraseAbility,
   [randomStrike.id]: randomStrike,
   [priorityStun.id]: priorityStun,
   [prioritySilence.id]: prioritySilence,
@@ -148,7 +172,16 @@ const TEAM_B: CreateBattleTeamInput = {
 };
 
 function deps(resolutionOrder: ResolutionOrder = defaultResolutionOrder) {
-  return { abilities, resolutionOrder, energyRules: testEnergyRules, statusLibrary: STATUS_LIBRARY };
+  return {
+    abilities,
+    resolutionOrder,
+    energyRules: testEnergyRules,
+    statusLibrary: STATUS_LIBRARY,
+    passives: {},
+    summonLibrary: {},
+    transformationLibrary: {},
+    resourceLibrary: {},
+  };
 }
 
 function freshBattle(seed = 1, matchFormat: MatchFormat = defaultMatchFormat) {
@@ -537,5 +570,116 @@ describe("resolveTurn — simultaneous team wipe is a draw (OQ-09)", () => {
     const endEvent = result.state.eventLog.find((e) => e.type === "matchEndedByTeamWipe");
     expect(endEvent).toBeDefined();
     expect(endEvent?.payload.winnerPlayerId).toBe("playerA");
+  });
+});
+
+describe("resolveTurn — Ability Lock (spec/01 Cheaters 'lock an ability')", () => {
+  it("blocks only the named ability, on a later turn once the lock is active", () => {
+    const state = freshBattle();
+    const lockTurn = resolveTurn(
+      state,
+      [],
+      [{ playerId: "playerB", characterId: "b1", abilityId: priorityLockStrike30.id, targetIds: ["a1"] }],
+      deps(),
+    );
+    if (!lockTurn.ok) throw new Error("expected a legal turn");
+    expect(
+      lockTurn.state.characters.a1?.statuses.some((s) => s.statusId === "status.ability-lock" && s.param === strike30.id),
+    ).toBe(true);
+
+    const lockedAttempt = resolveTurn(
+      lockTurn.state,
+      [{ playerId: "playerA", characterId: "a1", abilityId: strike30.id, targetIds: ["b1"] }],
+      [],
+      deps(),
+    );
+    expect(lockedAttempt.ok).toBe(false);
+
+    const otherAbilityStillWorks = resolveTurn(
+      lockTurn.state,
+      [{ playerId: "playerA", characterId: "a1", abilityId: randomStrike.id, targetIds: ["b1"] }],
+      [],
+      deps(),
+    );
+    expect(otherAbilityStillWorks.ok).toBe(true);
+  });
+});
+
+describe("resolveTurn — Cheater retargeting (OQ-07)", () => {
+  it("redirects a same-turn queued action to a new target", () => {
+    const state = freshBattle();
+    const result = resolveTurn(
+      state,
+      [{ playerId: "playerA", characterId: "a1", abilityId: priorityRetargetToA2.id, targetIds: ["a1"] }],
+      [{ playerId: "playerB", characterId: "b1", abilityId: strike30.id, targetIds: ["a1"] }],
+      deps(),
+    );
+    if (!result.ok) throw new Error("expected a legal turn");
+    const damageEvent = result.events.find((e) => e.type === "damageDealt");
+    expect(damageEvent?.targetId).toBe("a2"); // redirected from the requested a1
+  });
+});
+
+describe("resolveTurn — erasure bypasses onDeath triggers (spec/02)", () => {
+  const deathWatcher: PassiveDefinition = passiveDefinitionSchema.parse({
+    id: "test.death-watcher",
+    displayName: "Death Watcher",
+    description: "test fixture: gain Might whenever any character dies",
+    trigger: { event: "onDeath", relation: "any" },
+    effects: [{ kind: "modifyEnergy", family: "MIGHT", amount: 5 }],
+  });
+
+  function depsWithDeathWatcher() {
+    return { ...deps(), passives: { [deathWatcher.id]: deathWatcher } };
+  }
+
+  function freshBattleWithWatcher() {
+    const teamAWithPassive: CreateBattleTeamInput = {
+      playerId: "playerA",
+      characters: [
+        { characterId: "a1", maxHp: 100, passiveId: deathWatcher.id },
+        { characterId: "a2", maxHp: 100 },
+        { characterId: "a3", maxHp: 100 },
+      ],
+    };
+    return createBattle([teamAWithPassive, TEAM_B], 1, {
+      balanceVersionId: "test-balance-v1",
+      matchFormat: defaultMatchFormat,
+      energyRules: testEnergyRules,
+    });
+  }
+
+  it("a normal death fires onDeath and the watching passive", () => {
+    let state = freshBattleWithWatcher();
+    for (let i = 0; i < 4; i++) {
+      const result = resolveTurn(
+        state,
+        [{ playerId: "playerA", characterId: "a1", abilityId: strike30.id, targetIds: ["b1"] }],
+        [],
+        depsWithDeathWatcher(),
+      );
+      if (!result.ok) throw new Error(`expected turn ${i} to be legal`);
+      state = result.state;
+      if (!state.characters.b1?.alive) {
+        expect(result.events.some((e) => e.type === "energyModified")).toBe(true);
+        return;
+      }
+    }
+    throw new Error("expected b1 to die within 4 strikes");
+  });
+
+  it("erasure kills without ever firing onDeath — the watching passive does not react", () => {
+    const state = freshBattleWithWatcher();
+    const result = resolveTurn(
+      state,
+      [{ playerId: "playerA", characterId: "a1", abilityId: eraseAbility.id, targetIds: ["b1"] }],
+      [],
+      depsWithDeathWatcher(),
+    );
+    if (!result.ok) throw new Error("expected a legal turn");
+    expect(result.state.characters.b1?.alive).toBe(false);
+    expect(result.events.some((e) => e.type === "erased")).toBe(true);
+    expect(result.events.some((e) => e.type === "death")).toBe(false);
+    expect(result.events.some((e) => e.type === "energyModified")).toBe(false);
   });
 });

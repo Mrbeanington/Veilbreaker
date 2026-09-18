@@ -28,6 +28,10 @@ export type Condition =
   | { type: "deathCountAtLeast"; target: z.infer<typeof targetRefSchema>; count: number }
   | { type: "killCountAtLeast"; target: z.infer<typeof targetRefSchema>; count: number }
   | { type: "teamComposition"; side: "ally" | "enemy"; characterIds: string[] }
+  // phase-03-advanced-systems.md "last-turn history" / "sequence tracking":
+  // checked against CharacterRuntimeState.abilityHistory (most recent last).
+  | { type: "usedAbilityLastTurn"; target: z.infer<typeof targetRefSchema>; abilityId: string }
+  | { type: "abilitySequenceMatches"; target: z.infer<typeof targetRefSchema>; sequence: string[] }
   // An escape hatch for a mechanic components genuinely cannot express
   // (CLAUDE.md rule 3). `scriptId` must be registered in DECISIONS.md under
   // "Custom script registry" before it is used by any character.
@@ -95,6 +99,16 @@ export const conditionSchema: z.ZodType<Condition> = z.lazy(() =>
       characterIds: z.array(idSchema).min(1),
     }),
     z.object({
+      type: z.literal("usedAbilityLastTurn"),
+      target: targetRefSchema,
+      abilityId: idSchema,
+    }),
+    z.object({
+      type: z.literal("abilitySequenceMatches"),
+      target: targetRefSchema,
+      sequence: z.array(idSchema).min(1),
+    }),
+    z.object({
       type: z.literal("secretScript"),
       scriptId: idSchema,
     }),
@@ -117,14 +131,23 @@ export const triggerEventSchema = z.enum([
   "onStatusApplied",
   "onStatusExpired",
   "onResourceChanged",
+  "onHpThreshold",
   "onDeath",
   "onKill",
   "onResurrection",
 ]);
 export type TriggerEvent = z.infer<typeof triggerEventSchema>;
 
+// phase-03-advanced-systems.md "onDeath (any/ally/enemy)": which character's
+// event this is, relative to whoever holds the trigger (a passive or a
+// status's own triggerTiming) — "self" (the default) means the holder's own
+// event; "ally"/"enemy" filter to someone else's team; "any" matches either.
+export const triggerRelationSchema = z.enum(["self", "ally", "enemy", "any"]);
+export type TriggerRelation = z.infer<typeof triggerRelationSchema>;
+
 export const triggerSchema = z.object({
   event: triggerEventSchema,
+  relation: triggerRelationSchema.default("self"),
   condition: conditionSchema.optional(),
 });
 export type Trigger = z.infer<typeof triggerSchema>;

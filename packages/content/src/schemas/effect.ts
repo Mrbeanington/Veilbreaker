@@ -35,6 +35,9 @@ export type Effect =
       // amount, ...). Meaningless — and ignored — for a presence-only status like
       // Stun. See docs/DECISIONS.md for the stacking model this feeds into.
       magnitude?: number;
+      // Ability Lock's ability id, Energy Lock's family, or similar — see
+      // ActiveStatus.param (battle.ts) and OQ-29.
+      param?: string;
       target?: TargetRule;
     }
   | {
@@ -63,6 +66,29 @@ export type Effect =
     }
   | { kind: "summon"; summonId: string }
   | { kind: "transformInto"; transformationId: string }
+  // spec/02 "erasure that bypasses death triggers (Shiro)": kills without
+  // firing onDeath — a distinct mechanism from lethal damage, not just
+  // damage big enough to kill.
+  | { kind: "erase"; target?: TargetRule }
+  // spec/02 "resurrection and resurrection lock": revives a dead character
+  // at a percentage of max HP, unless status.resurrection-lock blocks it.
+  | { kind: "resurrect"; healthPercent?: number; target?: TargetRule }
+  // spec/01 "RNG manipulation": queues a one-shot modifier consumed by the
+  // target's next `randomOutcome` roll. See RngModifier (battle.ts) and
+  // docs/DECISIONS.md for what each mode means for a branch-based outcome.
+  | {
+      kind: "modifyRandomOutcome";
+      mode: "forceOutcome" | "guaranteeMin" | "guaranteeMax" | "reroll" | "weightBoost";
+      branchIndex?: number;
+      weightMultiplier?: number;
+      target?: TargetRule;
+    }
+  // spec/01 Cheaters "change targets after actions are selected" (OQ-07): a
+  // Priority-tier effect that overrides another already-queued action's
+  // targets for later tiers this same turn. `queuedCharacterId` names whose
+  // queued action to modify — not a TargetRule, since this isn't about who
+  // receives the effect, it's a reference into the turn's action queue.
+  | { kind: "retargetQueuedAction"; queuedCharacterId: string; newTargetIds: string[] }
   | { kind: "randomOutcome"; outcome: RandomOutcome }
   | { kind: "conditional"; condition: Condition; ifTrue: Effect[]; ifFalse?: Effect[] }
   | { kind: "sequence"; effects: Effect[] };
@@ -100,6 +126,7 @@ export const effectSchema: z.ZodType<Effect, z.ZodTypeDef, unknown> = z.lazy(() 
       durationTurns: z.number().int().min(0).optional(),
       stacks: z.number().int().min(1).optional(),
       magnitude: z.number().int().optional(),
+      param: z.string().min(1).optional(),
       target: targetRuleSchema.optional(),
     }),
     z.object({
@@ -135,6 +162,24 @@ export const effectSchema: z.ZodType<Effect, z.ZodTypeDef, unknown> = z.lazy(() 
     }),
     z.object({ kind: z.literal("summon"), summonId: idSchema }),
     z.object({ kind: z.literal("transformInto"), transformationId: idSchema }),
+    z.object({ kind: z.literal("erase"), target: targetRuleSchema.optional() }),
+    z.object({
+      kind: z.literal("resurrect"),
+      healthPercent: z.number().min(1).max(100).optional(),
+      target: targetRuleSchema.optional(),
+    }),
+    z.object({
+      kind: z.literal("modifyRandomOutcome"),
+      mode: z.enum(["forceOutcome", "guaranteeMin", "guaranteeMax", "reroll", "weightBoost"]),
+      branchIndex: z.number().int().min(0).optional(),
+      weightMultiplier: z.number().positive().optional(),
+      target: targetRuleSchema.optional(),
+    }),
+    z.object({
+      kind: z.literal("retargetQueuedAction"),
+      queuedCharacterId: idSchema,
+      newTargetIds: z.array(idSchema),
+    }),
     z.object({ kind: z.literal("randomOutcome"), outcome: randomOutcomeSchema }),
     z.object({
       kind: z.literal("conditional"),

@@ -1,13 +1,13 @@
 # Progress
 
-**Current phase:** 02 (complete, verified green — see session log). Next: 03.
+**Current phase:** 03 (complete, verified green — see session log). Next: 04.
 
 | Phase | Title | Status |
 |---|---|---|
 | 00 | Architecture and scaffolding | ☑ |
 | 01 | Battle state, resolver, RNG, energy | ☑ |
 | 02 | Combat primitives | ☑ |
-| 03 | Advanced systems | ☐ |
+| 03 | Advanced systems | ☑ |
 | 04 | First five prototypes | ☐ |
 | 05 | Playable local 3v3 | ☐ |
 | 06 | Remaining 15 prototypes | ☐ |
@@ -200,3 +200,84 @@ table, the status-duration same-turn exemption, taunt-redirects-rather-than-reje
 **Recommended next step:** Phase 03 ("Advanced systems") — transformations, summons, per-character
 resource tracking (`modifyResource`), and whichever of the 13 deferred statuses the first real
 character kits (Phase 04) turn out to need.
+
+### 2026-09-18 — Phase 03
+The largest phase yet — built every remaining "Advanced systems" deliverable on top of Phases
+01–02's resolver and combat primitives:
+- **Triggers and Conditions**: a new `PassiveDefinition` (trigger→condition→effects, spec/02 had
+  no equivalent for a character's own passive, only for statuses) and one shared evaluator
+  (`triggers.ts`'s `evaluateEvent`) that scans every character's current passive and every active
+  status's `triggerTiming` against each game event, with a `relation` field (`self`/`ally`/
+  `enemy`/`any`) making "onDeath (any/ally/enemy)" concrete. `conditions.ts`'s `evaluateCondition`
+  implements every Condition variant from Phase 00's schema plus two new ones
+  (`usedAbilityLastTurn`, `abilitySequenceMatches`, backed by a new `CharacterRuntimeState
+  .abilityHistory`). A depth-5 recursion guard (`MAX_TRIGGER_DEPTH`) stops a self-perpetuating
+  cascade, tested with a genuinely looping fixture.
+- **Custom Resources**: `Resource` gained `displayHint`/`trackMode`; `CharacterRuntimeState
+  .resources` plus a real `modifyResource` effect handler (clamped to the definition's min/max)
+  replace what was a schema-only concept through Phase 02.
+- **Transformation engine**: `transformations.ts`'s `applyTransformation` swaps abilities/passive/
+  cooldowns and rescales current HP by ratio when max HP changes, while never touching `statuses`
+  (so they persist through a transformation, per spec/02's "preserving identity and statuses").
+- **Summons**: `summons.ts` + `damage.ts` — attached (non-slot) summons absorb damage for their
+  owner, with overflow carrying through once they break; slot-occupying ("fourth unit") summons
+  are tracked but not yet independently targetable (OQ-32). Expiry runs in the post-turn-effects
+  tier alongside status decay, firing `onExpireEffects`.
+- **Death extensions**: Death Prevention floors a lethal hit at 1 HP and self-consumes
+  (`damage.ts`'s `applyHp`); `erase` kills via a distinct `"erased"` event that `deriveGameEvents`
+  never maps to `onDeath` — that omission alone is the whole "erasure bypasses death triggers"
+  mechanism; `resurrect` revives at a configurable HP%, blocked by Resurrection Lock.
+- **State snapshot/restore**: `snapshot.ts` — a JSON-round-trip deep clone (BattleState is already
+  plain, serializable data), tested for full deep-equality and independence from later mutation of
+  either copy, plus a smoke test of the OQ-06 rewind pattern (restore, then re-resolve).
+- **RNG manipulation**: `rng-modifiers.ts` — a one-shot `RngModifier` queued on a character and
+  consumed by their next `randomOutcome` roll. Branches are read worst-to-best by author
+  convention; `forceOutcome`/`guaranteeMin`/`guaranteeMax`/`reroll`/`weightBoost` cover spec/01's
+  four named manipulations.
+- **Cheater hooks**: `retargetQueuedAction` (OQ-07) lets a priority-tier effect redirect a
+  same-turn queued action via a `resolver.ts`-owned override map (`applyEffect` stays pure — it
+  only reports the request); Ability Lock and Energy Lock both got a real hook via a new
+  `ActiveStatus.param` field (resolving two of OQ-29's three parameter-blocked statuses); Energy
+  Cost Increase adds its magnitude onto NEUTRAL cost (`getEffectiveCost`, actions.ts); "punish
+  repeated abilities" is just a `usedAbilityLastTurn`/`abilitySequenceMatches` condition check —
+  no new engine primitive needed.
+
+**Files created:** `packages/engine/src/{conditions,triggers,transformations,summons,snapshot,
+rng-modifiers,test-support}.ts` and test files for all but `test-support.ts` (shared test
+fixture helper, not part of the public API); `packages/content/src/schemas/passive.ts`.
+**Files changed:** `packages/content/src/schemas/{common,condition,battle,effect,index}.ts`
+(Resource display fields; Trigger.relation + onHpThreshold; ActiveStatus.param, RngModifier,
+CharacterStats, SummonRuntimeState, and CharacterRuntimeState's resources/abilityIds/passiveId/
+abilityHistory/stats/pendingRngModifiers; the erase/resurrect/modifyRandomOutcome/
+retargetQueuedAction effect kinds); `packages/engine/src/{energy,damage,effects,actions,resolver,
+index}.ts`; test fixtures across `{statuses,damage,targeting,effects,resolver}.test.ts` updated
+for the new required CharacterRuntimeState/EffectState/EffectContext/ResolveTurnDeps fields.
+
+**Tests:** 179 passing (up from 124): triggers.test.ts (18, one per trigger type plus relation
+filtering, conditional gating, and the recursion guard), snapshot.test.ts (3), rng-modifiers.test.ts
+(9), plus new coverage in damage.test.ts (death prevention, summon absorption with overflow),
+effects.test.ts (summon, transformInto, erase, resurrect + resurrection lock, all five RNG
+manipulation modes, retargetQueuedAction, modifyResource clamping, conditional), and
+resolver.test.ts (Ability Lock end to end, same-turn Cheater retargeting, erasure genuinely not
+firing a watching passive vs. a normal death firing it). `pnpm run ci` is green, verified on
+GitHub Actions directly.
+
+**Deviations:** logged as ADR-010 (twelve numbered decisions — see docs/DECISIONS.md for the full
+list: passive/status trigger evaluation, subject-targeted reactive effects, the recursion guard,
+erasure-as-distinct-event, kill attribution, death prevention, summon absorption, transformation
+HP rescaling, RNG modifier semantics, the new ActiveStatus.param, and the conditions that still
+always return false).
+
+**New open questions:** OQ-31 (reactive-effect targeting, hasTag/secretScript always false,
+onMatchStart not wired, onTurnStart/End's per-character firing convention, onHpThreshold's lack of
+edge-detection), OQ-32 (slot-occupying summons aren't independently targetable yet), OQ-33
+(Transformation.changes.tags/energyCostOverrides not applied to runtime state). OQ-29 is
+partially resolved (5 of its original blockers fixed; 8 statuses remain data-only).
+
+**Custom scripts:** none.
+
+**Recommended next step:** Phase 04 ("First five prototypes") — the first real character kits.
+This is where several Phase 03 simplifications will get their first real pressure test: whichever
+deferred statuses these five characters actually need, whether reactive effects need real
+targeting beyond "the event's subject," and whether slot-occupying summons need to become fully
+independent units.

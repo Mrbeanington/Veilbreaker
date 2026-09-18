@@ -5,6 +5,7 @@ export * from "./status";
 export * from "./transformation";
 export * from "./summon";
 export * from "./ability";
+export * from "./passive";
 export * from "./character";
 export * from "./config";
 export * from "./battle";
