@@ -1,4 +1,6 @@
-# VEILBREAK — Claude Code Kit (client-only edition)
+# VEILBREAK: ARENA OF THE FALLEN — Claude Code Kit (client-only edition)
+
+**[Open the game](https://mrbeanington.github.io/Veilbreaker/)** *(early build — scaffolding only, no gameplay yet)* · **[Project hub](https://claude.ai/artifact/CZPeCuznjEnsUJcVNTz2SE)** (progress, live docs, spec, and every package, linked through)
 
 The original single prompt, restructured for iterative work in Claude Code, with a hard **client-only** platform constraint: no backend, no database, no server-side processing, no authentication, and no external APIs for core functionality. The game ships as static files and plays offline.
 
