@@ -1,0 +1,351 @@
+import { statusDefinitionSchema, type StatusDefinition } from "../schemas/status";
+import type { TargetRule } from "../schemas/common";
+
+// spec/02 "Status system": the full initial status library, as data (CLAUDE.md
+// rule 3 — characters are compositions of reusable components, never
+// character-specific hacks). Every entry here gets the engine's generic
+// treatment for free: apply, stack (per stackRule/maxStacks), duration
+// countdown, expiry, and dispel (packages/engine/src/statuses.ts).
+//
+// A status also gets a *mechanical hook* — something that actually checks
+// for it during resolution — only where phase-02-combat-primitives.md's
+// deliverables name a concrete behavior: the damage pipeline (invulnerable,
+// reflect, counter, damage reduction, shield, damage amplification,
+// weakness), the heal handler (anti-heal, healing reduction, healing
+// amplification), action legality (stun, silence), targeting (taunt,
+// untargetable), the cooldown-reduction tier (cooldown increase/reduction),
+// and DoT/HoT ticking (bleed, burn, poison). See docs/DECISIONS.md for the
+// full list and rationale.
+//
+// The rest are real, valid StatusDefinitions — nameable, applicable,
+// stackable, dispellable, and visible in the battle log like any other
+// status — but their unique mechanic has no engine hook yet, either because
+// spec/06's own text says so (Infection, Soul Consecration, Death
+// Prevention) or because it needs a per-status parameter (which ability,
+// which energy family) the current single-`magnitude` ActiveStatus model
+// can't express without a character actually needing it (Ability Lock,
+// Energy Lock, Energy Cost Increase — TODO(phase-03)), or because spec
+// names the status without defining a concrete mechanic at all (Curse, Fear,
+// Petrification, Mark, Stealth, Exposed, Resurrection Lock — TODO(phase-03)).
+
+function status(
+  overrides: Partial<StatusDefinition> & Pick<StatusDefinition, "id" | "displayName" | "tooltip">,
+): StatusDefinition {
+  const defaultTarget: TargetRule = {
+    side: "enemy",
+    scope: "single",
+    count: 1,
+    includeSelf: false,
+    filterTags: [],
+  };
+  return statusDefinitionSchema.parse({
+    icon: `icon/status/${overrides.id.replace(/^status\./, "")}.svg`,
+    source: "ability",
+    defaultTarget,
+    duration: { turns: 2, permanent: false },
+    stackRule: "refresh",
+    maxStacks: 1,
+    dispellable: true,
+    visualTreatment: "TBD — placeholder pending Phase 14 art specs",
+    ...overrides,
+  });
+}
+
+const selfTarget: TargetRule = { side: "self", scope: "single", count: 1, includeSelf: true, filterTags: [] };
+const allyTarget: TargetRule = { side: "ally", scope: "single", count: 1, includeSelf: true, filterTags: [] };
+
+// ---- Statuses with a real engine hook (see file header) --------------------
+
+export const STUN = status({
+  id: "status.stun",
+  displayName: "Stun",
+  duration: { turns: 1, permanent: false },
+  tooltip: "Cannot take any action while stunned.",
+});
+
+export const SILENCE = status({
+  id: "status.silence",
+  displayName: "Silence",
+  tooltip: "Cannot take any action while silenced.",
+});
+
+export const INVULNERABLE = status({
+  id: "status.invulnerable",
+  displayName: "Invulnerable",
+  defaultTarget: selfTarget,
+  duration: { turns: 1, permanent: false },
+  tooltip: "Immune to normal and piercing damage. Affliction damage still applies.",
+});
+
+export const UNTARGETABLE = status({
+  id: "status.untargetable",
+  displayName: "Untargetable",
+  defaultTarget: selfTarget,
+  duration: { turns: 1, permanent: false },
+  tooltip: "Cannot be selected as a target by enemies.",
+});
+
+export const DAMAGE_REDUCTION = status({
+  id: "status.damage-reduction",
+  displayName: "Damage Reduction",
+  defaultTarget: allyTarget,
+  stackRule: "stack",
+  maxStacks: 3,
+  tooltip: "Reduces incoming normal damage by a flat amount.",
+});
+
+export const SHIELD = status({
+  id: "status.shield",
+  displayName: "Shield",
+  defaultTarget: allyTarget,
+  duration: { turns: 3, permanent: false },
+  stackRule: "stack",
+  maxStacks: 3,
+  tooltip: "Absorbs incoming damage up to the shield's remaining amount before HP is affected.",
+});
+
+export const COUNTER = status({
+  id: "status.counter",
+  displayName: "Counter",
+  defaultTarget: selfTarget,
+  tooltip: "The next attacker also takes damage back, in addition to the damage this character takes.",
+});
+
+export const REFLECT = status({
+  id: "status.reflect",
+  displayName: "Reflect",
+  defaultTarget: selfTarget,
+  tooltip: "Normal damage is redirected to the attacker instead of being taken.",
+});
+
+export const BLEED = status({
+  id: "status.bleed",
+  displayName: "Bleed",
+  duration: { turns: 3, permanent: false },
+  stackRule: "stackAndRefresh",
+  maxStacks: 5,
+  tickBehavior: "damageOverTime",
+  tooltip: "Deals damage at the start of each turn, per stack.",
+});
+
+export const BURN = status({
+  id: "status.burn",
+  displayName: "Burn",
+  duration: { turns: 3, permanent: false },
+  stackRule: "stackAndRefresh",
+  maxStacks: 5,
+  tickBehavior: "damageOverTime",
+  tooltip: "Deals damage at the start of each turn, per stack.",
+});
+
+export const POISON = status({
+  id: "status.poison",
+  displayName: "Poison",
+  duration: { turns: 3, permanent: false },
+  stackRule: "stackAndRefresh",
+  maxStacks: 5,
+  tickBehavior: "damageOverTime",
+  tooltip: "Deals damage at the start of each turn, per stack.",
+});
+
+export const ANTI_HEAL = status({
+  id: "status.anti-heal",
+  displayName: "Anti-Heal",
+  tooltip: "Blocks conventional healing entirely. Life transfer and HP-setting effects are unaffected.",
+});
+
+export const HEALING_REDUCTION = status({
+  id: "status.healing-reduction",
+  displayName: "Healing Reduction",
+  stackRule: "stack",
+  maxStacks: 3,
+  tooltip: "Reduces healing received, including life transfer, by a flat amount.",
+});
+
+export const HEALING_AMPLIFICATION = status({
+  id: "status.healing-amplification",
+  displayName: "Healing Amplification",
+  defaultTarget: allyTarget,
+  stackRule: "stack",
+  maxStacks: 3,
+  tooltip: "Increases healing received, including life transfer, by a flat amount.",
+});
+
+export const COOLDOWN_INCREASE = status({
+  id: "status.cooldown-increase",
+  displayName: "Cooldown Increase",
+  stackRule: "stack",
+  maxStacks: 3,
+  tooltip: "Slows cooldown recovery on all of this character's abilities.",
+});
+
+export const COOLDOWN_REDUCTION = status({
+  id: "status.cooldown-reduction",
+  displayName: "Cooldown Reduction",
+  defaultTarget: allyTarget,
+  stackRule: "stack",
+  maxStacks: 3,
+  tooltip: "Speeds up cooldown recovery on all of this character's abilities.",
+});
+
+export const TAUNT = status({
+  id: "status.taunt",
+  displayName: "Taunt",
+  defaultTarget: selfTarget,
+  duration: { turns: 1, permanent: false },
+  tooltip: "Enemies targeting a single foe must target this character instead.",
+});
+
+export const DAMAGE_AMPLIFICATION = status({
+  id: "status.damage-amplification",
+  displayName: "Damage Amplification",
+  stackRule: "stack",
+  maxStacks: 3,
+  tooltip: "Increases normal and piercing damage taken by a flat amount.",
+});
+
+export const WEAKNESS = status({
+  id: "status.weakness",
+  displayName: "Weakness",
+  stackRule: "stack",
+  maxStacks: 3,
+  tooltip: "Reduces normal and piercing damage this character deals by a flat amount.",
+});
+
+// ---- Data-only for now — see file header (spec/06 + parameter limits) -----
+
+export const INFECTION = status({
+  id: "status.infection",
+  displayName: "Infection",
+  duration: { turns: 3, permanent: false },
+  stackRule: "stackAndRefresh",
+  maxStacks: 5,
+  tooltip: "TODO(phase-03): spreads and worsens over time.",
+});
+
+export const CURSE = status({
+  id: "status.curse",
+  displayName: "Curse",
+  duration: { turns: 3, permanent: false },
+  dispellable: false,
+  tooltip: "TODO(phase-03): mechanic defined per character.",
+});
+
+export const FEAR = status({
+  id: "status.fear",
+  displayName: "Fear",
+  duration: { turns: 1, permanent: false },
+  tooltip: "TODO(phase-03): mechanic defined per character.",
+});
+
+export const PETRIFICATION = status({
+  id: "status.petrification",
+  displayName: "Petrification",
+  duration: { turns: 1, permanent: false },
+  dispellable: false,
+  tooltip: "TODO(phase-03): mechanic defined per character.",
+});
+
+export const ENERGY_LOCK = status({
+  id: "status.energy-lock",
+  displayName: "Energy Lock",
+  tooltip: "TODO(phase-03): needs a per-application energy-family parameter.",
+});
+
+export const ENERGY_COST_INCREASE = status({
+  id: "status.energy-cost-increase",
+  displayName: "Energy Cost Increase",
+  stackRule: "stack",
+  maxStacks: 3,
+  tooltip: "TODO(phase-03): needs cost-solver integration.",
+});
+
+export const MARK = status({
+  id: "status.mark",
+  displayName: "Mark",
+  duration: { turns: 3, permanent: false },
+  tooltip: "TODO(phase-03): mechanic defined per character.",
+});
+
+export const STEALTH = status({
+  id: "status.stealth",
+  displayName: "Stealth",
+  defaultTarget: selfTarget,
+  duration: { turns: 1, permanent: false },
+  tooltip: "TODO(phase-03): mechanic defined per character.",
+});
+
+export const EXPOSED = status({
+  id: "status.exposed",
+  displayName: "Exposed",
+  tooltip: "TODO(phase-03): mechanic defined per character.",
+});
+
+export const DEATH_PREVENTION = status({
+  id: "status.death-prevention",
+  displayName: "Death Prevention",
+  defaultTarget: selfTarget,
+  duration: { turns: 0, permanent: true },
+  dispellable: false,
+  tooltip: "TODO(phase-03): needs death-check integration (Aurelia: cannot fall below 1 HP).",
+});
+
+export const RESURRECTION_LOCK = status({
+  id: "status.resurrection-lock",
+  displayName: "Resurrection Lock",
+  dispellable: false,
+  tooltip: "TODO(phase-03): needs the resurrection system.",
+});
+
+export const SOUL_CONSECRATION = status({
+  id: "status.soul-consecration",
+  displayName: "Soul Consecration",
+  source: "passive",
+  defaultTarget: selfTarget,
+  duration: { turns: 0, permanent: true },
+  dispellable: false,
+  tooltip: "TODO(phase-03): Father Bell / soul-collection mechanic.",
+});
+
+export const ABILITY_LOCK = status({
+  id: "status.ability-lock",
+  displayName: "Ability Lock",
+  tooltip: "TODO(phase-03): needs a per-application ability-id parameter.",
+});
+
+export const STATUS_LIBRARY: Record<string, StatusDefinition> = Object.fromEntries(
+  [
+    STUN,
+    SILENCE,
+    INVULNERABLE,
+    UNTARGETABLE,
+    DAMAGE_REDUCTION,
+    SHIELD,
+    COUNTER,
+    REFLECT,
+    BLEED,
+    BURN,
+    POISON,
+    ANTI_HEAL,
+    HEALING_REDUCTION,
+    HEALING_AMPLIFICATION,
+    COOLDOWN_INCREASE,
+    COOLDOWN_REDUCTION,
+    TAUNT,
+    DAMAGE_AMPLIFICATION,
+    WEAKNESS,
+    INFECTION,
+    CURSE,
+    FEAR,
+    PETRIFICATION,
+    ENERGY_LOCK,
+    ENERGY_COST_INCREASE,
+    MARK,
+    STEALTH,
+    EXPOSED,
+    DEATH_PREVENTION,
+    RESURRECTION_LOCK,
+    SOUL_CONSECRATION,
+    ABILITY_LOCK,
+  ].map((def) => [def.id, def]),
+);

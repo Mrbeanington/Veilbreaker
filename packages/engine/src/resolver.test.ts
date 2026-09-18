@@ -3,6 +3,7 @@ import {
   abilitySchema,
   defaultMatchFormat,
   defaultResolutionOrder,
+  STATUS_LIBRARY,
   type Ability,
   type EnergyRules,
   type MatchFormat,
@@ -76,11 +77,57 @@ const randomStrike = ability({
   ],
 });
 
+// Phase 02 fixtures — resolutionTierId: "priority-abilities" so these
+// resolve before a "standard-attacks-support" action queued the same turn,
+// which is what lets the stun/silence/taunt tests below observe a status
+// applied earlier in the SAME turn actually blocking/redirecting a later
+// action in that turn, not just a future one.
+const priorityStun = ability({
+  id: "test.priority-stun",
+  resolutionTierId: "priority-abilities",
+  effects: [{ kind: "applyStatus", statusId: "status.stun", durationTurns: 1 }],
+});
+
+const prioritySilence = ability({
+  id: "test.priority-silence",
+  resolutionTierId: "priority-abilities",
+  effects: [{ kind: "applyStatus", statusId: "status.silence", durationTurns: 1 }],
+});
+
+const priorityTaunt = ability({
+  id: "test.priority-taunt",
+  resolutionTierId: "priority-abilities",
+  target: { side: "self", scope: "single", count: 1, includeSelf: true, filterTags: [] },
+  effects: [{ kind: "applyStatus", statusId: "status.taunt", durationTurns: 1 }],
+});
+
+const bigStrike = ability({
+  id: "test.big-strike",
+  effects: [{ kind: "damage", amount: 999 }],
+});
+
+const bleedBolt = ability({
+  id: "test.bleed-bolt",
+  effects: [{ kind: "applyStatus", statusId: "status.bleed", durationTurns: 2, stacks: 1, magnitude: 15 }],
+});
+
+const hasteSelf = ability({
+  id: "test.haste-self",
+  target: { side: "self", scope: "single", count: 1, includeSelf: true, filterTags: [] },
+  effects: [{ kind: "applyStatus", statusId: "status.cooldown-reduction", durationTurns: 5, magnitude: 1 }],
+});
+
 const abilities: Record<string, Ability> = {
   [strike30.id]: strike30,
   [priorityStrike20.id]: priorityStrike20,
   [selfHealCooldown2.id]: selfHealCooldown2,
   [randomStrike.id]: randomStrike,
+  [priorityStun.id]: priorityStun,
+  [prioritySilence.id]: prioritySilence,
+  [priorityTaunt.id]: priorityTaunt,
+  [bigStrike.id]: bigStrike,
+  [bleedBolt.id]: bleedBolt,
+  [hasteSelf.id]: hasteSelf,
 };
 
 const TEAM_A: CreateBattleTeamInput = {
@@ -101,7 +148,7 @@ const TEAM_B: CreateBattleTeamInput = {
 };
 
 function deps(resolutionOrder: ResolutionOrder = defaultResolutionOrder) {
-  return { abilities, resolutionOrder, energyRules: testEnergyRules };
+  return { abilities, resolutionOrder, energyRules: testEnergyRules, statusLibrary: STATUS_LIBRARY };
 }
 
 function freshBattle(seed = 1, matchFormat: MatchFormat = defaultMatchFormat) {
@@ -319,5 +366,176 @@ describe("resolveTurn — initiative alternation (OQ-02)", () => {
     const result = resolveTurn(state, [], [], deps());
     if (!result.ok) throw new Error("expected a legal turn");
     expect(result.state.initiativePlayerId).not.toBe(firstInitiative);
+  });
+});
+
+describe("resolveTurn — stun and silence prevent action (phase-02-combat-primitives.md)", () => {
+  it("a character stunned earlier this same turn cannot act later this turn", () => {
+    const state = freshBattle();
+    const result = resolveTurn(
+      state,
+      [{ playerId: "playerA", characterId: "a1", abilityId: strike30.id, targetIds: ["b1"] }],
+      [{ playerId: "playerB", characterId: "b1", abilityId: priorityStun.id, targetIds: ["a1"] }],
+      deps(),
+    );
+    if (!result.ok) throw new Error("expected a legal turn");
+    expect(result.events.some((e) => e.type === "actionSkippedCannotAct" && e.sourceId === "a1")).toBe(true);
+    expect(result.events.some((e) => e.type === "damageDealt" && e.targetId === "b1")).toBe(false);
+  });
+
+  it("silence blocks action the same way stun does", () => {
+    const state = freshBattle();
+    const result = resolveTurn(
+      state,
+      [{ playerId: "playerA", characterId: "a1", abilityId: strike30.id, targetIds: ["b1"] }],
+      [{ playerId: "playerB", characterId: "b1", abilityId: prioritySilence.id, targetIds: ["a1"] }],
+      deps(),
+    );
+    if (!result.ok) throw new Error("expected a legal turn");
+    expect(result.events.some((e) => e.type === "actionSkippedCannotAct" && e.sourceId === "a1")).toBe(true);
+  });
+
+  it("planning rejects a queued action for an already-stunned character", () => {
+    const state = freshBattle();
+    const stunTurn = resolveTurn(
+      state,
+      [],
+      [{ playerId: "playerB", characterId: "b1", abilityId: priorityStun.id, targetIds: ["a1"] }],
+      deps(),
+    );
+    if (!stunTurn.ok) throw new Error("expected a legal turn");
+    expect(stunTurn.state.characters.a1?.statuses.some((s) => s.statusId === "status.stun")).toBe(true);
+
+    const attempt = resolveTurn(
+      stunTurn.state,
+      [{ playerId: "playerA", characterId: "a1", abilityId: strike30.id, targetIds: ["b1"] }],
+      [],
+      deps(),
+    );
+    expect(attempt.ok).toBe(false);
+  });
+});
+
+describe("resolveTurn — taunt override", () => {
+  it("forces same-turn enemy targeting onto whoever taunted earlier this turn", () => {
+    const state = freshBattle();
+    const result = resolveTurn(
+      state,
+      [{ playerId: "playerA", characterId: "a2", abilityId: priorityTaunt.id, targetIds: ["a2"] }],
+      [{ playerId: "playerB", characterId: "b1", abilityId: strike30.id, targetIds: ["a1"] }],
+      deps(),
+    );
+    if (!result.ok) throw new Error("expected a legal turn");
+    const damageEvent = result.events.find((e) => e.type === "damageDealt");
+    expect(damageEvent?.targetId).toBe("a2");
+  });
+});
+
+describe("resolveTurn — damage-over-time ticking", () => {
+  it("ticks Bleed on the turn applied and every turn duration counts down, then stops once it expires", () => {
+    // bleedBolt applies Bleed with durationTurns: 2. The turn it's applied
+    // doesn't consume any of that duration (ADR-006's cooldown exemption,
+    // extended to status durations — see docs/DECISIONS.md): it ticks that
+    // turn, then ticks again on each of the 2 turns the duration counts
+    // down through, for 3 ticks total before it's removed.
+    const state = freshBattle();
+    const turn1 = resolveTurn(
+      state,
+      [{ playerId: "playerA", characterId: "a1", abilityId: bleedBolt.id, targetIds: ["b1"] }],
+      [],
+      deps(),
+    );
+    if (!turn1.ok) throw new Error("expected a legal turn");
+    expect(turn1.state.characters.b1?.currentHp).toBe(85); // 100 - 15, ticked same turn as applied
+    expect(turn1.events.some((e) => e.type === "damageDealt" && e.tierId === "damage-over-time")).toBe(true);
+    expect(turn1.state.characters.b1?.statuses.find((s) => s.statusId === "status.bleed")?.remainingTurns).toBe(2);
+
+    const turn2 = resolveTurn(turn1.state, [], [], deps());
+    if (!turn2.ok) throw new Error("expected a legal turn");
+    expect(turn2.state.characters.b1?.currentHp).toBe(70); // ticked again
+
+    const turn3 = resolveTurn(turn2.state, [], [], deps());
+    if (!turn3.ok) throw new Error("expected a legal turn");
+    expect(turn3.state.characters.b1?.currentHp).toBe(55); // ticked a third and final time
+
+    const turn4 = resolveTurn(turn3.state, [], [], deps());
+    if (!turn4.ok) throw new Error("expected a legal turn");
+    expect(turn4.state.characters.b1?.currentHp).toBe(55); // Bleed has expired — no further tick
+  });
+});
+
+describe("resolveTurn — Cooldown Reduction status speeds up recovery", () => {
+  it("an active Cooldown Reduction stack decrements cooldowns by an extra point per turn", () => {
+    const state = freshBattle();
+    const buffTurn = resolveTurn(
+      state,
+      [{ playerId: "playerA", characterId: "a1", abilityId: hasteSelf.id, targetIds: ["a1"] }],
+      [],
+      deps(),
+    );
+    if (!buffTurn.ok) throw new Error("expected a legal turn");
+    expect(buffTurn.state.characters.a1?.statuses.some((s) => s.statusId === "status.cooldown-reduction")).toBe(true);
+
+    const castTurn = resolveTurn(
+      buffTurn.state,
+      [{ playerId: "playerA", characterId: "a1", abilityId: selfHealCooldown2.id, targetIds: ["a1"] }],
+      [],
+      deps(),
+    );
+    if (!castTurn.ok) throw new Error("expected a legal turn");
+    expect(castTurn.state.characters.a1?.cooldowns[selfHealCooldown2.id]).toBe(2); // untouched the turn it's set
+
+    const nextTurn = resolveTurn(castTurn.state, [], [], deps());
+    if (!nextTurn.ok) throw new Error("expected a legal turn");
+    // Normal decrement (1) + Cooldown Reduction (1) = 2, so cooldown 2 -> 0
+    // in a single turn instead of two.
+    expect(nextTurn.state.characters.a1?.cooldowns[selfHealCooldown2.id]).toBe(0);
+  });
+});
+
+describe("resolveTurn — simultaneous team wipe is a draw (OQ-09)", () => {
+  it("both teams wiped in the same turn ends the match in a draw", () => {
+    const soloTeamA: CreateBattleTeamInput = { playerId: "playerA", characters: [{ characterId: "solo-a", maxHp: 50 }] };
+    const soloTeamB: CreateBattleTeamInput = { playerId: "playerB", characters: [{ characterId: "solo-b", maxHp: 50 }] };
+    const state = createBattle([soloTeamA, soloTeamB], 1, {
+      balanceVersionId: "test-balance-v1",
+      matchFormat: defaultMatchFormat,
+      energyRules: testEnergyRules,
+    });
+    const result = resolveTurn(
+      state,
+      [{ playerId: "playerA", characterId: "solo-a", abilityId: bigStrike.id, targetIds: ["solo-b"] }],
+      [{ playerId: "playerB", characterId: "solo-b", abilityId: bigStrike.id, targetIds: ["solo-a"] }],
+      deps(),
+    );
+    if (!result.ok) throw new Error("expected a legal turn");
+    expect(result.state.characters["solo-a"]?.alive).toBe(false);
+    expect(result.state.characters["solo-b"]?.alive).toBe(false);
+    const endEvent = result.state.eventLog.find((e) => e.type === "matchEndedInDraw");
+    expect(endEvent).toBeDefined();
+    expect(endEvent?.payload.winnerPlayerId).toBeNull();
+  });
+
+  it("one team wiped (not both) declares the surviving team's player the winner", () => {
+    const soloTeamA: CreateBattleTeamInput = {
+      playerId: "playerA",
+      characters: [{ characterId: "solo-a", maxHp: 999 }],
+    };
+    const soloTeamB: CreateBattleTeamInput = { playerId: "playerB", characters: [{ characterId: "solo-b", maxHp: 50 }] };
+    const state = createBattle([soloTeamA, soloTeamB], 1, {
+      balanceVersionId: "test-balance-v1",
+      matchFormat: defaultMatchFormat,
+      energyRules: testEnergyRules,
+    });
+    const result = resolveTurn(
+      state,
+      [{ playerId: "playerA", characterId: "solo-a", abilityId: bigStrike.id, targetIds: ["solo-b"] }],
+      [],
+      deps(),
+    );
+    if (!result.ok) throw new Error("expected a legal turn");
+    const endEvent = result.state.eventLog.find((e) => e.type === "matchEndedByTeamWipe");
+    expect(endEvent).toBeDefined();
+    expect(endEvent?.payload.winnerPlayerId).toBe("playerA");
   });
 });

@@ -118,6 +118,13 @@ Key invariants this pseudocode must preserve once implemented:
   reveal their actions (spec/06), and inside `packages/ai`'s headless simulation — one resolver,
   no duplicated logic.
 
+**Implemented in Phases 01–02** (`packages/engine/src/resolver.ts`) matching this pseudocode
+closely, plus the combat-primitives layer it calls into:
+`packages/engine/src/{statuses,damage,targeting,effects}.ts` — see ADR-006, ADR-007, and ADR-009
+in `docs/DECISIONS.md` for where real behavior needed a decision this pseudocode left implicit
+(exact damage-type interactions, the status stacking/duration model, taunt redirect vs. rejection,
+cooldown timing).
+
 ## Tech stack — ADR-001/ADR-002 status
 
 Both accepted as proposed, with one addition (see `docs/DECISIONS.md` ADR-003): workspace packages

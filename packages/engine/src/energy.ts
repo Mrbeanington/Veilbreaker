@@ -71,6 +71,11 @@ function totalCost(cost: Cost): number {
   return cost.might + cost.focus + cost.spirit + cost.chaos + cost.neutral;
 }
 
+/** The family with the most energy in this pool — used both for NEUTRAL payment and for a "drain whichever family" effect (effects.ts). */
+export function richestFamily(pool: EnergyPool): EnergyFamily {
+  return ENERGY_FAMILIES.reduce((richest, family) => (pool[family] > pool[richest] ? family : richest));
+}
+
 export function canAfford(pool: EnergyPool, cost: Cost): boolean {
   let remainingAfterFixed = 0;
   for (const family of ENERGY_FAMILIES) {
@@ -130,15 +135,13 @@ function payCostAutomatically(pool: EnergyPool, cost: Cost): EnergyPool | null {
 
   let neutralRemaining = cost.neutral;
   while (neutralRemaining > 0) {
-    const richestFamily = ENERGY_FAMILIES.reduce((richest, family) =>
-      nextPool[family] > nextPool[richest] ? family : richest,
-    );
-    if (nextPool[richestFamily] <= 0) {
+    const family = richestFamily(nextPool);
+    if (nextPool[family] <= 0) {
       // canAfford() already confirmed enough total remains; this would only
       // trip on a logic error above.
       return null;
     }
-    nextPool[richestFamily] -= 1;
+    nextPool[family] -= 1;
     neutralRemaining -= 1;
   }
 

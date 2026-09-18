@@ -7,24 +7,60 @@ import { conditionSchema, type Condition } from "./condition";
 export const healingClassSchema = z.enum(["heal", "lifeTransfer", "setHp"]);
 export type HealingClass = z.infer<typeof healingClassSchema>;
 
+// spec/01 "Damage language" + phase-02-combat-primitives.md. Every stage of
+// the pipeline (invulnerable → reflect/counter → amplification/weakness →
+// damage reduction → shield → HP) runs for "normal" damage. "piercing"
+// bypasses only flat defense (damage reduction and shield). "affliction" is
+// unavoidable "true damage": it bypasses invulnerable, reflect/counter,
+// damage reduction, and shield, but amplification/weakness still applies —
+// those represent innate vulnerability, not defense. See docs/DECISIONS.md.
+export const damageTypeSchema = z.enum(["normal", "piercing", "affliction"]);
+export type DamageType = z.infer<typeof damageTypeSchema>;
+
 // spec/02 "Effect" plus spec/01 "Randomness (controlled)". Effect and
 // RandomOutcome are mutually recursive (a random outcome branch is a list of
 // effects; an effect can itself be "roll a random outcome"), so both types
 // are written by hand before either schema exists — z.infer cannot describe
 // a schema before the schema exists.
 export type Effect =
-  | { kind: "damage"; amount: number; target?: TargetRule }
+  | { kind: "damage"; amount: number; damageType?: DamageType; target?: TargetRule }
   | { kind: "heal"; healingClass: HealingClass; amount: number; target?: TargetRule }
   | {
       kind: "applyStatus";
       statusId: string;
       durationTurns?: number;
       stacks?: number;
+      // The per-application strength of a status that carries a number (Shield's
+      // absorption pool, Damage Reduction's flat reduction, a DoT/HoT's per-tick
+      // amount, ...). Meaningless — and ignored — for a presence-only status like
+      // Stun. See docs/DECISIONS.md for the stacking model this feeds into.
+      magnitude?: number;
       target?: TargetRule;
     }
-  | { kind: "removeStatus"; statusId: string; target?: TargetRule }
+  | {
+      kind: "removeStatus";
+      // spec/02 "dispel": either a specific statusId, or dispelAll: true to
+      // remove every currently-active dispellable status.
+      statusId?: string;
+      dispelAll?: boolean;
+      target?: TargetRule;
+    }
   | { kind: "modifyResource"; resourceId: string; amount: number; target?: TargetRule }
   | { kind: "modifyEnergy"; family: EnergyFamilyOrNeutral; amount: number }
+  | {
+      kind: "modifyCooldown";
+      abilityId: string;
+      mode: "set" | "delta";
+      amount: number;
+      target?: TargetRule;
+    }
+  | {
+      kind: "drainEnergy";
+      family: z.infer<typeof energyFamilySchema> | "any";
+      amount: number;
+      grantToSelf: boolean;
+      target?: TargetRule;
+    }
   | { kind: "summon"; summonId: string }
   | { kind: "transformInto"; transformationId: string }
   | { kind: "randomOutcome"; outcome: RandomOutcome }
@@ -49,6 +85,7 @@ export const effectSchema: z.ZodType<Effect, z.ZodTypeDef, unknown> = z.lazy(() 
     z.object({
       kind: z.literal("damage"),
       amount: z.number().int().positive(),
+      damageType: damageTypeSchema.default("normal"),
       target: targetRuleSchema.optional(),
     }),
     z.object({
@@ -62,11 +99,13 @@ export const effectSchema: z.ZodType<Effect, z.ZodTypeDef, unknown> = z.lazy(() 
       statusId: idSchema,
       durationTurns: z.number().int().min(0).optional(),
       stacks: z.number().int().min(1).optional(),
+      magnitude: z.number().int().optional(),
       target: targetRuleSchema.optional(),
     }),
     z.object({
       kind: z.literal("removeStatus"),
-      statusId: idSchema,
+      statusId: idSchema.optional(),
+      dispelAll: z.boolean().optional(),
       target: targetRuleSchema.optional(),
     }),
     z.object({
@@ -79,6 +118,20 @@ export const effectSchema: z.ZodType<Effect, z.ZodTypeDef, unknown> = z.lazy(() 
       kind: z.literal("modifyEnergy"),
       family: z.union([energyFamilySchema, z.literal("neutral")]),
       amount: z.number().int(),
+    }),
+    z.object({
+      kind: z.literal("modifyCooldown"),
+      abilityId: idSchema,
+      mode: z.enum(["set", "delta"]),
+      amount: z.number().int(),
+      target: targetRuleSchema.optional(),
+    }),
+    z.object({
+      kind: z.literal("drainEnergy"),
+      family: z.union([energyFamilySchema, z.literal("any")]),
+      amount: z.number().int().positive(),
+      grantToSelf: z.boolean(),
+      target: targetRuleSchema.optional(),
     }),
     z.object({ kind: z.literal("summon"), summonId: idSchema }),
     z.object({ kind: z.literal("transformInto"), transformationId: idSchema }),

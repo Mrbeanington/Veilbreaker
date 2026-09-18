@@ -31,14 +31,30 @@ export const battleEventSchema = z.object({
 });
 export type BattleEvent = z.infer<typeof battleEventSchema>;
 
+// phase-02-combat-primitives.md: one applied status. `stacks` counts how
+// many applications are currently active (capped at the StatusDefinition's
+// maxStacks); `magnitude` is the most recent application's strength. The
+// engine's generic rule (packages/engine/src/statuses.ts, docs/DECISIONS.md)
+// is: effective strength for any math (Shield's absorption, Damage
+// Reduction's flat reduction, a DoT/HoT's per-tick amount, ...) is always
+// `magnitude * stacks`. `remainingTurns: null` means indefinite (cleared only
+// by dispel or an explicit removeStatus effect), matching
+// StatusDuration.permanent on the definition.
+export const activeStatusSchema = z.object({
+  statusId: idSchema,
+  remainingTurns: z.number().int().min(0).nullable(),
+  stacks: z.number().int().min(1),
+  magnitude: z.number().int().default(0),
+});
+export type ActiveStatus = z.infer<typeof activeStatusSchema>;
+
 // spec/02 "Core models": BattleState is the engine's single source of truth
 // for a match in progress. Phase 00 shipped this as a foundational skeleton
 // (OQ-25) since resolution logic was out of scope; Phase 01 (the resolver)
-// adds the per-character runtime fields the resolver actually reads and
-// writes: current/max HP, per-ability cooldowns, and whether the character
-// is still alive. Statuses, transformation stage, and live resource values
-// are still out of scope — those belong to Phase 02 ("Combat primitives")
-// and Phase 03 ("Advanced systems") respectively.
+// added current/max HP, per-ability cooldowns, and whether the character is
+// still alive. Phase 02 ("Combat primitives") adds `statuses`. Transformation
+// stage and live resource values are still out of scope — Phase 03
+// ("Advanced systems").
 export const characterRuntimeStateSchema = z.object({
   characterId: idSchema,
   currentHp: z.number().int().min(0),
@@ -47,6 +63,7 @@ export const characterRuntimeStateSchema = z.object({
   // Turns remaining before the ability can be used again; an ability with no
   // entry here (or a value of 0) is off cooldown.
   cooldowns: z.record(idSchema, z.number().int().min(0)).default({}),
+  statuses: z.array(activeStatusSchema).default([]),
 });
 export type CharacterRuntimeState = z.infer<typeof characterRuntimeStateSchema>;
 

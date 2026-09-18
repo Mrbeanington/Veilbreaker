@@ -1,5 +1,6 @@
 export { GAME_TITLE } from "./branding";
 export * from "./schemas/index";
+export * from "./data/statuses";
 
 import energyRulesJson from "./config/energy-rules.json";
 import matchFormatJson from "./config/match-format.json";

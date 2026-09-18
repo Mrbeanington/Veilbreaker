@@ -1,17 +1,16 @@
 import type { Ability, BattleState, PlayerAction } from "@veilbreak/content";
 import { canAfford } from "./energy";
+import { canAct } from "./statuses";
+import { resolveTargets } from "./targeting";
+import { createRng } from "./rng";
 
 // spec: "an illegal action is rejected during planning, never silently
 // dropped mid-resolution" — resolveTurn (resolver.ts) validates every
-// submitted action with this before any effect resolves. Target-rule
-// checking here is deliberately a placeholder (phase-01-battle-core.md):
-// it confirms a target exists, is alive, and matches the ability's
-// ally/enemy/self side, but not richer scope rules like adjacency or
-// lowest/highest-HP selection, which need real content to test against and
-// belong to Phase 02.
+// submitted action with this before any effect resolves.
 export type ActionValidationError =
   | { code: "unknownCharacter"; characterId: string }
   | { code: "characterNotAlive"; characterId: string }
+  | { code: "characterCannotAct"; characterId: string }
   | { code: "characterNotOnPlayersTeam"; characterId: string; playerId: string }
   | { code: "unknownAbility"; abilityId: string }
   | { code: "abilityOnCooldown"; characterId: string; abilityId: string; turnsRemaining: number }
@@ -31,6 +30,10 @@ export function validateAction(
   }
   if (!actor.alive) {
     errors.push({ code: "characterNotAlive", characterId: action.characterId });
+  } else if (!canAct(actor)) {
+    // spec/02 Stun/Silence: "Cannot take any action." Only checked once
+    // known alive — a dead character is already covered above.
+    errors.push({ code: "characterCannotAct", characterId: action.characterId });
   }
 
   const actingTeam = state.teams.find((team) => team.playerId === action.playerId);
@@ -63,49 +66,15 @@ export function validateAction(
     errors.push({ code: "cannotAfford", characterId: action.characterId, abilityId: action.abilityId });
   }
 
-  errors.push(...validateTargets(state, action, ability));
-
-  return errors;
-}
-
-function validateTargets(
-  state: BattleState,
-  action: PlayerAction,
-  ability: Ability,
-): ActionValidationError[] {
-  const errors: ActionValidationError[] = [];
-
-  if (ability.target.scope !== "single" || ability.target.side !== "self") {
-    if (action.targetIds.length === 0) {
-      errors.push({ code: "invalidTarget", reason: "ability requires at least one target" });
-    }
-  }
-
-  for (const targetId of action.targetIds) {
-    const target = state.characters[targetId];
-    if (!target) {
-      errors.push({ code: "invalidTarget", reason: `unknown target "${targetId}"` });
-      continue;
-    }
-    if (!target.alive) {
-      errors.push({ code: "invalidTarget", reason: `target "${targetId}" is not alive` });
-    }
-
-    if (ability.target.side === "self") {
-      if (targetId !== action.characterId) {
-        errors.push({ code: "invalidTarget", reason: "this ability can only target the caster" });
-      }
-      continue;
-    }
-
-    const targetTeam = state.teams.find((team) => team.characterIds.includes(targetId));
-    const isAlly = targetTeam?.playerId === action.playerId;
-    if (ability.target.side === "ally" && !isAlly) {
-      errors.push({ code: "invalidTarget", reason: `target "${targetId}" is not an ally` });
-    }
-    if (ability.target.side === "enemy" && isAlly) {
-      errors.push({ code: "invalidTarget", reason: `target "${targetId}" is not an enemy` });
-    }
+  // resolveTargets is the single source of truth for target legality
+  // (taunt overrides, untargetable filtering, side/scope rules) — reused
+  // here rather than re-implemented, so validation can never approve a
+  // target combination execution would then refuse. Validation only cares
+  // whether a legal selection exists, not which random pick it would make,
+  // so a throwaway RNG state is fine: nothing derived from it is kept.
+  const targetResult = resolveTargets(state, ability, action.characterId, action.targetIds, createRng(0));
+  if (targetResult.error) {
+    errors.push({ code: "invalidTarget", reason: targetResult.error });
   }
 
   return errors;

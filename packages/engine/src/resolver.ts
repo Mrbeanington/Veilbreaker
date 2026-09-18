@@ -1,23 +1,32 @@
-import type {
-  Ability,
-  BattleEvent,
-  BattleState,
-  BattleTeam,
-  CharacterRuntimeState,
-  EnergyRules,
-  MatchFormat,
-  PlayerAction,
-  ResolutionOrder,
+import {
+  COOLDOWN_INCREASE,
+  COOLDOWN_REDUCTION,
+  type Ability,
+  type BattleEvent,
+  type BattleState,
+  type BattleTeam,
+  type CharacterRuntimeState,
+  type EnergyRules,
+  type MatchFormat,
+  type PlayerAction,
+  type ResolutionOrder,
+  type StatusDefinition,
 } from "@veilbreak/content";
 import { validateAction, type ActionValidationError } from "./actions";
 import { createEmptyPool, generateEnergy, payCost, type EnergyPool } from "./energy";
 import { applyEffect } from "./effects";
+import { resolveDamage, resolveHeal } from "./damage";
+import { canAct, computeTicks, decrementStatusDurations, getEffectiveMagnitude } from "./statuses";
+import { resolveTargets } from "./targeting";
 import { createRng, nextUint32, type RngState } from "./rng";
 
 // spec/01 "Resolution stack": abilities without an explicit
 // `resolutionTierId` (packages/content/src/schemas/ability.ts) resolve here.
 export const STANDARD_RESOLUTION_TIER_ID = "standard-attacks-support";
 export const DEATH_CHECK_TIER_ID = "death-checks";
+export const DAMAGE_OVER_TIME_TIER_ID = "damage-over-time";
+export const HEALING_OVER_TIME_TIER_ID = "healing-over-time";
+export const POST_TURN_EFFECTS_TIER_ID = "post-turn-effects";
 export const COOLDOWN_REDUCTION_TIER_ID = "cooldown-reduction";
 export const RESOURCE_GENERATION_TIER_ID = "resource-generation";
 
@@ -57,6 +66,7 @@ export function createBattle(
         maxHp: c.maxHp,
         alive: true,
         cooldowns: {},
+        statuses: [],
       };
     }
   }
@@ -109,6 +119,7 @@ export interface ResolveTurnDeps {
   abilities: Record<string, Ability>;
   resolutionOrder: ResolutionOrder;
   energyRules: EnergyRules;
+  statusLibrary: Record<string, StatusDefinition>;
 }
 
 export type ResolveTurnResult =
@@ -131,8 +142,23 @@ function teamOf(state: BattleState, playerId: string): BattleTeam {
   return team;
 }
 
+/** OQ-09 "simultaneous team wipe": draw if both teams are fully dead, a win for whoever still has a living character otherwise, or null if the match continues. */
+function checkTeamWipe(
+  characters: Record<string, CharacterRuntimeState>,
+  teams: [BattleTeam, BattleTeam],
+): { outcome: "win" | "draw"; winnerPlayerId: string | null } | null {
+  const isWiped = (team: BattleTeam) => team.characterIds.every((id) => !characters[id]?.alive);
+  const [teamA, teamB] = teams;
+  const aWiped = isWiped(teamA);
+  const bWiped = isWiped(teamB);
+  if (aWiped && bWiped) return { outcome: "draw", winnerPlayerId: null };
+  if (aWiped) return { outcome: "win", winnerPlayerId: teamB.playerId };
+  if (bWiped) return { outcome: "win", winnerPlayerId: teamA.playerId };
+  return null;
+}
+
 /**
- * spec/01 "Turn system" + phase-01-battle-core.md: walks every tier in
+ * spec/01 "Turn system" + phase-01/02: walks every tier in
  * `resolutionOrder` (config, never hard-coded — CLAUDE.md rule 5), applying
  * each queued action's effects and emitting BattleEvents. Pure: returns a
  * new state and event list rather than mutating `state` (CLAUDE.md rule 4).
@@ -171,6 +197,8 @@ export function resolveTurn(
   const events: BattleEvent[] = [];
   let sequence = 0;
   const abilitiesUsedThisTurn = new Set<string>();
+  // `${targetId}:${statusId}` — see decrementStatusDurations' exemptStatusIds.
+  const statusesAppliedThisTurn = new Set<string>();
 
   function pushEvent(
     tierId: string,
@@ -230,19 +258,54 @@ export function resolveTurn(
         pushEvent(tier.id, "actionSkippedActorNotAlive", action.characterId);
         continue;
       }
+      // Stun/Silence may have been applied by an earlier tier this same
+      // turn, so this is re-checked here, not just at planning time
+      // (actions.ts) — the same reasoning as the alive check above.
+      if (!canAct(actor)) {
+        pushEvent(tier.id, "actionSkippedCannotAct", action.characterId);
+        continue;
+      }
 
       const ability = getAbility(action.abilityId);
+
+      // Targets are resolved against *current* state, not a stale snapshot
+      // from before this turn's earlier tiers — a taunt applied in an
+      // earlier tier, or a target dying, changes who's legal to hit.
+      const targetResult = resolveTargets(
+        { ...state, characters },
+        ability,
+        action.characterId,
+        action.targetIds,
+        rngState,
+      );
+      rngState = targetResult.nextRngState;
+      if (targetResult.error) {
+        pushEvent(tier.id, "actionSkippedNoLegalTarget", action.characterId, undefined, {
+          reason: targetResult.error,
+        });
+        continue;
+      }
+
       for (const effect of ability.effects) {
         const result = applyEffect(
-          characters,
+          { characters, energyPools },
           effect,
-          { sourceId: action.characterId, targetIds: action.targetIds },
+          {
+            sourceId: action.characterId,
+            targetIds: targetResult.targetIds,
+            teams: state.teams,
+            statusLibrary: deps.statusLibrary,
+          },
           rngState,
         );
-        characters = result.characters;
+        characters = result.state.characters;
+        energyPools = result.state.energyPools;
         rngState = result.nextRngState;
         for (const event of result.events) {
           pushEvent(tier.id, event.type, event.sourceId, event.targetId, event.payload);
+          if (event.type === "statusApplied" && event.targetId && typeof event.payload?.statusId === "string") {
+            statusesAppliedThisTurn.add(`${event.targetId}:${event.payload.statusId}`);
+          }
         }
       }
 
@@ -265,6 +328,32 @@ export function resolveTurn(
       }
     }
 
+    if (tier.id === DAMAGE_OVER_TIME_TIER_ID || tier.id === HEALING_OVER_TIME_TIER_ID) {
+      // spec/02 "DoT, HoT": which statuses tick, and by how much, is data
+      // (StatusDefinition.tickBehavior + the active status's magnitude*stacks)
+      // — never a hard-coded status id here. DoT ticks are unmitigated
+      // ("affliction"): Bleed/Burn/Poison are meant to punish reliably
+      // regardless of the target's defenses (see docs/DECISIONS.md).
+      const behavior = tier.id === DAMAGE_OVER_TIME_TIER_ID ? "damageOverTime" : "healOverTime";
+      for (const [characterId, character] of Object.entries(characters)) {
+        if (!character.alive) continue;
+        for (const tick of computeTicks(character, deps.statusLibrary, behavior)) {
+          if (tick.amount <= 0) continue;
+          const result =
+            behavior === "damageOverTime"
+              ? resolveDamage(characters, characterId, characterId, tick.amount, "affliction")
+              : resolveHeal(characters, characterId, characterId, tick.amount, "heal");
+          characters = result.characters;
+          for (const event of result.events) {
+            pushEvent(tier.id, event.type, event.sourceId, event.targetId, {
+              ...event.payload,
+              statusId: tick.statusId,
+            });
+          }
+        }
+      }
+    }
+
     if (tier.id === DEATH_CHECK_TIER_ID) {
       for (const [characterId, character] of Object.entries(characters)) {
         if (character.alive && character.currentHp <= 0) {
@@ -274,12 +363,31 @@ export function resolveTurn(
       }
     }
 
+    if (tier.id === POST_TURN_EFFECTS_TIER_ID) {
+      for (const [characterId, character] of Object.entries(characters)) {
+        const exempt = new Set(
+          character.statuses
+            .map((s) => s.statusId)
+            .filter((statusId) => statusesAppliedThisTurn.has(`${characterId}:${statusId}`)),
+        );
+        characters = { ...characters, [characterId]: decrementStatusDurations(character, exempt) };
+      }
+    }
+
     if (tier.id === COOLDOWN_REDUCTION_TIER_ID) {
       for (const [characterId, character] of Object.entries(characters)) {
+        // spec/02 Cooldown Increase/Reduction: each stack shifts the normal
+        // 1-per-turn decrement up or down; it can't go negative (cooldowns
+        // never count *up* on their own).
+        const speedUp = getEffectiveMagnitude(character, COOLDOWN_REDUCTION.id);
+        const slowDown = getEffectiveMagnitude(character, COOLDOWN_INCREASE.id);
+        const decrementAmount = Math.max(0, 1 + speedUp - slowDown);
         const reducedCooldowns: Record<string, number> = {};
         for (const [abilityId, turnsRemaining] of Object.entries(character.cooldowns)) {
           const wasJustSet = abilitiesUsedThisTurn.has(`${characterId}:${abilityId}`);
-          reducedCooldowns[abilityId] = wasJustSet ? turnsRemaining : Math.max(0, turnsRemaining - 1);
+          reducedCooldowns[abilityId] = wasJustSet
+            ? turnsRemaining
+            : Math.max(0, turnsRemaining - decrementAmount);
         }
         characters = { ...characters, [characterId]: { ...character, cooldowns: reducedCooldowns } };
       }
@@ -310,6 +418,21 @@ export function resolveTurn(
     }
   }
 
+  // OQ-09 "simultaneous team wipe": checked once, using the final state
+  // after every tier has run. Takes precedence over the max-turn tiebreak
+  // below — if the match already ended by wipe, it didn't also run out the
+  // clock.
+  const wipeResult = checkTeamWipe(characters, state.teams);
+  if (wipeResult) {
+    pushEvent(
+      DEATH_CHECK_TIER_ID,
+      wipeResult.outcome === "draw" ? "matchEndedInDraw" : "matchEndedByTeamWipe",
+      undefined,
+      undefined,
+      { winnerPlayerId: wipeResult.winnerPlayerId },
+    );
+  }
+
   const nextTurn = state.turn + 1;
   const nextInitiativePlayerId = otherTeamOf(state, state.initiativePlayerId).playerId;
 
@@ -325,7 +448,7 @@ export function resolveTurn(
 
   // OQ-14: "40 turns; then the team with the higher total remaining HP
   // percentage wins; if tied, draw."
-  if (nextTurn > state.matchFormat.maxTurns) {
+  if (!wipeResult && nextTurn > state.matchFormat.maxTurns) {
     const hpPercent = (team: BattleTeam): number => {
       let currentTotal = 0;
       let maxTotal = 0;
@@ -355,6 +478,7 @@ export function resolveTurn(
         },
       ],
     };
+    sequence += 1;
   }
 
   return { ok: true, state: nextState, events };

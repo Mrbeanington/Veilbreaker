@@ -1,12 +1,12 @@
 # Progress
 
-**Current phase:** 01 (complete, verified green — see session log). Next: 02.
+**Current phase:** 02 (complete, verified green — see session log). Next: 03.
 
 | Phase | Title | Status |
 |---|---|---|
 | 00 | Architecture and scaffolding | ☑ |
 | 01 | Battle state, resolver, RNG, energy | ☑ |
-| 02 | Combat primitives | ☐ |
+| 02 | Combat primitives | ☑ |
 | 03 | Advanced systems | ☐ |
 | 04 | First five prototypes | ☐ |
 | 05 | Playable local 3v3 | ☐ |
@@ -130,3 +130,73 @@ Phase 02).
 **Recommended next step:** Phase 02 ("Combat primitives") — extend `applyEffect` to cover
 statuses, and build real death/resurrection handling on top of the `death-checks` tier this phase
 already wired up.
+
+### 2026-09-18 — GitHub Pages + repo publication (between phases)
+Made the repo public (user request, matching `gridiron-playbook`'s setup) and added
+`.github/workflows/deploy.yml`, which builds `apps/web` and publishes `apps/web/dist` to GitHub
+Pages on every push to `main`. README now leads with links to the live game
+(https://mrbeanington.github.io/Veilbreaker/) and the project hub artifact, same pattern as
+`gridiron-playbook`. This is also when ADR-008's CI fix landed (see above) — setting up Pages is
+what finally surfaced that CI had been red since Phase 00.
+
+### 2026-09-18 — Phase 02
+Built the combat primitives on top of Phase 01's resolver:
+- **Status engine** (`packages/engine/src/statuses.ts`): `applyStatusToCharacter` (stack rules
+  none/refresh/stack/stackAndRefresh, capped at `maxStacks`), `dispelCharacter`, `hasStatus`,
+  `getEffectiveMagnitude` (`magnitude * stacks`, the one rule used everywhere), `computeTicks`
+  (DoT/HoT), `decrementStatusDurations` (with the same same-turn exemption ADR-006 gave
+  cooldowns — see ADR-009), and `canAct` (Stun/Silence).
+- **Damage pipeline** (`packages/engine/src/damage.ts`): `resolveDamage` implements invulnerable
+  → reflect/counter → amplification/weakness → damage reduction → shield → HP exactly as
+  phase-02-combat-primitives.md names it, with a precise table (ADR-009) for what each of
+  normal/piercing/affliction skips. `resolveHeal` implements OQ-04's healing-class rules
+  (Anti-Heal blocks `heal` only; Healing Reduction/Amplification affect `heal` and
+  `lifeTransfer`, never `setHp`).
+- **Targeting** (`packages/engine/src/targeting.ts`): `resolveTargets` evaluates self/ally/enemy/
+  any × single/all/random/lowestHp/highestHp, filters out untargetable characters, and forces
+  enemy-side targeting onto a taunter — redirecting an explicit off-target selection rather than
+  rejecting it as illegal (a real bug I caught and fixed via a failing test).
+- **`effects.ts`** now implements `applyStatus`, `removeStatus` (including `dispelAll`),
+  `modifyCooldown`, `modifyEnergy`, and `drainEnergy`, alongside Phase 01's damage/heal/sequence/
+  randomOutcome. `summon`, `transformInto`, and `modifyResource` still throw — Phase 03 scope.
+- **`resolver.ts`**: real target resolution (via targeting.ts) replaces Phase 01's raw
+  pass-through of player-submitted target ids; Stun/Silence are checked both at planning
+  (actions.ts) and again per-action during resolution (a status can be applied mid-turn by an
+  earlier tier); DoT/HoT tick during their named tiers; status durations decrement during
+  post-turn-effects; Cooldown Increase/Reduction adjust the cooldown-reduction tier's decrement
+  rate; and OQ-09's team-wipe win/draw check runs after every tier, taking precedence over the
+  max-turn tiebreak.
+- **Status library** (`packages/content/src/data/statuses.ts`): all 32 statuses from spec/02, each
+  a real, schema-validated `StatusDefinition`. 19 have a concrete engine hook exercised by tests;
+  13 are data-only with a `TODO(phase-03)` tooltip (ADR-009, OQ-29) — spec/06's own named
+  exceptions plus nine more that either have no concrete spec'd mechanic or need a richer
+  per-application parameter than the current model supports.
+
+**Files created:** `packages/engine/src/{statuses,damage,targeting,types}.ts` and their
+`*.test.ts` files (except `types.ts`, which has no runtime behavior to test);
+`packages/content/src/data/statuses.ts` and its test.
+**Files changed:** `packages/content/src/schemas/{common,battle,effect,status}.ts` (EnergyPool
+already existed; added `ActiveStatus`/`CharacterRuntimeState.statuses`, damage types, the
+`applyStatus`/`removeStatus` field additions, `modifyCooldown`, `drainEnergy`,
+`StatusDefinition.tickBehavior`), `packages/engine/src/{energy,effects,actions,resolver,index}.ts`.
+
+**Tests:** 124 passing (up from 54): the new statuses.test.ts (15), damage.test.ts (18),
+targeting.test.ts (13), effects.test.ts (12), and content's statuses.test.ts (4), plus 8 new
+resolver.test.ts integration tests (stun/silence blocking action in both same-turn-execution and
+next-turn-planning forms, taunt redirect, DoT ticking across its full duration, Cooldown
+Reduction speeding up recovery, simultaneous wipe → draw, one-sided wipe → win). `pnpm run ci`
+is green, and this time GitHub Actions was checked directly (not just assumed from the local run
+— see ADR-008's lesson).
+
+**Deviations:** logged as ADR-009 — the ActiveStatus stacking model, the damage-type interaction
+table, the status-duration same-turn exemption, taunt-redirects-rather-than-rejects, and the
+13 statuses shipped data-only.
+
+**New open questions:** OQ-29 (13 statuses without a concrete engine hook yet), OQ-30
+(`drainEnergy`'s grant-to-self doesn't enforce the pool cap). OQ-28 is resolved (see above).
+
+**Custom scripts:** none.
+
+**Recommended next step:** Phase 03 ("Advanced systems") — transformations, summons, per-character
+resource tracking (`modifyResource`), and whichever of the 13 deferred statuses the first real
+character kits (Phase 04) turn out to need.

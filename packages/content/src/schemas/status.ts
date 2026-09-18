@@ -19,6 +19,14 @@ export const statusDurationSchema = z
   });
 export type StatusDuration = z.infer<typeof statusDurationSchema>;
 
+// phase-02-combat-primitives.md "DoT, HoT": whether — and how — a status
+// deals damage or heals every turn is a property of the status itself (Bleed
+// always ticks damage; a plain Stun never does), not something an ability
+// decides per-use. Keeping it data-driven here means the engine's tick logic
+// (packages/engine/src/statuses.ts) never hard-codes a status id.
+export const statusTickBehaviorSchema = z.enum(["none", "damageOverTime", "healOverTime"]);
+export type StatusTickBehavior = z.infer<typeof statusTickBehaviorSchema>;
+
 export const statusDefinitionSchema = z.object({
   id: idSchema,
   displayName: z.string().min(1),
@@ -30,6 +38,7 @@ export const statusDefinitionSchema = z.object({
   maxStacks: z.number().int().min(1).default(1),
   dispellable: z.boolean().default(true),
   hidden: z.boolean().default(false),
+  tickBehavior: statusTickBehaviorSchema.default("none"),
   triggerTiming: z.array(triggerSchema).default([]),
   visualTreatment: z.string().min(1),
   tooltip: z.string().min(1),
