@@ -16,6 +16,20 @@ export type Id = z.infer<typeof idSchema>;
 export const energyFamilySchema = z.enum(["MIGHT", "FOCUS", "SPIRIT", "CHAOS"]);
 export type EnergyFamily = z.infer<typeof energyFamilySchema>;
 
+// A player's held energy, one amount per family. Deliberately a plain
+// z.object rather than `z.record(energyFamilySchema, ...)` — zod v3 infers
+// an enum-keyed record's output as `Partial<Record<Family, number>>` (every
+// family optional), but a pool always holds a real, non-negative amount in
+// every family; treating all four as required avoids `?? 0` fallbacks
+// scattered through the engine every time a pool is read.
+export const energyPoolSchema = z.object({
+  MIGHT: z.number().int().min(0),
+  FOCUS: z.number().int().min(0),
+  SPIRIT: z.number().int().min(0),
+  CHAOS: z.number().int().min(0),
+});
+export type EnergyPool = z.infer<typeof energyPoolSchema>;
+
 // spec/01 "Archetype tags". An extensible enum: abilities/conditions may
 // check tags, so this list is expected to grow as the roster grows.
 export const archetypeTagSchema = z.enum([

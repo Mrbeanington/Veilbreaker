@@ -1,11 +1,11 @@
 # Progress
 
-**Current phase:** 00 (complete, verified green — see session log). Next: 01.
+**Current phase:** 01 (complete, verified green — see session log). Next: 02.
 
 | Phase | Title | Status |
 |---|---|---|
 | 00 | Architecture and scaffolding | ☑ |
-| 01 | Battle state, resolver, RNG, energy | ☐ |
+| 01 | Battle state, resolver, RNG, energy | ☑ |
 | 02 | Combat primitives | ☐ |
 | 03 | Advanced systems | ☐ |
 | 04 | First five prototypes | ☐ |
@@ -77,3 +77,56 @@ surfaced and fixed real bugs the hand-review missed:
 tests pass, `apps/web` builds to static files (`index-*.js` 65 KB, `vendor-*.js` 141 KB gzip'd to
 ~16 KB / ~45 KB), and the client-only guard reports no violations. Logged the schema/guard fixes
 as ADR-004 in `docs/DECISIONS.md`. Phase 00 is genuinely done — Phase 01 can start.
+
+### 2026-09-17 — Phase 01
+Implemented the battle resolver end to end in `packages/engine`:
+- `src/rng.ts` — a pure, seeded mulberry32 PRNG (`RngState` is a decimal string, fits
+  `BattleState.rngState`) with `nextUint32`/`nextFloat`/`rollDie`/`pickRandom`/`pickWeighted`.
+  Every function returns a new state; nothing mutates. No `Math.random` anywhere (still enforced
+  by the ESLint rule from Phase 00).
+- `src/energy.ts` — `generateEnergy` (random and fixed modes, pool cap, OQ-03 turn-1 skip) and
+  `canAfford`/`payCost` (NEUTRAL paid from the richest remaining family when unspecified; a
+  caller-supplied explicit payment is validated and must sum exactly to the cost).
+- `src/actions.ts` — `validateAction`: unknown character/ability, wrong team, cooldown,
+  affordability, and target-side/alive placeholder checks.
+- `src/effects.ts` — `applyEffect` for `damage`, `heal`, `sequence`, `randomOutcome`; every other
+  `Effect` kind throws (by design — see ADR-007) since those systems don't exist until Phase 02/03.
+- `src/resolver.ts` — `createBattle` and `resolveTurn`. `resolveTurn` validates every action
+  up front (an illegal action is rejected, not dropped), walks `ResolutionOrder` tiers read from
+  config, orders each tier's actions by initiative-then-ally-slot (OQ-02), reduces cooldowns
+  (excluding abilities set that same turn — ADR-007), runs the death-checks and
+  resource-generation tiers, flips initiative, and applies OQ-14's max-turn HP-percentage
+  tiebreak. Pure throughout: takes a state, returns a new state and event list (CLAUDE.md rule 4).
+
+Extended `packages/content/src/schemas/battle.ts` (OQ-25's flagged extension point):
+`CharacterRuntimeState` (HP, alive, cooldowns) and `initiativePlayerId` on `BattleState`. Added
+`energyPoolSchema` to `common.ts` (ADR-005 — an enum-keyed `z.record` infers as `Partial`, which
+doesn't work for a pool where every family is always present) and an optional `resolutionTierId`
+on `Ability` (ADR-007).
+
+**Files created:** `packages/engine/src/{rng,energy,actions,effects,resolver}.ts` and their
+`*.test.ts` files.
+**Files changed:** `packages/content/src/schemas/{common,battle,ability}.ts`,
+`packages/engine/src/index.ts` (public API), `packages/engine/src/index.test.ts` (replaced the
+Phase 00 placeholder assertion).
+
+**Tests:** 54 passing (up from 14): 10 RNG (determinism, purity, range/distribution checks), 19
+energy (generation modes, pool cap, canAfford/payCost incl. NEUTRAL edge cases), 13 resolver
+(determinism, illegal-action rejection incl. a no-mutation check, tier-ordering read from config
+in both directions, cooldown timing, death checks, the max-turn tiebreak, initiative alternation),
+2 content, 2 barrel/index smoke tests. `pnpm run ci` (typecheck, lint, test, build,
+verify-client-only) is green.
+
+**Deviations:** logged as ADR-005/006/007 — the `EnergyPool` schema shape, "fixed" energy-mode
+semantics plus `createBattle`'s turn-1 generation pass, and the resolver's intentionally narrow
+effect-kind support / cooldown timing / win-condition scope.
+
+**New open questions:** OQ-27 (alternating turn model not implemented — deferred until a mode
+needs it), OQ-28 (team-wipe/win-condition detection beyond the max-turn tiebreak deferred to
+Phase 02).
+
+**Custom scripts:** none.
+
+**Recommended next step:** Phase 02 ("Combat primitives") — extend `applyEffect` to cover
+statuses, and build real death/resurrection handling on top of the `death-checks` tier this phase
+already wired up.
