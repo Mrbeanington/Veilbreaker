@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom/vitest";
 import { createDefaultProfile, createMemoryStore, encodeTransfer, loadProfile, saveProfile, type Profile } from "@veilbreak/persistence";
@@ -247,8 +247,8 @@ describe("device transfer between two devices", () => {
     const storeB = await seededStore((p) => ({ ...p, xp: 30, matchesPlayed: 1 }));
     await renderApp(storeB);
     await user.click(screen.getByRole("button", { name: "Profile" }));
-    await user.click(await screen.findByLabelText("Paste a code or link"));
-    await user.paste(`https://example.test/game/#transfer=${code}`);
+    // Set the value directly: clipboard emulation differs between environments.
+    fireEvent.change(await screen.findByLabelText("Paste a code or link"), { target: { value: `https://example.test/game/#transfer=${code}` } });
     await user.click(screen.getByRole("button", { name: "Check code" }));
 
     const dialog = await screen.findByRole("alertdialog");
@@ -270,8 +270,7 @@ describe("device transfer between two devices", () => {
     const user = userEvent.setup();
     const store = await renderApp();
     await user.click(screen.getByRole("button", { name: "Profile" }));
-    await user.click(await screen.findByLabelText("Paste a code or link"));
-    await user.paste("VB1.definitely-not-valid");
+    fireEvent.change(await screen.findByLabelText("Paste a code or link"), { target: { value: "VB1.definitely-not-valid" } });
     await user.click(screen.getByRole("button", { name: "Check code" }));
     expect(await screen.findByRole("alert")).toHaveTextContent(/damaged|not a Veilbreak code/i);
     expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();

@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it } from "vitest";
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom/vitest";
 import { createDefaultProfile, createMemoryStore, saveProfile, saveReplay, encodeReplay } from "@veilbreak/persistence";
@@ -51,14 +51,11 @@ describe("match history and the replay viewer", () => {
       </SettingsProvider>,
     );
     const box = await screen.findByLabelText(/paste a replay code/i);
-    await user.click(box);
-    await user.paste("VR1.not-a-real-code");
+    fireEvent.change(box, { target: { value: "VR1.not-a-real-code" } });
     await user.click(screen.getByRole("button", { name: "Open replay" }));
     expect(await screen.findByRole("alert")).toHaveTextContent(/damaged|not a Veilbreak/i);
-    await user.clear(box);
     const short = { ...done.replay!, turns: done.replay!.turns.slice(0, 3) };
-    await user.click(box);
-    await user.paste(`https://example.test/game/#replay=${encodeReplay(short)}`);
+    fireEvent.change(box, { target: { value: `https://example.test/game/#replay=${encodeReplay(short)}` } });
     await user.click(screen.getByRole("button", { name: "Open replay" }));
     await waitFor(() => expect(screen.getByText(/Turn 0 of 3/)).toBeInTheDocument());
   });
