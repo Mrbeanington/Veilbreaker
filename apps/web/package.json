@@ -4,10 +4,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "generate-manifest": "tsx scripts/generate-manifest.ts",
+    "dev": "pnpm run generate-manifest && vite",
     "typecheck": "tsc --noEmit",
-    "build": "vite build",
-    "preview": "vite preview"
+    "build": "pnpm run generate-manifest && vite build",
+    "preview": "vite preview",
+    "test": "vitest run"
   },
   "dependencies": {
     "@veilbreak/ai": "workspace:*",
@@ -18,9 +20,14 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.7",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.2",
+    "jsdom": "^30.1.0",
+    "tsx": "^4.23.13",
     "typescript": "^5.6.2",
     "vite": "^5.4.8"
   }

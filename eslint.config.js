@@ -34,6 +34,19 @@ export default tseslint.config(
     },
   },
   {
+    // apps/web/sw-template.js runs in the ServiceWorker global scope, not a
+    // browser window or Node — its own globals (phase-05-local-playable.md's
+    // PWA foundation, ADR-012).
+    files: ["apps/web/sw-template.js"],
+    languageOptions: {
+      globals: {
+        self: "readonly",
+        caches: "readonly",
+        fetch: "readonly",
+      },
+    },
+  },
+  {
     // CLAUDE.md rule 4: packages/engine has no I/O, no Math.random, no Date.now.
     // All randomness must flow through the seeded RNG stored in battle state,
     // so replays and friend-match verification stay deterministic.

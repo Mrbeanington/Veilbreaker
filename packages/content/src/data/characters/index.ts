@@ -3,6 +3,7 @@ import type { CharacterDefinition } from "../../schemas/character";
 import type { PassiveDefinition } from "../../schemas/passive";
 import type { Transformation } from "../../schemas/transformation";
 import type { Summon } from "../../schemas/summon";
+import type { Resource } from "../../schemas/common";
 import type { CharacterArtSpec, CharacterVisualBible } from "../../schemas/art";
 
 export * from "./helpers";
@@ -78,6 +79,13 @@ export const TRANSFORMATION_LIBRARY: Record<string, Transformation> = Object.fro
 );
 
 export const SUMMON_LIBRARY: Record<string, Summon> = Object.fromEntries([THRALL_SUMMON, BOUND_THRALL_SUMMON].map((s) => [s.id, s]));
+
+/** Every custom Resource any implemented character uses — the `resourceLibrary` a real match's `ResolveTurnDeps` needs (clamping modifyResource to each resource's own min/max). */
+export const RESOURCE_LIBRARY: Record<string, Resource> = Object.fromEntries(
+  Object.values(CHARACTER_LIBRARY)
+    .flatMap((c) => c.resources)
+    .map((r) => [r.id, r]),
+);
 
 export const CHARACTER_ART_LIBRARY: Record<string, CharacterArtSpec> = Object.fromEntries(
   [TORTUGA_REX_ART, MISTER_WHISKERS_ART, WHISKERS_DEVOURER_OF_WORLDS_ART, PATIENT_ZERO_ART, MOONSHOT_MADDOX_ART, MALACHAR_ART].map((a) => [

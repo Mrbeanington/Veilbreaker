@@ -4,3 +4,5 @@
 // in Phase 07.
 export const BOT_LEVELS = ["BEGINNER", "INTERMEDIATE", "ADVANCED", "EXPERT", "LEGEND_BOSS"] as const;
 export type BotLevel = (typeof BOT_LEVELS)[number];
+
+export { decideSimpleBotActions } from "./simple-bot";

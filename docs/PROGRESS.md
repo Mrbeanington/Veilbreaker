@@ -1,6 +1,6 @@
 # Progress
 
-**Current phase:** 04 (complete, verified green — see session log). Next: 05.
+**Current phase:** 05 (complete, verified green — see session log). Next: 06.
 
 | Phase | Title | Status |
 |---|---|---|
@@ -9,7 +9,7 @@
 | 02 | Combat primitives | ☑ |
 | 03 | Advanced systems | ☑ |
 | 04 | First five prototypes | ☑ |
-| 05 | Playable local 3v3 | ☐ |
+| 05 | Playable local 3v3 | ☑ |
 | 06 | Remaining 15 prototypes | ☐ |
 | 07 | Bots and headless simulation | ☐ |
 | 08 | Full client UI | ☐ |
@@ -366,3 +366,36 @@ Consecration now have real hooks; 6 statuses remain data-only). OQ-31(a) is part
 characters (plus the engine) into an actual playable match, which is also where a "build a
 `CreateBattleTeamInput` from a chosen roster" helper (using `defaultResourcesFor` and friends) will
 want a proper home outside test fixtures.
+
+### 2026-09-18 — Phase 05
+Built the first playable match in `apps/web`, entirely driven by the engine:
+- **Screens/components:** Home (mode + settings), team picker (implemented roster, no duplicates
+  within a team), match screen (both teams, HP bars, status chips with text, custom-resource chips —
+  Bases/Souls/etc. always visible, energy pool, generated ability tooltips with cost/cooldown state,
+  target selection, queued-actions panel with change/confirm, battle log, turn timer), pass-the-device
+  screen for hotseat, result screen. Placeholder portraits are initials + hash-derived hue.
+- **Bot:** `packages/ai` `decideSimpleBotActions` (random legal action, prefers lethal-looking hits,
+  legality via the real `validateAction`), run in a Web Worker (`apps/web/src/game/bot.worker.ts`).
+- **PWA foundation:** generated manifest + placeholder SVG icons (`scripts/generate-manifest.ts`, from
+  `GAME_TITLE`), hand-written precaching service worker built by a small Vite plugin; verified in
+  `vite preview` (manifest fetch, SW registered/active, Cache Storage contents).
+- **Settings:** animation speed, reduced-motion honored, turn timer toggle. Keyboard play via native
+  buttons throughout.
+- **Also added:** `RESOURCE_LIBRARY` (content), `client-only` allowlist entry for `sw.js`.
+- Bugs found by actually playing in the browser pane: turns unconfirmable when a character had no
+  affordable action (added explicit Pass); half-chosen target could leak across pass-device (cleared
+  on confirm); service worker didn't precache index.html and never pruned old caches (both fixed).
+
+**Files created:** `apps/web/src/{components,game,screens,settings}/*`, `styles.css`,
+`registerServiceWorker.ts`, `apps/web/{sw-template.js,scripts/generate-manifest.ts}`,
+`packages/ai/src/simple-bot{,.test}.ts`. **Changed:** `apps/web/{index.html,package.json,tsconfig.json,
+vite.config.ts,src/App.tsx,src/main.tsx}`, `packages/content/src/data/characters/index.ts`,
+`packages/ai/src/index.ts`, `eslint.config.js`, `scripts/verify-client-only.mjs`, `.gitignore`.
+
+**Tests:** 237 passing (up from 225): 7 web component tests (action selection, validation feedback,
+pass, timer expiry), 4 bot tests, 1 RESOURCE_LIBRARY test. `pnpm run ci` green.
+
+**Deviations:** ADR-012. **New open questions:** OQ-37 (bot lethality heuristic), OQ-38 (no error
+boundary), OQ-39 (settings not persisted). **Custom scripts:** none.
+
+**Recommended next step:** Phase 06 ("Remaining 15 prototypes").

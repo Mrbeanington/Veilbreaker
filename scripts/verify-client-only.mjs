@@ -9,14 +9,22 @@
 //   2. a call to fetch(, XMLHttpRequest, or `new WebSocket(`
 //
 // A match is allowed only when the source file path contains a segment from
-// ALLOWLIST below. Today that list is empty: friend-match code/link exchange
-// (spec/06) uses no networking APIs at all, and live WebRTC P2P (spec/06,
-// "Live peer-to-peer (optional stretch)") is not built yet. When phase 10
-// adds the optional WebRTC module, add its directory here — WebRTC signaling
-// itself is manual copy/paste, so RTCPeerConnection alone should not need to
-// appear on this list; only add paths that must legitimately call fetch/XHR/
-// WebSocket (for example, an optional user-provided STUN/TURN client).
-const ALLOWLIST = [];
+// ALLOWLIST below.
+//
+// - "sw.js" (phase-05-local-playable.md's PWA foundation, ADR-012): a
+//   hand-written, same-origin-only service worker (apps/web/sw-template.js)
+//   necessarily calls `fetch(event.request)` to intercept/serve/cache the
+//   app's own requests — that's what a service worker's fetch handler *is*,
+//   not a call to a third party. Audited by hand once, the same way the
+//   vendor chunk below is.
+// - Friend-match code/link exchange (spec/06) uses no networking APIs at
+//   all, and live WebRTC P2P (spec/06, "Live peer-to-peer (optional
+//   stretch)") is not built yet. When phase 10 adds the optional WebRTC
+//   module, add its directory here — WebRTC signaling itself is manual
+//   copy/paste, so RTCPeerConnection alone should not need to appear on this
+//   list; only add paths that must legitimately call fetch/XHR/WebSocket
+//   (for example, an optional user-provided STUN/TURN client).
+const ALLOWLIST = ["sw.js"];
 
 // The "vendor" chunk (apps/web/vite.config.ts `build.rollupOptions.output
 // .manualChunks`) holds only third-party library code (React/React-DOM),
