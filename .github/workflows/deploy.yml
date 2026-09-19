@@ -43,6 +43,9 @@ jobs:
       - name: Verify client-only guard
         run: node scripts/verify-client-only.mjs
 
+      - name: Verify no dev-mode code is shipped
+        run: node scripts/verify-no-dev-mode.mjs
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 

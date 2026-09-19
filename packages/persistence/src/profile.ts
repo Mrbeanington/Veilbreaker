@@ -49,6 +49,8 @@ export const historyEntrySchema = z.object({
   turns: z.number().int().min(0),
   replayId: z.string().optional(),
   trialId: z.string().optional(),
+  /** Which side this device played (one-person modes only); used by the personal stats. */
+  humanSide: z.enum(["A", "B"]).optional(),
 });
 export type HistoryEntry = z.infer<typeof historyEntrySchema>;
 

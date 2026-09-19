@@ -35,3 +35,7 @@ jobs:
       # if the shipped bundle references an external origin or calls
       # fetch/XMLHttpRequest/WebSocket outside the explicit P2P allowlist.
       - run: pnpm verify-client-only
+
+      # Phase 12: the production build must contain no dev-mode code (also self-tests
+      # with a VITE_DEV_MODE=1 build so the check cannot pass vacuously).
+      - run: pnpm verify-no-dev-mode

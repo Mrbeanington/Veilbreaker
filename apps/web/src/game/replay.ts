@@ -1,4 +1,4 @@
-import { defaultMatchFormat, type BattleEvent, type EnergyRules } from "@veilbreak/content";
+import { defaultMatchFormat, librariesForVersion, type BattleEvent, type EnergyRules } from "@veilbreak/content";
 import { createBattle, resolveTurn, type BattleState, type PlayerAction } from "@veilbreak/engine";
 import type { ReplayRecord } from "@veilbreak/persistence";
 import { BALANCE_VERSION_ID, buildTeamInput, matchDeps } from "./setup";
@@ -53,14 +53,16 @@ export type ReplayRun =
 
 /** Re-runs a recording through the engine. Fails clearly if an action is no longer legal (for example, the rules changed). */
 export function runReplay(record: ReplayRecord): ReplayRun {
-  const balanceMismatch = record.balanceVersionId !== BALANCE_VERSION_ID;
+  // A replay runs under the numbers of the balance version it was recorded with (spec/02); only an unknown version is a mismatch.
+  const libs = librariesForVersion(record.balanceVersionId);
+  const balanceMismatch = libs === null;
   try {
-    let state = createBattle([buildTeamInput("playerA", record.teamAIds), buildTeamInput("playerB", record.teamBIds)], record.seed, {
+    let state = createBattle([buildTeamInput("playerA", record.teamAIds, libs?.characters), buildTeamInput("playerB", record.teamBIds, libs?.characters)], record.seed, {
       balanceVersionId: record.balanceVersionId,
       matchFormat: defaultMatchFormat,
       energyRules: record.energyRules,
     });
-    const deps = matchDeps(record.energyRules);
+    const deps = matchDeps(record.energyRules, libs ?? undefined);
     const frames: ReplayFrame[] = [{ state, events: [] }];
     let winner: string | null = null;
     for (const [i, turn] of record.turns.entries()) {

@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { defineConfig, type Plugin } from "vite";
+import { defineConfig, loadEnv, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 
 // phase-05-local-playable.md "PWA foundation": a service worker that
@@ -54,7 +54,18 @@ function veilbreakServiceWorkerPlugin(): Plugin {
 // Relative base (CLAUDE.md "client-only"): the build output must work when
 // served from any static host, including a subpath or a local file, with no
 // server-side rewriting.
-export default defineConfig({
+// phase-12: developer mode (balance workbench, simulation dashboard) is compiled
+// in only for dev builds, or when a build is made on purpose with
+// VITE_DEV_MODE=1. In a normal production build both flags are the literal
+// `false`, so the dev entry point (and everything only it imports) is dropped
+// by tree-shaking; scripts/verify-no-dev-mode.mjs checks that in CI.
+export default defineConfig(({ mode }) => {
+  const forced = loadEnv(mode, process.cwd(), "VITE_").VITE_DEV_MODE === "1";
+  return {
+  define: {
+    __DEV_TOOLS__: JSON.stringify(mode !== "production" || forced),
+    __DEV_TOOLS_FORCED__: JSON.stringify(forced),
+  },
   base: "./",
   plugins: [react(), veilbreakServiceWorkerPlugin()],
   build: {
@@ -95,4 +106,5 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ["@veilbreak/content", "@veilbreak/engine", "@veilbreak/ai", "@veilbreak/persistence", "@veilbreak/protocol"],
   },
+  };
 });

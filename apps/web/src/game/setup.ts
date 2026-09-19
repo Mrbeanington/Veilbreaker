@@ -10,6 +10,8 @@ import {
   defaultMatchFormat,
   defaultResolutionOrder,
   defaultResourcesFor,
+  type BalanceLibraries,
+  type CharacterDefinition,
 } from "@veilbreak/content";
 import type { EnergyRules } from "@veilbreak/content";
 import { createBattle, type BattleState, type CreateBattleTeamInput, type ResolveTurnDeps } from "@veilbreak/engine";
@@ -21,11 +23,11 @@ import { createBattle, type BattleState, type CreateBattleTeamInput, type Resolv
 
 export const BALANCE_VERSION_ID = "phase-05-v1";
 
-export function buildTeamInput(playerId: string, characterIds: readonly string[]): CreateBattleTeamInput {
+export function buildTeamInput(playerId: string, characterIds: readonly string[], characters: Record<string, CharacterDefinition> = CHARACTER_LIBRARY): CreateBattleTeamInput {
   return {
     playerId,
     characters: characterIds.map((id) => {
-      const definition = CHARACTER_LIBRARY[id];
+      const definition = characters[id];
       if (!definition) {
         throw new Error(`startMatch: unknown character "${id}" — is it in PICKABLE_CHARACTERS?`);
       }
@@ -57,7 +59,20 @@ export function startMatch(
 // `energyRules` defaults to the real spec/01 config; component tests pass a
 // deterministic override (e.g. "fixed" mode) so an ability's affordability
 // doesn't depend on the same random draw the match itself uses.
-export function matchDeps(energyRules: EnergyRules = defaultEnergyRules): ResolveTurnDeps {
+// `libs` are the numbers of a specific balance version (a replay of an older version passes its own).
+export function matchDeps(energyRules: EnergyRules = defaultEnergyRules, libs?: BalanceLibraries): ResolveTurnDeps {
+  if (libs) {
+    return {
+      abilities: libs.abilities,
+      resolutionOrder: defaultResolutionOrder,
+      energyRules,
+      statusLibrary: libs.statuses,
+      passives: libs.passives,
+      summonLibrary: libs.summons,
+      transformationLibrary: libs.transformations,
+      resourceLibrary: RESOURCE_LIBRARY,
+    };
+  }
   return {
     abilities: ABILITY_LIBRARY,
     resolutionOrder: defaultResolutionOrder,

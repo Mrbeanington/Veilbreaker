@@ -4,6 +4,7 @@ export * from "./data/statuses";
 export * from "./data/characters/index";
 export * from "./coverage";
 export * from "./tooltip";
+export * from "./balance";
 
 import energyRulesJson from "./config/energy-rules.json";
 import matchFormatJson from "./config/match-format.json";

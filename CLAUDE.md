@@ -79,4 +79,5 @@ The build output is static files that work when served from any static host AND 
 - Client-only platform guard (run after `pnpm build`): `pnpm verify-client-only`
 - Full local CI gate, same checks CI runs: `pnpm ci`
 - Run a single package's scripts: `pnpm --filter @veilbreak/<name> <script>` (e.g. `pnpm --filter @veilbreak/content test`)
-- Node simulation CLI (`packages/ai`): `pnpm sim --matches N --bots level --seed S` writes a balance report to `docs/balance/`; `pnpm meta` refreshes the ranked ladder's meta pool (`packages/ai/src/meta-pool.json`).
+- Node simulation CLI (`packages/ai`): `pnpm sim --matches N --bots level --seed S` writes a balance report to `docs/balance/`; `pnpm sim --balance file.json` simulates a balance draft exported from dev mode; `pnpm meta` refreshes the ranked ladder's meta pool (`packages/ai/src/meta-pool.json`).
+- Dev mode (balance workbench): open the dev server with `?dev=1`. Never in production builds; `pnpm verify-no-dev-mode` checks (see `docs/design/balance-workflow.md`).

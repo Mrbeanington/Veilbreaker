@@ -1,15 +1,11 @@
 import {
-  ABILITY_LIBRARY,
-  PASSIVE_LIBRARY,
   PLAYABLE_CHARACTERS,
   RESOURCE_LIBRARY,
-  STATUS_LIBRARY,
-  SUMMON_LIBRARY,
-  TRANSFORMATION_LIBRARY,
-  defaultEnergyRules,
   defaultMatchFormat,
   defaultResolutionOrder,
   defaultResourcesFor,
+  baseLibraries,
+  type BalanceLibraries,
   type CharacterDefinition,
 } from "@veilbreak/content";
 import {
@@ -29,17 +25,22 @@ import { createRandom, shuffled, type Random } from "./prng";
 // Pure TypeScript with no Node or DOM APIs, so the same code runs in the dev
 // CLI (packages/ai/scripts/sim.ts) and could run inside a browser Worker.
 
-export function defaultSimDeps(): ResolveTurnDeps {
+export function defaultSimDeps(libs: BalanceLibraries = baseLibraries()): ResolveTurnDeps {
   return {
-    abilities: ABILITY_LIBRARY,
+    abilities: libs.abilities,
     resolutionOrder: defaultResolutionOrder,
-    energyRules: defaultEnergyRules,
-    statusLibrary: STATUS_LIBRARY,
-    passives: PASSIVE_LIBRARY,
-    summonLibrary: SUMMON_LIBRARY,
-    transformationLibrary: TRANSFORMATION_LIBRARY,
+    energyRules: libs.energyRules,
+    statusLibrary: libs.statuses,
+    passives: libs.passives,
+    summonLibrary: libs.summons,
+    transformationLibrary: libs.transformations,
     resourceLibrary: RESOURCE_LIBRARY,
   };
+}
+
+/** The playable characters as they are under `libs` (phase-12: a balance draft changes their numbers). */
+export function playablePool(libs: BalanceLibraries): CharacterDefinition[] {
+  return PLAYABLE_CHARACTERS.map((c) => libs.characters[c.id] ?? c);
 }
 
 export function teamInput(playerId: string, characters: readonly CharacterDefinition[]): CreateBattleTeamInput {

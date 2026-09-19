@@ -1,6 +1,6 @@
 # Progress
 
-**Current phase:** 11 complete. Next: Phase 12.
+**Current phase:** 12 complete. Next: Phase 13.
 
 | Phase | Title | Status |
 |---|---|---|
@@ -16,7 +16,7 @@
 | 09 | Local profile, persistence, progression, unlocks | ✅ done |
 | 10 | Friend matches (serverless) | ✅ done |
 | 11 | Local ranked | ✅ done |
-| 12 | Dev-mode balance tools and local analytics | ☐ |
+| 12 | Dev-mode balance tools & local analytics | ✅ done |
 | 13 | Roster scale to 120 | ☐ |
 | 14 | Art spec completion | ☐ |
 | 15 | Balance pass, polish, accessibility, offline/PWA, security | ☐ |
@@ -423,3 +423,6 @@ New package `packages/protocol`: message schemas, compressed bundle codes, SHA-2
 
 ### 2026-09-19 — Phase 11 (local ranked)
 The Ranked section is now a working ladder against bots. Hidden Elo rating, 16 visible divisions (Bronze III to Diamond I, then Veilbreaker), five placement matches per season, calendar-month seasons with archive and half-reset, streaks, personal bests, most-played stats, best seasons (a local personal-best leaderboard) and recent matches. Bots scale in skill and team quality by division and draw teams from a measured meta pool (`pnpm meta`, `packages/ai/src/meta-pool.json`); Legend policy per OQ-05; pick/ban (four picks, one ban each) at Diamond and above. A match left unfinished is saved as pending and counts as a loss. All state is the profile's `ranked` block (**profile v3**, migration 2 to 3) and is in backups and transfer codes. Play screen has a Ranked Ladder card. **New:** `packages/persistence/src/ranked.ts`, `packages/ai/src/{ladder,meta}.ts`, `packages/ai/src/meta-pool.json`, `packages/ai/scripts/meta.ts`, `apps/web/src/game/ranked.ts`, `apps/web/src/screens/RankedScreen.tsx`, tests for each. **Changed:** `packages/persistence/src/{profile,codec,replay,index}.ts`, `packages/ai/src/index.ts`, `apps/web/src/{App.tsx,components/TeamPicker.tsx,game/finishMatch.ts,game/progression.ts,screens/{PlayScreen,ResultScreen,HistoryPanel}.tsx}`, root and ai `package.json` (`pnpm meta`), `apps/web/src/App.test.tsx`, `platform.test.ts`. **Removed:** `PlaceholderScreen.tsx`. **Bugs fixed:** the team picker could not hold more than three; Friend matches were labelled "Hotseat" in history. **Tests:** 567 (up from 485). ADR-020; OQ-05 resolved; OQ-60 to OQ-64. **Custom scripts:** none. **Recommended next step:** Phase 12.
+
+### 2026-09-19 — Phase 12 (dev-mode balance tools and local analytics)
+**Balance drafts:** `packages/content/src/balance.ts` (tunable discovery, `BalanceDraft` schema, atomic `applyBalanceDraft` with diff, warnings and schema re-validation, `SHIPPED_BALANCE_PATCHES`, `librariesForVersion`); replays now resolve under their own balance version. **Dev mode** (`apps/web/src/dev/*`, opened with `?dev=1`): draft manager in IndexedDB, searchable and filterable value editor, diff and validation, Worker simulation of shipped vs. draft with outlier flags and recommendations (never applied automatically), JSON export and import. `pnpm sim --balance file.json` runs a draft from the terminal. **CI guard:** `scripts/verify-no-dev-mode.mjs` (added to `pnpm ci`) proves the production build has no dev-mode code and self-tests with a `VITE_DEV_MODE=1` build. **Player stats** (Profile screen): win rates by fighter, team and opponent, favourite abilities and transformation counts. History entries record the side played. Docs: `docs/design/balance-workflow.md`. **Files:** `packages/content/src/{balance,balance.test,index}.ts`, `packages/ai/{src/simulate,src/index,scripts/sim}.ts`, `packages/persistence/src/profile.ts`, `apps/web/src/dev/*`, `apps/web/src/game/{stats,stats.test,balanceReplay.test,setup,replay,progression}.ts`, `apps/web/src/screens/{StatsPanel,StatsPanel.test,ProfileScreen}.tsx`, `apps/web/src/{App.tsx,vite-env.d.ts}`, `apps/web/vite.config.ts`, `vitest.config.ts`, `scripts/verify-no-dev-mode.mjs`, root `package.json`, docs. **Tests:** see CI (up from 567). ADR-021; OQ-65 to OQ-69. **Custom scripts:** none. **Recommended next step:** Phase 13.

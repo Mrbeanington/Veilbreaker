@@ -8,6 +8,7 @@ export { createRandom, type Random } from "./prng";
 export {
   DETECTORS,
   defaultSimDeps,
+  playablePool,
   parseBotLevel,
   runBatch,
   runMatch,

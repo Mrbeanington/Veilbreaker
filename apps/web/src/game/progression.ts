@@ -308,6 +308,7 @@ export function applyMatchProgress(profile: Profile, match: ProgressMatch, repla
     turns: match.turns,
     replayId,
     trialId: match.trialId,
+    humanSide: match.humanTeams.length === 1 ? match.humanTeams[0] : undefined,
   };
   next = { ...next, xp: next.xp + xp, lastPlayedAt: now, history: [entry, ...next.history].slice(0, 50) };
 

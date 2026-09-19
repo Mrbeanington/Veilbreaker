@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CHARACTER_LIBRARY, GAME_TITLE } from "@veilbreak/content";
 import { exportBackup, listReplays, saveReplay } from "@veilbreak/persistence";
 import { SettingsProvider } from "./settings/SettingsContext";
@@ -24,6 +24,12 @@ import { installPlan } from "./platform/install";
 import { requestPersistence } from "./platform/protection";
 import { useInstallPrompt } from "./platform/useInstallPrompt";
 import { writeAutosave } from "./platform/files";
+
+// phase-12: developer mode. `__DEV_TOOLS__` is a build-time literal, so in a
+// normal production build this whole expression is `null` and the dev code is
+// never bundled (checked by scripts/verify-no-dev-mode.mjs).
+const DevMode = __DEV_TOOLS__ ? lazy(() => import("./dev/DevMode")) : null;
+const devModeRequested = (): boolean => __DEV_TOOLS__ && (__DEV_TOOLS_FORCED__ || (typeof location !== "undefined" && new URLSearchParams(location.search).get("dev") === "1"));
 
 // spec/05 "Main navigation".
 export const SECTIONS = [
@@ -136,6 +142,8 @@ function readHash(): { transfer?: string; replay?: string; match?: string } {
 export function AppShell() {
   const { profile, update, ready, store } = useProfile();
   const initial = useMemo(readHash, []);
+  const devMode = useMemo(devModeRequested, []);
+  const [dev, setDev] = useState(false);
   const [section, setSection] = useState<SectionId>(initial.transfer || initial.replay ? "profile" : "play");
   const mainRef = useRef<HTMLElement>(null);
 
@@ -164,6 +172,7 @@ export function AppShell() {
   }, [profile, ready, store]);
 
   const go = useCallback((next: SectionId) => {
+    setDev(false);
     setSection(next);
     // Move focus to the new page so keyboard and screen-reader users land on it.
     requestAnimationFrame(() => mainRef.current?.focus());
@@ -192,6 +201,13 @@ export function AppShell() {
               </button>
             </li>
           ))}
+          {devMode && DevMode && (
+            <li>
+              <button type="button" className={`nav-btn${dev ? " active" : ""}`} aria-current={dev ? "page" : undefined} onClick={() => setDev(true)}>
+                Dev
+              </button>
+            </li>
+          )}
         </ul>
       </nav>
       <main id="content" className="app-shell" tabIndex={-1} ref={mainRef}>
@@ -207,6 +223,10 @@ export function AppShell() {
               go("profile");
             }}
           />
+        ) : dev && DevMode ? (
+          <Suspense fallback={<p>Loading the balance workbench…</p>}>
+            <DevMode />
+          </Suspense>
         ) : (
           <>
             {plan === "banner" && <InstallBanner canPrompt={canPrompt} onInstall={() => void install()} onNotNow={() => asked()} />}

@@ -22,6 +22,7 @@ import { DELETE_WARNING, offerMoveProgress, readEnv, detectPlatform } from "../p
 import { backupFileName, chooseAutosaveFile, downloadText, hasAutosaveFile, readFileText, shareOrDownload, stopAutosave, supportsAutosave } from "../platform/files";
 import { protectionLabel } from "../platform/protection";
 import { HistoryPanel } from "./HistoryPanel";
+import { StatsPanel } from "./StatsPanel";
 
 interface Incoming {
   profile: Profile;
@@ -260,6 +261,7 @@ export function ProfileScreen({ initialTransferCode, initialReplayCode }: Profil
         )}
       </div>
 
+      <StatsPanel />
       <HistoryPanel initialReplayCode={initialReplayCode} />
     </div>
   );
