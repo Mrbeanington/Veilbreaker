@@ -139,7 +139,9 @@ export function evaluateEvent(
   let allEvents: AppliedEvent[] = [];
 
   for (const [holderId, holder] of Object.entries(currentState.characters)) {
-    if (!holder.alive) continue;
+    // A character that has just died may still answer its own death (Lantern Spirit's Last Light); dead holders react to nothing else.
+    const dyingSelf = !holder.alive && gameEvent.event === "onDeath" && gameEvent.subjectId === holderId;
+    if (!holder.alive && !dyingSelf) continue;
     const relation = relationOf(deps.teams, holderId, gameEvent.subjectId);
     const conditionState = { teams: deps.teams, turn: deps.turn, characters: currentState.characters };
     const conditionCtx = { selfId: holderId, sourceId: gameEvent.relatedId, targetId: gameEvent.subjectId };
@@ -159,6 +161,7 @@ export function evaluateEvent(
     }
 
     for (const source of reactiveEffectSources) {
+      if (dyingSelf && source.trigger.relation !== "self") continue;
       if (!matchesTrigger(source.trigger, gameEvent, relation)) continue;
       if (source.trigger.condition && !evaluateCondition(conditionState, source.trigger.condition, conditionCtx)) continue;
       if (source.condition && !evaluateCondition(conditionState, source.condition, conditionCtx)) continue;

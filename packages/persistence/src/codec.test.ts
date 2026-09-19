@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { deflateSync } from "fflate";
+import { CHARACTER_LIBRARY } from "@veilbreak/content";
 import {
   MAX_BACKUP_BYTES,
+  MAX_TRANSFER_PAIRS,
   MAX_REPLAY_LINK_CHARS,
   QR_MAX_BYTES,
   TRANSFER_PREFIX,
@@ -105,8 +107,24 @@ describe("device transfer code", () => {
     expect(p.settings).toEqual(profile.settings);
     expect(p.trialsWon).toEqual(profile.trialsWon);
     expect(p.matchesPlayed).toBe(profile.matchesPlayed);
-    expect(p.beat.hydra?.shiro).toBe(3); // clamped from 40: still "2 or more"
+    // A maxed profile has every pair seen 40 times, far more than one QR code can hold: the strongest MAX_TRANSFER_PAIRS travel, clamped to 3 ("2 or more").
+    const pairs = Object.values(p.beat).flatMap((row) => Object.values(row));
+    expect(pairs).toHaveLength(MAX_TRANSFER_PAIRS);
+    expect(pairs.every((n) => n === 3)).toBe(true);
     expect(p.history).toEqual([]); // match history is not transferred
+  });
+
+  it("a realistic profile keeps all of its pairs, clamped, and the strongest win when a table is over the limit", () => {
+    const small = { ...createDefaultProfile(), beat: { hydra: { shiro: 40, koschei: 1 } }, wonWith: { hydra: { koschei: 2 } } };
+    const back = decodeTransfer(encodeTransfer(small, ID_TABLE), ID_TABLE);
+    expect(back.ok && back.profile.beat).toEqual({ hydra: { shiro: 3, koschei: 1 } });
+    expect(back.ok && back.profile.wonWith).toEqual({ hydra: { koschei: 2 } });
+
+    const ids = Object.keys(CHARACTER_LIBRARY);
+    const wide: Record<string, Record<string, number>> = {};
+    for (const a of ids) for (const b of ids) if (a !== b) (wide[a] ??= {})[b] = a === "hydra" && b === "zeiron" ? 9 : 1;
+    const capped = decodeTransfer(encodeTransfer({ ...createDefaultProfile(), beat: wide }, ID_TABLE), ID_TABLE);
+    expect(capped.ok && capped.profile.beat.hydra?.zeiron).toBe(3); // the strongest pair always survives
   });
 
   it("a default profile round-trips exactly", () => {

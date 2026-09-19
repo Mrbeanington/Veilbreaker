@@ -33,7 +33,6 @@ describe("coverage matrix", () => {
   });
 
   it("honestly reports zero coverage for a mechanic no character touches yet", () => {
-    expect(charactersCoveringMechanic("pets")).toEqual([]);
     expect(charactersCoveringMechanic("relics")).toEqual([]);
   });
 
@@ -58,6 +57,20 @@ describe("coverage matrix", () => {
     expect(covers("counterattacks")).toEqual(expect.arrayContaining(["cerberus", "zeiron"]));
     expect(covers("transformations")).toContain("the-forgotten-titan");
     expect(covers("cooldown manipulation")).toContain("arachne");
+  });
+
+  it("credits region 2 (Japanese Folklore / Ink Realm) with the mechanics it was written for", () => {
+    const covers = (mechanic: Parameters<typeof charactersCoveringMechanic>[0]) => charactersCoveringMechanic(mechanic).map((c) => c.id);
+    expect(covers("resurrection")).toContain("nekomata");
+    expect(covers("pets")).toContain("the-paper-monk");
+    expect(covers("ink")).toEqual(expect.arrayContaining(["the-painted-ronin", "the-paper-monk"]));
+    expect(covers("energy generation")).toContain("lantern-spirit");
+    expect(covers("ice")).toContain("yuki-onna");
+    expect(covers("HP sacrifice")).toEqual(expect.arrayContaining(["lantern-spirit", "oni-of-the-red-gate", "red-oni"]));
+    expect(covers("cooldown manipulation")).toEqual(expect.arrayContaining(["yuki-onna", "tengu-swordsman", "the-mirror-samurai"]));
+    expect(covers("water/tides")).toEqual(expect.arrayContaining(["kappa-kiro", "umbrella-yokai"]));
+    expect(covers("energy stealing")).toContain("umbrella-yokai");
+    expect(covers("summons")).toContain("the-paper-monk");
   });
 
   it("generates a markdown table with a row per mechanic", () => {

@@ -201,3 +201,29 @@ describe("evaluateEvent — Trigger.effectTarget (ADR-011, OQ-31a)", () => {
     expect(resourceEvent?.targetId).toBe("a1");
   });
 });
+
+describe("evaluateEvent — a character that has just died (phase 13 regression)", () => {
+  const dead = (state: EffectState, id: string): EffectState => ({ ...state, characters: { ...state.characters, [id]: { ...state.characters[id]!, alive: false, currentHp: 0 } } });
+  const on = (relation: "self" | "ally" | "any") =>
+    passive({ id: `test.dying.${relation}`, trigger: { event: "onDeath", relation }, effects: [{ kind: "applyStatus", statusId: "status.taunt" }] });
+
+  it("answers its own death with a 'self' onDeath trigger (Last Light)", () => {
+    const p = passive({ id: "test.lastlight", trigger: { event: "onDeath", relation: "self", effectTarget: "self" }, effects: [{ kind: "modifyEnergy", family: "SPIRIT", amount: 2 }] });
+    const state = dead(stateWith({ a1: p.id }), "a1");
+    const result = evaluateEvent(state, { event: "onDeath", subjectId: "a1" }, deps({ [p.id]: p }), createRng(1));
+    expect(result.events.some((e) => e.type === "energyModified")).toBe(true);
+    expect(result.state.energyPools.playerA?.SPIRIT).toBe(2);
+  });
+  it("does not react to its own death through 'any' or 'ally' triggers", () => {
+    for (const relation of ["any", "ally"] as const) {
+      const p = on(relation);
+      const result = evaluateEvent(dead(stateWith({ a1: p.id }), "a1"), { event: "onDeath", subjectId: "a1" }, deps({ [p.id]: p }), createRng(1));
+      expect(result.events, relation).toHaveLength(0);
+    }
+  });
+  it("a dead character reacts to nobody else's death", () => {
+    const p = on("any");
+    const result = evaluateEvent(dead(stateWith({ a1: p.id }), "a1"), { event: "onDeath", subjectId: "b1" }, deps({ [p.id]: p }), createRng(1));
+    expect(result.events).toHaveLength(0);
+  });
+});

@@ -139,10 +139,17 @@ function refs(table: readonly string[]): { toRef: (id: string) => Ref; fromRef: 
 
 const SETTINGS_ORDER = ["animationSpeed", "reducedMotion", "turnTimer", "uiScale", "highContrast", "soundEnabled", "soundVolume", "showAllCharacters", "botLevel"] as const;
 
+/** A transfer code has to fit one QR code, and pair tables grow with the square of the roster (120 characters is 14,000 pairs), so each table sends only its strongest pairs. Backups carry everything. */
+export const MAX_TRANSFER_PAIRS = 300;
+
 function packPairs(table: Profile["beat"], toRef: (id: string) => Ref) {
-  return Object.entries(table)
-    .map(([a, row]) => [toRef(a), Object.entries(row).filter(([, n]) => n > 0).map(([b, n]) => [toRef(b), Math.min(COUNT_CAP, n)])])
-    .filter(([, row]) => (row as unknown[]).length > 0);
+  const entries: [string, string, number][] = [];
+  for (const [a, row] of Object.entries(table)) for (const [b, n] of Object.entries(row)) if (n > 0) entries.push([a, b, Math.min(COUNT_CAP, n)]);
+  // Keep the largest counts first (the Codex only reads "2 or more"), ties broken by id so the code is stable.
+  entries.sort((x, y) => y[2] - x[2] || x[0].localeCompare(y[0]) || x[1].localeCompare(y[1]));
+  const kept = new Map<string, [Ref, number][]>();
+  for (const [a, b, n] of entries.slice(0, MAX_TRANSFER_PAIRS)) kept.set(a, [...(kept.get(a) ?? []), [toRef(b), n]]);
+  return [...kept.entries()].map(([a, row]) => [toRef(a), row]);
 }
 
 export function encodeTransfer(profile: Profile, idTable: readonly string[]): string {

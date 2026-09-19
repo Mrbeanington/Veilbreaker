@@ -109,6 +109,8 @@ export const targetRuleSchema = z.object({
   scope: z.enum(["single", "all", "random", "adjacent", "lowestHp", "highestHp"]),
   count: z.number().int().min(1).default(1),
   includeSelf: z.boolean().default(false),
+  /** Phase 13: choose from the fallen instead of the living (a resurrection targets the dead). */
+  includeDead: z.boolean().optional(),
   filterTags: z.array(archetypeTagSchema).default([]),
 });
 export type TargetRule = z.infer<typeof targetRuleSchema>;

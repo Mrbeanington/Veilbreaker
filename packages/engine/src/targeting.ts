@@ -42,7 +42,8 @@ function candidatePool(state: BattleState, actorId: string, target: TargetRule):
     pool = state.teams.flatMap((team) => team.characterIds).filter((id) => target.includeSelf || id !== actorId);
   }
 
-  pool = pool.filter((id) => state.characters[id]?.alive);
+  // Normally only the living can be targeted; a rule with `includeDead` (resurrection) picks from the fallen instead.
+  pool = pool.filter((id) => state.characters[id]?.alive === !target.includeDead);
 
   // Untargetable filtering never excludes targeting yourself.
   pool = pool.filter((id) => {

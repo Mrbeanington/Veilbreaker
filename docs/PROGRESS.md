@@ -1,6 +1,6 @@
 # Progress
 
-**Current phase:** 13 in progress: region 1 (Ancient Mediterranean) done. Next: region 2 (Japanese Folklore / Ink Realm), one region per session.
+**Current phase:** 13 in progress: regions 1 and 2 done (46 of 120 characters built). Next: region 3 (Slavic / Russian Night), one region per session.
 
 | Phase | Title | Status |
 |---|---|---|
@@ -17,7 +17,7 @@
 | 10 | Friend matches (serverless) | ✅ done |
 | 11 | Local ranked | ✅ done |
 | 12 | Dev-mode balance tools & local analytics | ✅ done |
-| 13 | Scale the roster to 120 | 🔄 region 1 of 11 done |
+| 13 | Scale the roster to 120 | 🔄 region 2 of 11 done |
 | 14 | Art spec completion | ☐ |
 | 15 | Balance pass, polish, accessibility, offline/PWA, security | ☐ |
 
@@ -429,3 +429,6 @@ The Ranked section is now a working ladder against bots. Hidden Elo rating, 16 v
 
 ### 2026-09-19 — Phase 13, region 1 (Ancient Mediterranean)
 **13 new characters:** Asterion, Medusa, Charon, The Bronze Giant, Arachne, Cyclops Brontes, The Oracle, Cerberus, The Siren, Nemesis, Hecate's Disciple, and the Secrets Icarion and The Forgotten Titan (Hydra and Zeiron already existed; region complete at 15). Each has data, art spec and visual bible, a design note (`docs/design/characters/`), and signature-mechanic scenario tests (`packages/engine/src/scenarios/region1.scenario.test.ts`, 50 tests). New status `status.foretold`. **Engine bug fixed:** a damage effect's `target` (self) was ignored, so self-damage hit enemies (regression tests). **Checks:** coverage matrix regenerated (uncovered mechanics 24 to 5; several detectors were hard-coded "none" and now read data); template-overlap check added (no pair over 70%, closest 60%); 5,000-match simulation, 0 engine errors, outliers recorded in `docs/balance/phase13-region1-notes.md` (Forgotten Titan 67%). Ranked meta pool regenerated (60,000 matches, roster-scaled threshold). **The Island King:** backlog design note only. **Files:** `packages/content/src/data/characters/{asterion,medusa,charon,the-bronze-giant,arachne,cyclops-brontes,the-oracle,cerberus,the-siren,nemesis,hecates-disciple,icarion,the-forgotten-titan}.ts`, `index.ts`, `helpers.ts`, `statuses.ts`, `coverage.ts` (+ tests), `region1.roster.test.ts`, `packages/engine/src/effects.ts`, `packages/ai/{src/ladder.ts,src/meta-pool.json,scripts/meta.ts}`, `packages/content/coverage.md`, design notes, `docs/balance/*`, docs. **Tests:** see CI (up from 608). ADR-022; OQ-70 to OQ-74. **Custom scripts:** none. **Recommended next step:** region 2, Japanese Folklore / Ink Realm (15 characters; 2 already exist: The Nine-Tailed Trickster and Shiro).
+
+### 2026-09-19 — Phase 13, region 2 (Japanese Folklore / Ink Realm)
+**13 new characters:** Red Oni, Blue Oni, Kappa Kiro, Yuki-Onna, Tengu Swordsman, Lantern Spirit, Umbrella Yokai, The Paper Monk, Nekomata, The Mirror Samurai, Gashadokuro, and the Secrets Oni of the Red Gate and The Painted Ronin (The Nine-Tailed Trickster and Shiro already existed; region complete at 15). Data, art, design notes and 41 scenario tests each. **Engine:** `TargetRule.includeDead` (resurrection targets the fallen; engine, match screen and bots), and a dying character's own `self` onDeath trigger now fires. **Firsts:** resurrection (Nekomata), a pet (Paper Crane Familiar), ink, energy generation, ice, a decaying resource, `teamComposition`. **Checks:** coverage matrix (only relics uncovered), template overlap (no pair over 70%, closest 60%), 5,000-match simulation, 0 engine errors (notes in `docs/balance/phase13-region2-notes.md`). **QR scale fix:** transfer codes send each pair table's strongest 300 pairs only (a maxed profile no longer fit at 46 characters). Ranked meta pool regenerated (46 characters). Shared roster test kit (`regionRoster.testkit.ts`). **Files:** thirteen `packages/content/src/data/characters/*.ts`, `index.ts`, `schemas/common.ts`, `coverage.ts`, `regionRoster.testkit.ts`, `region{1,2}.roster.test.ts`, `packages/engine/src/{targeting,triggers}.ts` (+ tests, `scenarios/region2.scenario.test.ts`), `apps/web/src/screens/MatchScreen.tsx`, `packages/persistence/src/{codec,index}.ts`, `packages/ai/src/meta-pool.json`, design notes, `docs/balance/*`, docs. **Tests:** see CI (up from 673). ADR-023; OQ-75 to OQ-79. **Custom scripts:** none. **Recommended next step:** region 3, Slavic / Russian Night (12 characters; Baba Yaga and Koschei already exist).

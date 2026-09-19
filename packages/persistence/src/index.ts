@@ -65,6 +65,7 @@ export {
 export { BACKUP_KEYS, SAVE_KEY, loadProfile, saveProfile, type LoadResult, type LoadSource, type SaveOptions } from "./save";
 export {
   MAX_BACKUP_BYTES,
+  MAX_TRANSFER_PAIRS,
   MAX_REPLAY_LINK_CHARS,
   QR_MAX_BYTES,
   REPLAY_PREFIX,

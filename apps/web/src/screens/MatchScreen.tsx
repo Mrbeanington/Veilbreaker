@@ -160,6 +160,9 @@ export function MatchScreen({ mode, teamAIds, teamBIds, seed, botLevel, onMatchO
     setSkipsFor(playerId, (prev) => new Set(prev).add(characterId));
   }
 
+  // A resurrection picks from the fallen; everything else from the living.
+  const canTarget = (id: string) => !!pendingAbility && battleState.characters[id]?.alive === !pendingAbility.ability.target.includeDead;
+
   function handleAbilityClick(playerId: string, characterId: string, ability: Ability) {
     setError(null);
     if (ability.target.side === "self") {
@@ -297,7 +300,7 @@ export function MatchScreen({ mode, teamAIds, teamBIds, seed, botLevel, onMatchO
               key={id}
               character={battleState.characters[id]!}
               displayName={CHARACTER_LIBRARY[id]?.displayName ?? id}
-              targetable={!!pendingAbility && !!battleState.characters[id]?.alive}
+              targetable={canTarget(id)}
               acting={id === activeCharacterId}
               onClick={pendingAbility ? () => handleTargetClick(playerId, id) : undefined}
             />
@@ -310,7 +313,7 @@ export function MatchScreen({ mode, teamAIds, teamBIds, seed, botLevel, onMatchO
               key={id}
               character={battleState.characters[id]!}
               displayName={CHARACTER_LIBRARY[id]?.displayName ?? id}
-              targetable={!!pendingAbility && !!battleState.characters[id]?.alive}
+              targetable={canTarget(id)}
               acting={id === activeCharacterId}
               onClick={pendingAbility ? () => handleTargetClick(playerId, id) : undefined}
             />
