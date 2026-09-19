@@ -1,6 +1,6 @@
 # Progress
 
-**Current phase:** 06 (batch 1 of 3 complete: 5 of 15 characters). Next: 06 batch 2.
+**Current phase:** 06 (batches 1-2 of 3 complete: 10 of 15 characters). Next: 06 batch 3.
 
 | Phase | Title | Status |
 |---|---|---|
@@ -10,7 +10,7 @@
 | 03 | Advanced systems | ☑ |
 | 04 | First five prototypes | ☑ |
 | 05 | Playable local 3v3 | ☑ |
-| 06 | Remaining 15 prototypes | ◐ batch 1/3 |
+| 06 | Remaining 15 prototypes | ◐ batch 2/3 |
 | 07 | Bots and headless simulation | ☐ |
 | 08 | Full client UI | ☐ |
 | 09 | Local profile, persistence, progression, unlocks | ☐ |
@@ -402,3 +402,6 @@ boundary), OQ-39 (settings not persisted). **Custom scripts:** none.
 
 ### 2026-09-19 — Phase 06, batch 1
 Father Bell, The Plague Doctor, Behemoth (Legend), Shiro (Legend), Hydra: full data, art specs (Legends with reveal prompts), design notes (`docs/design/characters/`), coverage matrix regenerated. New `status.unhealable`; ADR-013. Required tests in `packages/engine/src/scenarios/batch1.scenario.test.ts`: Malachar vs. the real Father Bell, Behemoth no-heal (incl. dispel), Plague Doctor anti-heal/reduction vs. each healing class, Shiro erasure vs. death triggers, Hydra heads. Both Legends name two roster counters. **Tests:** 250 (up from 237). **Open:** OQ-40, OQ-41. **Remaining:** Koschei, Baba Yaga, Nine-Tailed Trickster, Referee, Gambler, Maestro Nocturne, Zeiron, Black Knight, Emperor Zero, Nameless One.
+
+### 2026-09-19 — Phase 06, batch 2
+Koschei (Death Seals), Baba Yaga, The Nine-Tailed Trickster (tails -> Ascension), The Gambler (probability/Chips), Zeiron (Legend): data, art specs, design notes, coverage regenerated, ADR-014. No engine changes. 18 new scenario tests in `batch2.scenario.test.ts` (Seals surviving a lethal blow; Ascension at 9 tails; Fox Fire Burn blocking Hydra's Regrow; Gambler roll consistency/determinism/Loaded Dice; Baba Yaga hut/flight/passive; Zeiron Wrath, Hush counter, Broken Crown). OQ-41 resolved. **Remaining:** The Referee, Maestro Nocturne, Black Knight, Emperor Zero, The Nameless One.

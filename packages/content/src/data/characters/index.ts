@@ -18,6 +18,11 @@ export * from "./plague-doctor";
 export * from "./behemoth";
 export * from "./shiro";
 export * from "./hydra";
+export * from "./koschei";
+export * from "./baba-yaga";
+export * from "./nine-tailed-trickster";
+export * from "./the-gambler";
+export * from "./zeiron";
 
 import { TORTUGA_REX, TORTUGA_REX_ABILITIES, TORTUGA_REX_ART, TORTUGA_REX_VISUAL_BIBLE } from "./tortuga-rex";
 import {
@@ -65,9 +70,22 @@ import { BEHEMOTH, BEHEMOTH_ABILITIES, BEHEMOTH_ART, BEHEMOTH_VISUAL_BIBLE, PRIM
 import { SHIRO, SHIRO_ABILITIES, SHIRO_ART, SHIRO_VISUAL_BIBLE } from "./shiro";
 import { CUT_ONE_TWO_GROW, HYDRA, HYDRA_ABILITIES, HYDRA_ART, HYDRA_VISUAL_BIBLE } from "./hydra";
 
+import { KOSCHEI, KOSCHEI_ABILITIES, KOSCHEI_ART, KOSCHEI_VISUAL_BIBLE, DEATH_HIDDEN_AWAY } from "./koschei";
+import { BABA_YAGA, BABA_YAGA_ABILITIES, BABA_YAGA_ART, BABA_YAGA_VISUAL_BIBLE, HUT_SUMMON, OLD_HUNGER } from "./baba-yaga";
+import {
+  ASCENSION,
+  NINE_TAILED_TRICKSTER,
+  NINE_TAILED_TRICKSTER_ABILITIES,
+  NINE_TAILED_TRICKSTER_ART,
+  NINE_TAILED_TRICKSTER_VISUAL_BIBLE,
+  TAIL_BY_TAIL,
+} from "./nine-tailed-trickster";
+import { THE_GAMBLER, THE_GAMBLER_ABILITIES, THE_GAMBLER_ART, THE_GAMBLER_VISUAL_BIBLE } from "./the-gambler";
+import { ZEIRON, ZEIRON_ABILITIES, ZEIRON_ART, ZEIRON_VISUAL_BIBLE, BROKEN_CROWN } from "./zeiron";
+
 /** phase-04-first-five.md's five prototypes, plus the stubbed Devourer-of-Worlds hook. */
 export const CHARACTER_LIBRARY: Record<string, CharacterDefinition> = Object.fromEntries(
-  [TORTUGA_REX, MISTER_WHISKERS, WHISKERS_DEVOURER_OF_WORLDS, PATIENT_ZERO, MOONSHOT_MADDOX, MALACHAR, FATHER_BELL, PLAGUE_DOCTOR, BEHEMOTH, SHIRO, HYDRA].map((c) => [c.id, c]),
+  [TORTUGA_REX, MISTER_WHISKERS, WHISKERS_DEVOURER_OF_WORLDS, PATIENT_ZERO, MOONSHOT_MADDOX, MALACHAR, FATHER_BELL, PLAGUE_DOCTOR, BEHEMOTH, SHIRO, HYDRA, KOSCHEI, BABA_YAGA, NINE_TAILED_TRICKSTER, THE_GAMBLER, ZEIRON].map((c) => [c.id, c]),
 );
 
 export const ABILITY_LIBRARY: Record<string, Ability> = Object.fromEntries(
@@ -83,18 +101,23 @@ export const ABILITY_LIBRARY: Record<string, Ability> = Object.fromEntries(
     ...BEHEMOTH_ABILITIES,
     ...SHIRO_ABILITIES,
     ...HYDRA_ABILITIES,
+    ...KOSCHEI_ABILITIES,
+    ...BABA_YAGA_ABILITIES,
+    ...NINE_TAILED_TRICKSTER_ABILITIES,
+    ...THE_GAMBLER_ABILITIES,
+    ...ZEIRON_ABILITIES,
   ].map((a) => [a.id, a]),
 );
 
 export const PASSIVE_LIBRARY: Record<string, PassiveDefinition> = Object.fromEntries(
-  [NINE_LIVES, THE_HUNGER_GROWS, AT_THE_PLATE, THE_DEAD_REMEMBER, LET_THE_DEAD_REST, PRIMORDIAL_HIDE, CUT_ONE_TWO_GROW].map((p) => [p.id, p]),
+  [NINE_LIVES, THE_HUNGER_GROWS, AT_THE_PLATE, THE_DEAD_REMEMBER, LET_THE_DEAD_REST, PRIMORDIAL_HIDE, CUT_ONE_TWO_GROW, DEATH_HIDDEN_AWAY, OLD_HUNGER, TAIL_BY_TAIL, BROKEN_CROWN].map((p) => [p.id, p]),
 );
 
 export const TRANSFORMATION_LIBRARY: Record<string, Transformation> = Object.fromEntries(
-  [...PATIENT_ZERO_TRANSFORMATIONS, TO_DEATH_KING].map((t) => [t.id, t]),
+  [...PATIENT_ZERO_TRANSFORMATIONS, TO_DEATH_KING, ASCENSION].map((t) => [t.id, t]),
 );
 
-export const SUMMON_LIBRARY: Record<string, Summon> = Object.fromEntries([THRALL_SUMMON, BOUND_THRALL_SUMMON].map((s) => [s.id, s]));
+export const SUMMON_LIBRARY: Record<string, Summon> = Object.fromEntries([THRALL_SUMMON, BOUND_THRALL_SUMMON, HUT_SUMMON].map((s) => [s.id, s]));
 
 /** Every custom Resource any implemented character uses — the `resourceLibrary` a real match's `ResolveTurnDeps` needs (clamping modifyResource to each resource's own min/max). */
 export const RESOURCE_LIBRARY: Record<string, Resource> = Object.fromEntries(
@@ -104,7 +127,7 @@ export const RESOURCE_LIBRARY: Record<string, Resource> = Object.fromEntries(
 );
 
 export const CHARACTER_ART_LIBRARY: Record<string, CharacterArtSpec> = Object.fromEntries(
-  [TORTUGA_REX_ART, MISTER_WHISKERS_ART, WHISKERS_DEVOURER_OF_WORLDS_ART, PATIENT_ZERO_ART, MOONSHOT_MADDOX_ART, MALACHAR_ART, FATHER_BELL_ART, PLAGUE_DOCTOR_ART, BEHEMOTH_ART, SHIRO_ART, HYDRA_ART].map((a) => [
+  [TORTUGA_REX_ART, MISTER_WHISKERS_ART, WHISKERS_DEVOURER_OF_WORLDS_ART, PATIENT_ZERO_ART, MOONSHOT_MADDOX_ART, MALACHAR_ART, FATHER_BELL_ART, PLAGUE_DOCTOR_ART, BEHEMOTH_ART, SHIRO_ART, HYDRA_ART, KOSCHEI_ART, BABA_YAGA_ART, NINE_TAILED_TRICKSTER_ART, THE_GAMBLER_ART, ZEIRON_ART].map((a) => [
     a.characterId,
     a,
   ]),
@@ -123,5 +146,10 @@ export const CHARACTER_VISUAL_BIBLE_LIBRARY: Record<string, CharacterVisualBible
     BEHEMOTH_VISUAL_BIBLE,
     SHIRO_VISUAL_BIBLE,
     HYDRA_VISUAL_BIBLE,
+    KOSCHEI_VISUAL_BIBLE,
+    BABA_YAGA_VISUAL_BIBLE,
+    NINE_TAILED_TRICKSTER_VISUAL_BIBLE,
+    THE_GAMBLER_VISUAL_BIBLE,
+    ZEIRON_VISUAL_BIBLE,
   ].map((b) => [b.characterId, b]),
 );
