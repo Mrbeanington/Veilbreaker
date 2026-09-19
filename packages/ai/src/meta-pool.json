@@ -1,392 +1,405 @@
 {
   "source": {
-    "matches": 20000,
+    "matches": 60000,
     "seed": 11,
     "bots": "INTERMEDIATE",
     "date": "2026-09-19"
   },
   "winRates": {
-    "patient-zero": 76.9,
-    "black-knight": 70,
-    "tortuga-rex": 61.6,
-    "the-nameless-one": 59.6,
-    "baba-yaga": 56.4,
-    "hydra": 55,
-    "nine-tailed-trickster": 53.1,
-    "plague-doctor": 52.6,
-    "emperor-zero": 50.5,
-    "behemoth": 48.2,
-    "zeiron": 48,
-    "shiro": 47,
-    "mister-whiskers": 46.4,
-    "father-bell": 44.1,
-    "the-gambler": 42.1,
-    "koschei": 40.5,
-    "malachar": 39.2,
-    "moonshot-maddox": 36.5,
-    "maestro-nocturne": 34,
-    "the-referee": 33
+    "patient-zero": 69.6,
+    "the-forgotten-titan": 64.9,
+    "nemesis": 64.8,
+    "asterion": 64.5,
+    "cyclops-brontes": 64.3,
+    "the-bronze-giant": 63.1,
+    "charon": 62.4,
+    "tortuga-rex": 61.7,
+    "black-knight": 59.7,
+    "cerberus": 59.6,
+    "hecates-disciple": 56.2,
+    "the-nameless-one": 54.6,
+    "arachne": 53.4,
+    "icarion": 51.9,
+    "baba-yaga": 51.3,
+    "nine-tailed-trickster": 50.5,
+    "emperor-zero": 49.3,
+    "hydra": 49,
+    "the-oracle": 47.7,
+    "plague-doctor": 45,
+    "zeiron": 44.5,
+    "shiro": 42.6,
+    "behemoth": 42,
+    "father-bell": 40.4,
+    "the-siren": 39.9,
+    "mister-whiskers": 39.1,
+    "medusa": 38.6,
+    "the-gambler": 38.5,
+    "koschei": 36.1,
+    "moonshot-maddox": 35.3,
+    "malachar": 33.7,
+    "the-referee": 32.3,
+    "maestro-nocturne": 32.1
   },
   "topTeams": [
     {
       "team": [
-        "black-knight",
-        "patient-zero",
-        "shiro"
-      ],
-      "games": 52,
-      "winRate": 91.9
-    },
-    {
-      "team": [
-        "black-knight",
-        "emperor-zero",
-        "patient-zero"
-      ],
-      "games": 46,
-      "winRate": 89.3
-    },
-    {
-      "team": [
-        "black-knight",
-        "patient-zero",
+        "charon",
+        "cyclops-brontes",
         "tortuga-rex"
       ],
-      "games": 42,
-      "winRate": 88.5
+      "games": 30,
+      "winRate": 87.5
     },
     {
       "team": [
-        "black-knight",
-        "nine-tailed-trickster",
+        "cerberus",
+        "cyclops-brontes",
         "tortuga-rex"
       ],
-      "games": 37,
-      "winRate": 87.2
+      "games": 28,
+      "winRate": 86.8
     },
     {
       "team": [
-        "emperor-zero",
-        "patient-zero",
-        "the-nameless-one"
-      ],
-      "games": 37,
-      "winRate": 87.2
-    },
-    {
-      "team": [
-        "baba-yaga",
         "hydra",
-        "patient-zero"
+        "patient-zero",
+        "tortuga-rex"
       ],
-      "games": 41,
-      "winRate": 86.3
+      "games": 27,
+      "winRate": 86.5
+    },
+    {
+      "team": [
+        "charon",
+        "the-forgotten-titan",
+        "tortuga-rex"
+      ],
+      "games": 26,
+      "winRate": 86.1
+    },
+    {
+      "team": [
+        "asterion",
+        "charon",
+        "tortuga-rex"
+      ],
+      "games": 22,
+      "winRate": 84.4
+    },
+    {
+      "team": [
+        "asterion",
+        "cyclops-brontes",
+        "tortuga-rex"
+      ],
+      "games": 22,
+      "winRate": 84.4
     },
     {
       "team": [
         "black-knight",
-        "tortuga-rex",
-        "zeiron"
-      ],
-      "games": 41,
-      "winRate": 86.3
-    },
-    {
-      "team": [
-        "black-knight",
-        "nine-tailed-trickster",
-        "patient-zero"
-      ],
-      "games": 33,
-      "winRate": 86
-    },
-    {
-      "team": [
-        "patient-zero",
-        "shiro",
+        "the-forgotten-titan",
         "tortuga-rex"
       ],
-      "games": 40,
-      "winRate": 86
+      "games": 22,
+      "winRate": 84.4
     },
     {
       "team": [
-        "baba-yaga",
-        "nine-tailed-trickster",
+        "charon",
+        "hecates-disciple",
         "patient-zero"
       ],
-      "games": 46,
-      "winRate": 85.7
+      "games": 22,
+      "winRate": 84.4
     },
     {
       "team": [
-        "mister-whiskers",
-        "patient-zero",
-        "tortuga-rex"
-      ],
-      "games": 39,
-      "winRate": 85.7
-    },
-    {
-      "team": [
-        "patient-zero",
-        "plague-doctor",
-        "tortuga-rex"
-      ],
-      "games": 37,
-      "winRate": 85.1
-    },
-    {
-      "team": [
-        "patient-zero",
-        "the-nameless-one",
-        "tortuga-rex"
-      ],
-      "games": 37,
-      "winRate": 85.1
-    },
-    {
-      "team": [
-        "baba-yaga",
-        "black-knight",
+        "cerberus",
+        "charon",
         "patient-zero"
       ],
-      "games": 29,
-      "winRate": 84.6
+      "games": 28,
+      "winRate": 84.2
     },
     {
       "team": [
-        "baba-yaga",
-        "emperor-zero",
-        "patient-zero"
-      ],
-      "games": 29,
-      "winRate": 84.6
-    },
-    {
-      "team": [
-        "father-bell",
+        "charon",
         "mister-whiskers",
         "patient-zero"
       ],
-      "games": 40,
-      "winRate": 84
+      "games": 28,
+      "winRate": 84.2
     },
     {
       "team": [
-        "black-knight",
-        "plague-doctor",
+        "cerberus",
+        "charon",
         "tortuga-rex"
       ],
-      "games": 46,
-      "winRate": 83.9
-    },
-    {
-      "team": [
-        "nine-tailed-trickster",
-        "patient-zero",
-        "tortuga-rex"
-      ],
-      "games": 33,
-      "winRate": 83.7
-    },
-    {
-      "team": [
-        "black-knight",
-        "hydra",
-        "patient-zero"
-      ],
-      "games": 45,
-      "winRate": 83.6
-    },
-    {
-      "team": [
-        "black-knight",
-        "hydra",
-        "nine-tailed-trickster"
-      ],
-      "games": 38,
+      "games": 20,
       "winRate": 83.3
     },
     {
       "team": [
-        "black-knight",
-        "maestro-nocturne",
-        "patient-zero"
+        "charon",
+        "cyclops-brontes",
+        "the-oracle"
       ],
-      "games": 38,
+      "games": 20,
       "winRate": 83.3
     },
     {
       "team": [
-        "black-knight",
-        "mister-whiskers",
-        "tortuga-rex"
+        "arachne",
+        "cerberus",
+        "cyclops-brontes"
       ],
-      "games": 38,
-      "winRate": 83.3
-    },
-    {
-      "team": [
-        "mister-whiskers",
-        "patient-zero",
-        "shiro"
-      ],
-      "games": 38,
-      "winRate": 83.3
-    },
-    {
-      "team": [
-        "patient-zero",
-        "the-referee",
-        "tortuga-rex"
-      ],
-      "games": 43,
-      "winRate": 83
-    },
-    {
-      "team": [
-        "baba-yaga",
-        "patient-zero",
-        "tortuga-rex"
-      ],
-      "games": 31,
+      "games": 25,
       "winRate": 82.9
     },
     {
       "team": [
-        "emperor-zero",
-        "patient-zero",
-        "shiro"
-      ],
-      "games": 36,
-      "winRate": 82.6
-    },
-    {
-      "team": [
-        "baba-yaga",
-        "mister-whiskers",
+        "charon",
+        "medusa",
         "patient-zero"
       ],
-      "games": 30,
-      "winRate": 82.5
+      "games": 25,
+      "winRate": 82.9
     },
     {
       "team": [
-        "baba-yaga",
-        "moonshot-maddox",
-        "patient-zero"
-      ],
-      "games": 30,
-      "winRate": 82.5
-    },
-    {
-      "team": [
-        "black-knight",
+        "cerberus",
         "patient-zero",
-        "the-gambler"
-      ],
-      "games": 30,
-      "winRate": 82.5
-    },
-    {
-      "team": [
-        "black-knight",
-        "mister-whiskers",
-        "patient-zero"
-      ],
-      "games": 35,
-      "winRate": 82.2
-    },
-    {
-      "team": [
-        "black-knight",
-        "patient-zero",
-        "the-referee"
-      ],
-      "games": 35,
-      "winRate": 82.2
-    },
-    {
-      "team": [
-        "black-knight",
-        "the-nameless-one",
         "tortuga-rex"
       ],
-      "games": 35,
-      "winRate": 82.2
+      "games": 19,
+      "winRate": 82.8
     },
     {
       "team": [
-        "behemoth",
+        "cyclops-brontes",
+        "patient-zero",
+        "the-oracle"
+      ],
+      "games": 19,
+      "winRate": 82.8
+    },
+    {
+      "team": [
+        "asterion",
+        "charon",
+        "father-bell"
+      ],
+      "games": 24,
+      "winRate": 82.4
+    },
+    {
+      "team": [
         "black-knight",
+        "cyclops-brontes",
         "tortuga-rex"
       ],
-      "games": 46,
-      "winRate": 82.1
+      "games": 24,
+      "winRate": 82.4
     },
     {
       "team": [
-        "emperor-zero",
-        "mister-whiskers",
-        "patient-zero"
+        "black-knight",
+        "nemesis",
+        "nine-tailed-trickster"
       ],
       "games": 29,
       "winRate": 82.1
     },
     {
       "team": [
-        "baba-yaga",
-        "patient-zero",
-        "shiro"
+        "asterion",
+        "nemesis",
+        "tortuga-rex"
       ],
-      "games": 34,
+      "games": 23,
       "winRate": 81.8
     },
     {
       "team": [
         "baba-yaga",
-        "patient-zero",
-        "the-nameless-one"
+        "the-forgotten-titan",
+        "tortuga-rex"
       ],
-      "games": 39,
+      "games": 28,
       "winRate": 81.6
     },
     {
       "team": [
-        "behemoth",
-        "emperor-zero",
+        "cerberus",
+        "mister-whiskers",
         "patient-zero"
       ],
-      "games": 39,
-      "winRate": 81.6
-    },
-    {
-      "team": [
-        "father-bell",
-        "nine-tailed-trickster",
-        "patient-zero"
-      ],
-      "games": 44,
+      "games": 17,
       "winRate": 81.5
     },
     {
       "team": [
-        "black-knight",
-        "emperor-zero",
-        "plague-doctor"
+        "charon",
+        "the-bronze-giant",
+        "tortuga-rex"
       ],
       "games": 33,
       "winRate": 81.4
     },
     {
       "team": [
-        "patient-zero",
-        "plague-doctor",
-        "shiro"
+        "asterion",
+        "charon",
+        "hydra"
+      ],
+      "games": 22,
+      "winRate": 81.3
+    },
+    {
+      "team": [
+        "asterion",
+        "cyclops-brontes",
+        "emperor-zero"
+      ],
+      "games": 22,
+      "winRate": 81.3
+    },
+    {
+      "team": [
+        "black-knight",
+        "cyclops-brontes",
+        "hydra"
+      ],
+      "games": 22,
+      "winRate": 81.3
+    },
+    {
+      "team": [
+        "cerberus",
+        "cyclops-brontes",
+        "icarion"
+      ],
+      "games": 22,
+      "winRate": 81.3
+    },
+    {
+      "team": [
+        "charon",
+        "cyclops-brontes",
+        "the-nameless-one"
+      ],
+      "games": 22,
+      "winRate": 81.3
+    },
+    {
+      "team": [
+        "asterion",
+        "charon",
+        "icarion"
+      ],
+      "games": 27,
+      "winRate": 81.1
+    },
+    {
+      "team": [
+        "baba-yaga",
+        "the-nameless-one",
+        "tortuga-rex"
       ],
       "games": 32,
       "winRate": 81
+    },
+    {
+      "team": [
+        "asterion",
+        "emperor-zero",
+        "patient-zero"
+      ],
+      "games": 16,
+      "winRate": 80.8
+    },
+    {
+      "team": [
+        "asterion",
+        "charon",
+        "the-bronze-giant"
+      ],
+      "games": 21,
+      "winRate": 80.6
+    },
+    {
+      "team": [
+        "asterion",
+        "emperor-zero",
+        "hecates-disciple"
+      ],
+      "games": 26,
+      "winRate": 80.6
+    },
+    {
+      "team": [
+        "asterion",
+        "the-bronze-giant",
+        "the-forgotten-titan"
+      ],
+      "games": 21,
+      "winRate": 80.6
+    },
+    {
+      "team": [
+        "charon",
+        "cyclops-brontes",
+        "icarion"
+      ],
+      "games": 21,
+      "winRate": 80.6
+    },
+    {
+      "team": [
+        "charon",
+        "moonshot-maddox",
+        "patient-zero"
+      ],
+      "games": 21,
+      "winRate": 80.6
+    },
+    {
+      "team": [
+        "charon",
+        "the-nameless-one",
+        "tortuga-rex"
+      ],
+      "games": 26,
+      "winRate": 80.6
+    },
+    {
+      "team": [
+        "cyclops-brontes",
+        "mister-whiskers",
+        "patient-zero"
+      ],
+      "games": 26,
+      "winRate": 80.6
+    },
+    {
+      "team": [
+        "emperor-zero",
+        "patient-zero",
+        "the-forgotten-titan"
+      ],
+      "games": 21,
+      "winRate": 80.6
+    },
+    {
+      "team": [
+        "arachne",
+        "icarion",
+        "patient-zero"
+      ],
+      "games": 31,
+      "winRate": 80.5
     }
   ]
 }

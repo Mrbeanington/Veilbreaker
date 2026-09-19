@@ -3,8 +3,8 @@ import { statusDefinitionSchema } from "../schemas/status";
 import { STATUS_LIBRARY } from "./statuses";
 
 describe("STATUS_LIBRARY", () => {
-  it("contains the full spec/02 initial library (32 spec statuses + Unhealable)", () => {
-    expect(Object.keys(STATUS_LIBRARY)).toHaveLength(33);
+  it("contains the full spec/02 initial library (32 spec statuses + Unhealable + Foretold)", () => {
+    expect(Object.keys(STATUS_LIBRARY)).toHaveLength(34);
   });
 
   it("every entry is a valid, self-consistent StatusDefinition", () => {

@@ -138,6 +138,8 @@ export function buildMetaPool(
   games: readonly MetaGame[],
   characterWinRates: Record<string, number>,
   source: MetaPool["source"],
+  /** A trio needs this many games to be listed; larger rosters have more trios, so the script lowers it. */
+  minGames = MIN_TEAM_GAMES,
 ): MetaPool {
   const teams = new Map<string, { team: string[]; games: number; wins: number }>();
   const note = (team: readonly string[], won: boolean) => {
@@ -154,7 +156,7 @@ export function buildMetaPool(
   }
   const SMOOTHING = 10; // ten imaginary 50% games
   const topTeams = [...teams.values()]
-    .filter((t) => t.games >= MIN_TEAM_GAMES)
+    .filter((t) => t.games >= minGames)
     .map((t) => ({ team: t.team, games: t.games, winRate: Math.round(((t.wins + SMOOTHING / 2) / (t.games + SMOOTHING)) * 1000) / 10 }))
     .sort((a, b) => b.winRate - a.winRate || a.team.join("|").localeCompare(b.team.join("|")))
     .slice(0, TOP_TEAMS);

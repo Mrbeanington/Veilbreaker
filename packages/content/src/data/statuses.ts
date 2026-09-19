@@ -339,6 +339,24 @@ export const ABILITY_LOCK = status({
   tooltip: "The locked ability cannot be used.",
 });
 
+// phase-13 (The Oracle): a prophecy on an enemy. The next time it takes damage
+// the wound is worse, exactly once; the status removes itself before dealing
+// the extra damage, so it can never chain. Affliction damage cannot be dodged:
+// fate is not a normal attack.
+export const FORETOLD = status({
+  id: "status.foretold",
+  displayName: "Foretold",
+  duration: { turns: 3, permanent: false },
+  stackRule: "refresh",
+  triggerTiming: [{ event: "onDamaged", relation: "self", effectTarget: "subject" }],
+  effects: [
+    { kind: "removeStatus", statusId: "status.foretold" },
+    { kind: "damage", amount: 30, damageType: "affliction" },
+  ],
+  knowledgeLevel: "DISCOVERABLE",
+  tooltip: "The next time this character takes damage, it takes 30 more, once.",
+});
+
 export const STATUS_LIBRARY: Record<string, StatusDefinition> = Object.fromEntries(
   [
     STUN,
@@ -374,5 +392,6 @@ export const STATUS_LIBRARY: Record<string, StatusDefinition> = Object.fromEntri
     RESURRECTION_LOCK,
     SOUL_CONSECRATION,
     ABILITY_LOCK,
+    FORETOLD,
   ].map((def) => [def.id, def]),
 );

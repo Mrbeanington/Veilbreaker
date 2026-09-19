@@ -1,4 +1,4 @@
-import { ABILITY_LIBRARY, CHARACTER_LIBRARY, PASSIVE_LIBRARY, SUMMON_LIBRARY, TRANSFORMATION_LIBRARY } from "./data/characters/index";
+import { ABILITY_LIBRARY, CHARACTER_LIBRARY, PASSIVE_LIBRARY, PLAYABLE_CHARACTERS, SUMMON_LIBRARY, TRANSFORMATION_LIBRARY } from "./data/characters/index";
 import { STATUS_LIBRARY } from "./data/statuses";
 import type { Ability } from "./schemas/ability";
 import type { CharacterDefinition } from "./schemas/character";
@@ -96,6 +96,8 @@ function abilitiesFor(character: CharacterDefinition): Ability[] {
 }
 
 export interface CharacterProfile {
+  /** Ability and passive names and descriptions, lowercased: the flavor-identity mechanics (fire, songs...) are read from words, like thralls. */
+  text: string;
   effects: Effect[];
   resourceIds: Set<string>;
   transformationCount: number;
@@ -105,7 +107,9 @@ export function profileOf(character: CharacterDefinition): CharacterProfile {
   const abilities = abilitiesFor(character);
   const passive = character.passiveId ? PASSIVE_LIBRARY[character.passiveId] : undefined;
   const raw = [...abilities.flatMap((a) => a.effects), ...(passive?.effects ?? [])];
+  const text = [...abilities.flatMap((a) => [a.displayName, a.description]), passive?.displayName ?? "", passive?.description ?? ""].join(" ").toLowerCase();
   return {
+    text,
     effects: flattenEffects(raw),
     resourceIds: new Set(character.resources.map((r) => r.id)),
     transformationCount: character.transformationIds.length,
@@ -118,6 +122,26 @@ function appliesStatus(profile: CharacterProfile, statusId: string): boolean {
 
 function hasKind(profile: CharacterProfile, kind: Effect["kind"]): boolean {
   return profile.effects.some((e) => e.kind === kind);
+}
+
+const mentions = (profile: CharacterProfile, pattern: RegExp): boolean => pattern.test(profile.text);
+
+/** A status this character applies whose own definition deals damage when it triggers (a delayed or fulfilled effect). */
+function appliesTriggeredDamageStatus(profile: CharacterProfile): boolean {
+  return profile.effects.some(
+    (e) => e.kind === "applyStatus" && (STATUS_LIBRARY[e.statusId]?.triggerTiming.length ?? 0) > 0 && STATUS_LIBRARY[e.statusId]?.effects.some((x) => x.kind === "damage"),
+  );
+}
+
+/** A damage effect aimed at the caster: HP paid for power. */
+function paysHealth(profile: CharacterProfile): boolean {
+  return profile.effects.some((e) => e.kind === "damage" && e.target?.side === "self");
+}
+
+function isBerserk(character: CharacterDefinition): boolean {
+  const passive = character.passiveId ? PASSIVE_LIBRARY[character.passiveId] : undefined;
+  const cond = passive?.condition;
+  return cond?.type === "hpBelowPercent";
 }
 
 function summonedIds(profile: CharacterProfile): string[] {
@@ -165,32 +189,32 @@ export const MECHANIC_DETECTORS: Record<Mechanic, (character: CharacterDefinitio
   randomness: (_c, p) => hasKind(p, "randomOutcome"),
   "probability manipulation": (_c, p) => hasKind(p, "modifyRandomOutcome"),
   "combo sequences": (_c, p) => usesCombosOrSequenceConditions(p),
-  "delayed attacks": () => false,
-  "HP sacrifice": () => false,
-  berserk: () => false,
+  "delayed attacks": (_c, p) => appliesTriggeredDamageStatus(p),
+  "HP sacrifice": (_c, p) => paysHealth(p),
+  berserk: (c) => isBerserk(c),
   "sports mechanics": (_c, p) => p.resourceIds.has("resource.bases") || p.resourceIds.has("resource.strikes"),
-  "musical sequences": () => false,
+  "musical sequences": (c, p) => c.tags.includes("MUSIC") && usesCombosOrSequenceConditions(p),
   pets: () => false,
   poison: (_c, p) => appliesStatus(p, "status.poison"),
   infection: (_c, p) => appliesStatus(p, "status.infection"),
-  fire: () => false,
-  ice: () => false,
-  "water/tides": () => false,
-  lightning: () => false,
+  fire: (_c, p) => appliesStatus(p, "status.burn") || mentions(p, /\b(fire|flame|torch|forge)\b/),
+  ice: (_c, p) => mentions(p, /\b(ice|frost|freez\w*|winter)\b/),
+  "water/tides": (_c, p) => mentions(p, /\b(tide|undertow|river|sea|wave)\b/),
+  lightning: (_c, p) => mentions(p, /\b(lightning|thunder\w*)\b/),
   fear: (_c, p) => appliesStatus(p, "status.fear"),
   curses: (_c, p) => appliesStatus(p, "status.curse"),
   petrification: (_c, p) => appliesStatus(p, "status.petrification"),
-  prophecy: () => false,
+  prophecy: (_c, p) => appliesStatus(p, "status.foretold") || mentions(p, /\b(prophec\w*|foretell|oracle)\b/),
   souls: (_c, p) => p.resourceIds.has("resource.souls"),
   relics: () => false,
-  tails: () => false,
-  heads: () => false,
+  tails: (_c, p) => p.resourceIds.has("resource.tails"),
+  heads: (_c, p) => p.resourceIds.has("resource.heads"),
   bases: (_c, p) => p.resourceIds.has("resource.bases"),
-  fouls: () => false,
-  songs: () => false,
+  fouls: (_c, p) => p.resourceIds.has("resource.fouls"),
+  songs: (_c, p) => mentions(p, /\b(song|lullaby|verse|melody|dirge|wail)\b/),
   ink: () => false,
-  labyrinths: () => false,
-  "death seals": () => false,
+  labyrinths: (_c, p) => p.resourceIds.has("resource.maze") || mentions(p, /\b(labyrinth|maze)\b/),
+  "death seals": (_c, p) => p.resourceIds.has("resource.death-seals"),
   // "Thrall" is a flavor identity (spec/03's Malachar/Father Bell text), not
   // a distinct engine primitive — Summon has no `THRALL` tag to check, so
   // this reads the summon's own display name, same as a human reviewer would.
@@ -226,4 +250,71 @@ export function generateCoverageMarkdown(): string {
   }
   lines.push("");
   return lines.join("\n") + "\n";
+}
+
+// ------------------------------------------------------------- template overlap
+// phase-13 "Check that no two characters share a template: flag any pair whose
+// ability effect-sets overlap more than 70%." A character's effect-set is the
+// set of distinct effect signatures across its abilities and passive (the kind
+// of effect plus what it applies: the status, family, healing class or damage
+// type). Two kits are close when their sets are mostly the same.
+
+export function effectSignatures(character: CharacterDefinition): Set<string> {
+  const signatures = new Set<string>();
+  for (const effect of profileOf(character).effects) {
+    switch (effect.kind) {
+      case "applyStatus":
+      case "removeStatus":
+        signatures.add(`${effect.kind}:${effect.statusId ?? "all"}`);
+        break;
+      case "heal":
+        signatures.add(`heal:${effect.healingClass}`);
+        break;
+      case "damage":
+        signatures.add(`damage:${effect.damageType ?? "normal"}${effect.target?.side === "self" ? ":self" : ""}`);
+        break;
+      case "modifyResource":
+        signatures.add(`resource:${effect.resourceId}`);
+        break;
+      case "drainEnergy":
+      case "modifyEnergy":
+        signatures.add(`${effect.kind}:${effect.family}`);
+        break;
+      case "conditional":
+      case "sequence":
+        break;
+      default:
+        signatures.add(effect.kind);
+    }
+  }
+  return signatures;
+}
+
+/** Overlap as shared over combined signatures (Jaccard, 0 to 1): two kits are close only when they are mostly the same set. */
+export function effectOverlap(a: ReadonlySet<string>, b: ReadonlySet<string>): number {
+  if (a.size === 0 || b.size === 0) return 0;
+  let shared = 0;
+  for (const x of a) if (b.has(x)) shared += 1;
+  return shared / (a.size + b.size - shared);
+}
+
+export const OVERLAP_LIMIT = 0.7;
+
+export interface OverlapPair {
+  a: string;
+  b: string;
+  overlap: number;
+}
+
+/** Every pair among `ids` (default: every playable character) whose effect-sets overlap more than the limit. */
+export function overlappingPairs(ids: readonly string[] = PLAYABLE_CHARACTERS.map((c) => c.id), limit = OVERLAP_LIMIT): OverlapPair[] {
+  const sets = ids.map((id) => [id, effectSignatures(CHARACTER_LIBRARY[id] as CharacterDefinition)] as const);
+  const out: OverlapPair[] = [];
+  for (let i = 0; i < sets.length; i += 1) {
+    for (let j = i + 1; j < sets.length; j += 1) {
+      const overlap = effectOverlap(sets[i]![1], sets[j]![1]);
+      if (overlap > limit) out.push({ a: sets[i]![0], b: sets[j]![0], overlap: Math.round(overlap * 100) / 100 });
+    }
+  }
+  return out.sort((x, y) => y.overlap - x.overlap || x.a.localeCompare(y.a));
 }

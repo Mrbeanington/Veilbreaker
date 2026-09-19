@@ -574,3 +574,19 @@ describe("applyEffect — conditional", () => {
     expect(falseCase.state.characters.a1?.currentHp).toBe(100); // already full, clamped
   });
 });
+
+describe("applyEffect — damage with a self target (phase 13 regression)", () => {
+  it("hurts the source, not the ability's enemy target (it used to ignore the override)", () => {
+    const state = stateWith([character("a1"), character("b1")]);
+    const self = { side: "self" as const, scope: "single" as const, count: 1, includeSelf: true, filterTags: [] };
+    const result = applyEffect(state, { kind: "damage", amount: 30, damageType: "affliction", target: self }, ctx({ sourceId: "a1", targetIds: ["b1"] }), createRng(1));
+    expect(result.state.characters.a1?.currentHp).toBe(70);
+    expect(result.state.characters.b1?.currentHp).toBe(100);
+  });
+  it("without an override the damage still goes to the ability's targets", () => {
+    const state = stateWith([character("a1"), character("b1")]);
+    const result = applyEffect(state, { kind: "damage", amount: 30, damageType: "normal" }, ctx({ sourceId: "a1", targetIds: ["b1"] }), createRng(1));
+    expect(result.state.characters.a1?.currentHp).toBe(100);
+    expect(result.state.characters.b1?.currentHp).toBe(70);
+  });
+});

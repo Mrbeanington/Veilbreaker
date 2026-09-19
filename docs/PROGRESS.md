@@ -1,6 +1,6 @@
 # Progress
 
-**Current phase:** 12 complete. Next: Phase 13.
+**Current phase:** 13 in progress: region 1 (Ancient Mediterranean) done. Next: region 2 (Japanese Folklore / Ink Realm), one region per session.
 
 | Phase | Title | Status |
 |---|---|---|
@@ -17,7 +17,7 @@
 | 10 | Friend matches (serverless) | ✅ done |
 | 11 | Local ranked | ✅ done |
 | 12 | Dev-mode balance tools & local analytics | ✅ done |
-| 13 | Roster scale to 120 | ☐ |
+| 13 | Scale the roster to 120 | 🔄 region 1 of 11 done |
 | 14 | Art spec completion | ☐ |
 | 15 | Balance pass, polish, accessibility, offline/PWA, security | ☐ |
 
@@ -426,3 +426,6 @@ The Ranked section is now a working ladder against bots. Hidden Elo rating, 16 v
 
 ### 2026-09-19 — Phase 12 (dev-mode balance tools and local analytics)
 **Balance drafts:** `packages/content/src/balance.ts` (tunable discovery, `BalanceDraft` schema, atomic `applyBalanceDraft` with diff, warnings and schema re-validation, `SHIPPED_BALANCE_PATCHES`, `librariesForVersion`); replays now resolve under their own balance version. **Dev mode** (`apps/web/src/dev/*`, opened with `?dev=1`): draft manager in IndexedDB, searchable and filterable value editor, diff and validation, Worker simulation of shipped vs. draft with outlier flags and recommendations (never applied automatically), JSON export and import. `pnpm sim --balance file.json` runs a draft from the terminal. **CI guard:** `scripts/verify-no-dev-mode.mjs` (added to `pnpm ci`) proves the production build has no dev-mode code and self-tests with a `VITE_DEV_MODE=1` build. **Player stats** (Profile screen): win rates by fighter, team and opponent, favourite abilities and transformation counts. History entries record the side played. Docs: `docs/design/balance-workflow.md`. **Files:** `packages/content/src/{balance,balance.test,index}.ts`, `packages/ai/{src/simulate,src/index,scripts/sim}.ts`, `packages/persistence/src/profile.ts`, `apps/web/src/dev/*`, `apps/web/src/game/{stats,stats.test,balanceReplay.test,setup,replay,progression}.ts`, `apps/web/src/screens/{StatsPanel,StatsPanel.test,ProfileScreen}.tsx`, `apps/web/src/{App.tsx,vite-env.d.ts}`, `apps/web/vite.config.ts`, `vitest.config.ts`, `scripts/verify-no-dev-mode.mjs`, root `package.json`, docs. **Tests:** see CI (up from 567). ADR-021; OQ-65 to OQ-69. **Custom scripts:** none. **Recommended next step:** Phase 13.
+
+### 2026-09-19 — Phase 13, region 1 (Ancient Mediterranean)
+**13 new characters:** Asterion, Medusa, Charon, The Bronze Giant, Arachne, Cyclops Brontes, The Oracle, Cerberus, The Siren, Nemesis, Hecate's Disciple, and the Secrets Icarion and The Forgotten Titan (Hydra and Zeiron already existed; region complete at 15). Each has data, art spec and visual bible, a design note (`docs/design/characters/`), and signature-mechanic scenario tests (`packages/engine/src/scenarios/region1.scenario.test.ts`, 50 tests). New status `status.foretold`. **Engine bug fixed:** a damage effect's `target` (self) was ignored, so self-damage hit enemies (regression tests). **Checks:** coverage matrix regenerated (uncovered mechanics 24 to 5; several detectors were hard-coded "none" and now read data); template-overlap check added (no pair over 70%, closest 60%); 5,000-match simulation, 0 engine errors, outliers recorded in `docs/balance/phase13-region1-notes.md` (Forgotten Titan 67%). Ranked meta pool regenerated (60,000 matches, roster-scaled threshold). **The Island King:** backlog design note only. **Files:** `packages/content/src/data/characters/{asterion,medusa,charon,the-bronze-giant,arachne,cyclops-brontes,the-oracle,cerberus,the-siren,nemesis,hecates-disciple,icarion,the-forgotten-titan}.ts`, `index.ts`, `helpers.ts`, `statuses.ts`, `coverage.ts` (+ tests), `region1.roster.test.ts`, `packages/engine/src/effects.ts`, `packages/ai/{src/ladder.ts,src/meta-pool.json,scripts/meta.ts}`, `packages/content/coverage.md`, design notes, `docs/balance/*`, docs. **Tests:** see CI (up from 608). ADR-022; OQ-70 to OQ-74. **Custom scripts:** none. **Recommended next step:** region 2, Japanese Folklore / Ink Realm (15 characters; 2 already exist: The Nine-Tailed Trickster and Shiro).

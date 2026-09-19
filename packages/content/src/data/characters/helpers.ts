@@ -56,6 +56,7 @@ export function buildArt(input: ArtInput): { bible: CharacterVisualBible; art: C
 // beats hard-coded).
 export const ENEMY_SINGLE: TargetRule = { side: "enemy", scope: "single", count: 1, includeSelf: false, filterTags: [] };
 export const ENEMY_ALL: TargetRule = { side: "enemy", scope: "all", count: 1, includeSelf: false, filterTags: [] };
+export const ALLY_SINGLE: TargetRule = { side: "ally", scope: "single", count: 1, includeSelf: true, filterTags: [] };
 export const SELF_ONLY: TargetRule = { side: "self", scope: "single", count: 1, includeSelf: true, filterTags: [] };
 
 // A TargetRule shape effects can set as their own `target` override to land

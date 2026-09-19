@@ -103,7 +103,7 @@ export function applyEffect(
       let characters = state.characters;
       let summons = state.summons;
       const events: AppliedEvent[] = [];
-      for (const targetId of ctx.targetIds) {
+      for (const targetId of resolveEffectTargets(effect.target, ctx)) {
         // The schema defaults damageType to "normal" at parse time, but the
         // hand-written Effect union still marks it optional (a raw literal
         // built without going through the schema, as tests sometimes do,

@@ -1,0 +1,4898 @@
+{
+  "meta": {
+    "matches": 5000,
+    "seed": 1,
+    "botA": "INTERMEDIATE",
+    "botB": "INTERMEDIATE",
+    "poolSize": 33,
+    "teamSize": 3,
+    "maxTurns": 40
+  },
+  "sides": {
+    "playerAWins": 2513,
+    "playerBWins": 2450,
+    "draws": 37
+  },
+  "initiative": {
+    "firstPlayerWins": 2515,
+    "secondPlayerWins": 2448,
+    "draws": 37,
+    "firstPlayerWinRate": 50.7
+  },
+  "length": {
+    "average": 14.8,
+    "min": 4,
+    "max": 40,
+    "turnLimitHits": 110
+  },
+  "characters": [
+    {
+      "id": "patient-zero",
+      "legend": false,
+      "games": 903,
+      "wins": 638,
+      "draws": 12,
+      "winRate": 70.7
+    },
+    {
+      "id": "the-forgotten-titan",
+      "legend": false,
+      "games": 897,
+      "wins": 601,
+      "draws": 6,
+      "winRate": 67
+    },
+    {
+      "id": "asterion",
+      "legend": false,
+      "games": 920,
+      "wins": 591,
+      "draws": 4,
+      "winRate": 64.2
+    },
+    {
+      "id": "cyclops-brontes",
+      "legend": false,
+      "games": 928,
+      "wins": 594,
+      "draws": 14,
+      "winRate": 64
+    },
+    {
+      "id": "the-bronze-giant",
+      "legend": false,
+      "games": 954,
+      "wins": 607,
+      "draws": 4,
+      "winRate": 63.6
+    },
+    {
+      "id": "nemesis",
+      "legend": false,
+      "games": 883,
+      "wins": 555,
+      "draws": 9,
+      "winRate": 62.9
+    },
+    {
+      "id": "tortuga-rex",
+      "legend": false,
+      "games": 913,
+      "wins": 571,
+      "draws": 5,
+      "winRate": 62.5
+    },
+    {
+      "id": "charon",
+      "legend": false,
+      "games": 870,
+      "wins": 529,
+      "draws": 4,
+      "winRate": 60.8
+    },
+    {
+      "id": "cerberus",
+      "legend": false,
+      "games": 923,
+      "wins": 541,
+      "draws": 8,
+      "winRate": 58.6
+    },
+    {
+      "id": "hecates-disciple",
+      "legend": false,
+      "games": 865,
+      "wins": 488,
+      "draws": 11,
+      "winRate": 56.4
+    },
+    {
+      "id": "black-knight",
+      "legend": true,
+      "games": 932,
+      "wins": 523,
+      "draws": 3,
+      "winRate": 56.1
+    },
+    {
+      "id": "the-nameless-one",
+      "legend": true,
+      "games": 928,
+      "wins": 520,
+      "draws": 8,
+      "winRate": 56
+    },
+    {
+      "id": "arachne",
+      "legend": false,
+      "games": 914,
+      "wins": 490,
+      "draws": 8,
+      "winRate": 53.6
+    },
+    {
+      "id": "icarion",
+      "legend": false,
+      "games": 875,
+      "wins": 460,
+      "draws": 8,
+      "winRate": 52.6
+    },
+    {
+      "id": "baba-yaga",
+      "legend": false,
+      "games": 913,
+      "wins": 476,
+      "draws": 4,
+      "winRate": 52.1
+    },
+    {
+      "id": "hydra",
+      "legend": false,
+      "games": 904,
+      "wins": 469,
+      "draws": 6,
+      "winRate": 51.9
+    },
+    {
+      "id": "emperor-zero",
+      "legend": true,
+      "games": 900,
+      "wins": 454,
+      "draws": 7,
+      "winRate": 50.4
+    },
+    {
+      "id": "nine-tailed-trickster",
+      "legend": false,
+      "games": 909,
+      "wins": 443,
+      "draws": 11,
+      "winRate": 48.7
+    },
+    {
+      "id": "the-oracle",
+      "legend": false,
+      "games": 901,
+      "wins": 432,
+      "draws": 6,
+      "winRate": 47.9
+    },
+    {
+      "id": "shiro",
+      "legend": true,
+      "games": 922,
+      "wins": 408,
+      "draws": 6,
+      "winRate": 44.3
+    },
+    {
+      "id": "plague-doctor",
+      "legend": false,
+      "games": 935,
+      "wins": 406,
+      "draws": 15,
+      "winRate": 43.4
+    },
+    {
+      "id": "behemoth",
+      "legend": true,
+      "games": 921,
+      "wins": 399,
+      "draws": 2,
+      "winRate": 43.3
+    },
+    {
+      "id": "zeiron",
+      "legend": true,
+      "games": 903,
+      "wins": 390,
+      "draws": 3,
+      "winRate": 43.2
+    },
+    {
+      "id": "medusa",
+      "legend": false,
+      "games": 946,
+      "wins": 394,
+      "draws": 11,
+      "winRate": 41.6
+    },
+    {
+      "id": "father-bell",
+      "legend": false,
+      "games": 889,
+      "wins": 369,
+      "draws": 6,
+      "winRate": 41.5
+    },
+    {
+      "id": "mister-whiskers",
+      "legend": false,
+      "games": 859,
+      "wins": 340,
+      "draws": 2,
+      "winRate": 39.6
+    },
+    {
+      "id": "the-siren",
+      "legend": false,
+      "games": 941,
+      "wins": 370,
+      "draws": 9,
+      "winRate": 39.3
+    },
+    {
+      "id": "the-gambler",
+      "legend": false,
+      "games": 936,
+      "wins": 351,
+      "draws": 5,
+      "winRate": 37.5
+    },
+    {
+      "id": "moonshot-maddox",
+      "legend": false,
+      "games": 874,
+      "wins": 310,
+      "draws": 5,
+      "winRate": 35.5
+    },
+    {
+      "id": "koschei",
+      "legend": false,
+      "games": 897,
+      "wins": 313,
+      "draws": 7,
+      "winRate": 34.9
+    },
+    {
+      "id": "the-referee",
+      "legend": false,
+      "games": 898,
+      "wins": 294,
+      "draws": 2,
+      "winRate": 32.7
+    },
+    {
+      "id": "maestro-nocturne",
+      "legend": false,
+      "games": 911,
+      "wins": 280,
+      "draws": 7,
+      "winRate": 30.7
+    },
+    {
+      "id": "malachar",
+      "legend": false,
+      "games": 936,
+      "wins": 283,
+      "draws": 4,
+      "winRate": 30.2
+    }
+  ],
+  "legends": {
+    "legendTeamGames": 4655,
+    "legendTeamWinRate": 49.1,
+    "noLegendTeamGames": 5345,
+    "noLegendTeamWinRate": 50.1,
+    "perLegend": [
+      {
+        "id": "black-knight",
+        "legend": true,
+        "games": 932,
+        "wins": 523,
+        "draws": 3,
+        "winRate": 56.1
+      },
+      {
+        "id": "the-nameless-one",
+        "legend": true,
+        "games": 928,
+        "wins": 520,
+        "draws": 8,
+        "winRate": 56
+      },
+      {
+        "id": "emperor-zero",
+        "legend": true,
+        "games": 900,
+        "wins": 454,
+        "draws": 7,
+        "winRate": 50.4
+      },
+      {
+        "id": "shiro",
+        "legend": true,
+        "games": 922,
+        "wins": 408,
+        "draws": 6,
+        "winRate": 44.3
+      },
+      {
+        "id": "behemoth",
+        "legend": true,
+        "games": 921,
+        "wins": 399,
+        "draws": 2,
+        "winRate": 43.3
+      },
+      {
+        "id": "zeiron",
+        "legend": true,
+        "games": 903,
+        "wins": 390,
+        "draws": 3,
+        "winRate": 43.2
+      }
+    ]
+  },
+  "counterMatrix": {
+    "the-bronze-giant": {
+      "hydra": {
+        "games": 88,
+        "wins": 61
+      },
+      "cerberus": {
+        "games": 80,
+        "wins": 41
+      },
+      "medusa": {
+        "games": 88,
+        "wins": 60
+      },
+      "shiro": {
+        "games": 103,
+        "wins": 78
+      },
+      "emperor-zero": {
+        "games": 89,
+        "wins": 60
+      },
+      "moonshot-maddox": {
+        "games": 104,
+        "wins": 74
+      },
+      "icarion": {
+        "games": 71,
+        "wins": 43
+      },
+      "the-siren": {
+        "games": 89,
+        "wins": 65
+      },
+      "patient-zero": {
+        "games": 92,
+        "wins": 39
+      },
+      "cyclops-brontes": {
+        "games": 106,
+        "wins": 47
+      },
+      "father-bell": {
+        "games": 89,
+        "wins": 64
+      },
+      "charon": {
+        "games": 72,
+        "wins": 34
+      },
+      "the-oracle": {
+        "games": 88,
+        "wins": 50
+      },
+      "the-referee": {
+        "games": 84,
+        "wins": 64
+      },
+      "behemoth": {
+        "games": 98,
+        "wins": 68
+      },
+      "malachar": {
+        "games": 119,
+        "wins": 100
+      },
+      "plague-doctor": {
+        "games": 88,
+        "wins": 67
+      },
+      "nine-tailed-trickster": {
+        "games": 82,
+        "wins": 47
+      },
+      "koschei": {
+        "games": 79,
+        "wins": 66
+      },
+      "mister-whiskers": {
+        "games": 80,
+        "wins": 57
+      },
+      "maestro-nocturne": {
+        "games": 93,
+        "wins": 79
+      },
+      "nemesis": {
+        "games": 85,
+        "wins": 40
+      },
+      "baba-yaga": {
+        "games": 79,
+        "wins": 50
+      },
+      "the-gambler": {
+        "games": 90,
+        "wins": 64
+      },
+      "black-knight": {
+        "games": 93,
+        "wins": 56
+      },
+      "hecates-disciple": {
+        "games": 89,
+        "wins": 39
+      },
+      "the-nameless-one": {
+        "games": 86,
+        "wins": 55
+      },
+      "asterion": {
+        "games": 108,
+        "wins": 58
+      },
+      "the-forgotten-titan": {
+        "games": 86,
+        "wins": 48
+      },
+      "arachne": {
+        "games": 82,
+        "wins": 40
+      },
+      "tortuga-rex": {
+        "games": 89,
+        "wins": 39
+      },
+      "zeiron": {
+        "games": 93,
+        "wins": 68
+      }
+    },
+    "the-referee": {
+      "hydra": {
+        "games": 87,
+        "wins": 23
+      },
+      "cerberus": {
+        "games": 77,
+        "wins": 18
+      },
+      "medusa": {
+        "games": 101,
+        "wins": 41
+      },
+      "icarion": {
+        "games": 81,
+        "wins": 21
+      },
+      "cyclops-brontes": {
+        "games": 65,
+        "wins": 13
+      },
+      "hecates-disciple": {
+        "games": 79,
+        "wins": 18
+      },
+      "black-knight": {
+        "games": 87,
+        "wins": 33
+      },
+      "baba-yaga": {
+        "games": 87,
+        "wins": 23
+      },
+      "asterion": {
+        "games": 92,
+        "wins": 25
+      },
+      "the-nameless-one": {
+        "games": 87,
+        "wins": 24
+      },
+      "charon": {
+        "games": 81,
+        "wins": 26
+      },
+      "moonshot-maddox": {
+        "games": 93,
+        "wins": 43
+      },
+      "mister-whiskers": {
+        "games": 92,
+        "wins": 36
+      },
+      "the-oracle": {
+        "games": 85,
+        "wins": 34
+      },
+      "the-siren": {
+        "games": 85,
+        "wins": 37
+      },
+      "the-bronze-giant": {
+        "games": 84,
+        "wins": 19
+      },
+      "the-forgotten-titan": {
+        "games": 82,
+        "wins": 19
+      },
+      "father-bell": {
+        "games": 76,
+        "wins": 35
+      },
+      "zeiron": {
+        "games": 91,
+        "wins": 30
+      },
+      "nemesis": {
+        "games": 79,
+        "wins": 15
+      },
+      "tortuga-rex": {
+        "games": 90,
+        "wins": 19
+      },
+      "patient-zero": {
+        "games": 83,
+        "wins": 11
+      },
+      "shiro": {
+        "games": 80,
+        "wins": 26
+      },
+      "emperor-zero": {
+        "games": 95,
+        "wins": 27
+      },
+      "plague-doctor": {
+        "games": 92,
+        "wins": 32
+      },
+      "arachne": {
+        "games": 74,
+        "wins": 17
+      },
+      "koschei": {
+        "games": 63,
+        "wins": 31
+      },
+      "behemoth": {
+        "games": 86,
+        "wins": 32
+      },
+      "the-gambler": {
+        "games": 95,
+        "wins": 41
+      },
+      "malachar": {
+        "games": 84,
+        "wins": 42
+      },
+      "nine-tailed-trickster": {
+        "games": 68,
+        "wins": 27
+      },
+      "maestro-nocturne": {
+        "games": 93,
+        "wins": 44
+      }
+    },
+    "zeiron": {
+      "hydra": {
+        "games": 91,
+        "wins": 29
+      },
+      "cerberus": {
+        "games": 88,
+        "wins": 33
+      },
+      "medusa": {
+        "games": 89,
+        "wins": 52
+      },
+      "nemesis": {
+        "games": 91,
+        "wins": 30
+      },
+      "the-forgotten-titan": {
+        "games": 85,
+        "wins": 15
+      },
+      "hecates-disciple": {
+        "games": 89,
+        "wins": 37
+      },
+      "black-knight": {
+        "games": 86,
+        "wins": 21
+      },
+      "patient-zero": {
+        "games": 69,
+        "wins": 21
+      },
+      "cyclops-brontes": {
+        "games": 75,
+        "wins": 25
+      },
+      "moonshot-maddox": {
+        "games": 81,
+        "wins": 43
+      },
+      "emperor-zero": {
+        "games": 82,
+        "wins": 38
+      },
+      "arachne": {
+        "games": 99,
+        "wins": 40
+      },
+      "the-siren": {
+        "games": 85,
+        "wins": 44
+      },
+      "father-bell": {
+        "games": 73,
+        "wins": 42
+      },
+      "charon": {
+        "games": 80,
+        "wins": 23
+      },
+      "behemoth": {
+        "games": 75,
+        "wins": 37
+      },
+      "maestro-nocturne": {
+        "games": 91,
+        "wins": 54
+      },
+      "tortuga-rex": {
+        "games": 69,
+        "wins": 19
+      },
+      "mister-whiskers": {
+        "games": 100,
+        "wins": 55
+      },
+      "shiro": {
+        "games": 87,
+        "wins": 41
+      },
+      "the-oracle": {
+        "games": 65,
+        "wins": 32
+      },
+      "baba-yaga": {
+        "games": 96,
+        "wins": 41
+      },
+      "asterion": {
+        "games": 85,
+        "wins": 29
+      },
+      "the-nameless-one": {
+        "games": 82,
+        "wins": 24
+      },
+      "malachar": {
+        "games": 89,
+        "wins": 59
+      },
+      "the-referee": {
+        "games": 91,
+        "wins": 61
+      },
+      "plague-doctor": {
+        "games": 85,
+        "wins": 42
+      },
+      "the-gambler": {
+        "games": 87,
+        "wins": 49
+      },
+      "icarion": {
+        "games": 81,
+        "wins": 32
+      },
+      "koschei": {
+        "games": 78,
+        "wins": 40
+      },
+      "nine-tailed-trickster": {
+        "games": 92,
+        "wins": 38
+      },
+      "the-bronze-giant": {
+        "games": 93,
+        "wins": 24
+      }
+    },
+    "hydra": {
+      "the-bronze-giant": {
+        "games": 88,
+        "wins": 27
+      },
+      "the-referee": {
+        "games": 87,
+        "wins": 64
+      },
+      "zeiron": {
+        "games": 91,
+        "wins": 62
+      },
+      "father-bell": {
+        "games": 76,
+        "wins": 42
+      },
+      "charon": {
+        "games": 81,
+        "wins": 32
+      },
+      "maestro-nocturne": {
+        "games": 92,
+        "wins": 59
+      },
+      "medusa": {
+        "games": 97,
+        "wins": 44
+      },
+      "the-gambler": {
+        "games": 94,
+        "wins": 65
+      },
+      "the-oracle": {
+        "games": 94,
+        "wins": 44
+      },
+      "malachar": {
+        "games": 95,
+        "wins": 73
+      },
+      "emperor-zero": {
+        "games": 79,
+        "wins": 40
+      },
+      "koschei": {
+        "games": 89,
+        "wins": 69
+      },
+      "plague-doctor": {
+        "games": 82,
+        "wins": 45
+      },
+      "icarion": {
+        "games": 73,
+        "wins": 38
+      },
+      "the-nameless-one": {
+        "games": 82,
+        "wins": 46
+      },
+      "nine-tailed-trickster": {
+        "games": 73,
+        "wins": 38
+      },
+      "black-knight": {
+        "games": 78,
+        "wins": 36
+      },
+      "moonshot-maddox": {
+        "games": 78,
+        "wins": 52
+      },
+      "arachne": {
+        "games": 89,
+        "wins": 35
+      },
+      "the-siren": {
+        "games": 87,
+        "wins": 53
+      },
+      "baba-yaga": {
+        "games": 99,
+        "wins": 46
+      },
+      "nemesis": {
+        "games": 64,
+        "wins": 29
+      },
+      "asterion": {
+        "games": 84,
+        "wins": 32
+      },
+      "patient-zero": {
+        "games": 91,
+        "wins": 17
+      },
+      "mister-whiskers": {
+        "games": 89,
+        "wins": 52
+      },
+      "cerberus": {
+        "games": 79,
+        "wins": 35
+      },
+      "shiro": {
+        "games": 102,
+        "wins": 62
+      },
+      "tortuga-rex": {
+        "games": 78,
+        "wins": 32
+      },
+      "the-forgotten-titan": {
+        "games": 81,
+        "wins": 22
+      },
+      "behemoth": {
+        "games": 90,
+        "wins": 57
+      },
+      "cyclops-brontes": {
+        "games": 88,
+        "wins": 34
+      },
+      "hecates-disciple": {
+        "games": 62,
+        "wins": 25
+      }
+    },
+    "cerberus": {
+      "the-bronze-giant": {
+        "games": 80,
+        "wins": 38
+      },
+      "the-referee": {
+        "games": 77,
+        "wins": 59
+      },
+      "zeiron": {
+        "games": 88,
+        "wins": 55
+      },
+      "behemoth": {
+        "games": 91,
+        "wins": 61
+      },
+      "malachar": {
+        "games": 89,
+        "wins": 73
+      },
+      "the-nameless-one": {
+        "games": 89,
+        "wins": 46
+      },
+      "charon": {
+        "games": 76,
+        "wins": 39
+      },
+      "the-forgotten-titan": {
+        "games": 89,
+        "wins": 42
+      },
+      "plague-doctor": {
+        "games": 97,
+        "wins": 63
+      },
+      "nine-tailed-trickster": {
+        "games": 89,
+        "wins": 46
+      },
+      "mister-whiskers": {
+        "games": 76,
+        "wins": 50
+      },
+      "baba-yaga": {
+        "games": 93,
+        "wins": 55
+      },
+      "the-gambler": {
+        "games": 88,
+        "wins": 62
+      },
+      "the-oracle": {
+        "games": 92,
+        "wins": 49
+      },
+      "the-siren": {
+        "games": 103,
+        "wins": 76
+      },
+      "emperor-zero": {
+        "games": 95,
+        "wins": 50
+      },
+      "arachne": {
+        "games": 80,
+        "wins": 43
+      },
+      "medusa": {
+        "games": 85,
+        "wins": 53
+      },
+      "black-knight": {
+        "games": 94,
+        "wins": 51
+      },
+      "nemesis": {
+        "games": 95,
+        "wins": 42
+      },
+      "maestro-nocturne": {
+        "games": 73,
+        "wins": 49
+      },
+      "hydra": {
+        "games": 79,
+        "wins": 43
+      },
+      "asterion": {
+        "games": 82,
+        "wins": 42
+      },
+      "patient-zero": {
+        "games": 93,
+        "wins": 30
+      },
+      "father-bell": {
+        "games": 81,
+        "wins": 53
+      },
+      "koschei": {
+        "games": 90,
+        "wins": 65
+      },
+      "icarion": {
+        "games": 75,
+        "wins": 51
+      },
+      "tortuga-rex": {
+        "games": 98,
+        "wins": 40
+      },
+      "moonshot-maddox": {
+        "games": 89,
+        "wins": 63
+      },
+      "shiro": {
+        "games": 93,
+        "wins": 68
+      },
+      "hecates-disciple": {
+        "games": 75,
+        "wins": 38
+      },
+      "cyclops-brontes": {
+        "games": 75,
+        "wins": 28
+      }
+    },
+    "medusa": {
+      "the-bronze-giant": {
+        "games": 88,
+        "wins": 28
+      },
+      "the-referee": {
+        "games": 101,
+        "wins": 60
+      },
+      "zeiron": {
+        "games": 89,
+        "wins": 37
+      },
+      "maestro-nocturne": {
+        "games": 79,
+        "wins": 41
+      },
+      "the-nameless-one": {
+        "games": 92,
+        "wins": 31
+      },
+      "emperor-zero": {
+        "games": 84,
+        "wins": 39
+      },
+      "koschei": {
+        "games": 72,
+        "wins": 38
+      },
+      "hecates-disciple": {
+        "games": 100,
+        "wins": 38
+      },
+      "mister-whiskers": {
+        "games": 81,
+        "wins": 41
+      },
+      "the-oracle": {
+        "games": 93,
+        "wins": 44
+      },
+      "behemoth": {
+        "games": 118,
+        "wins": 49
+      },
+      "malachar": {
+        "games": 95,
+        "wins": 64
+      },
+      "arachne": {
+        "games": 80,
+        "wins": 37
+      },
+      "hydra": {
+        "games": 97,
+        "wins": 52
+      },
+      "father-bell": {
+        "games": 67,
+        "wins": 34
+      },
+      "plague-doctor": {
+        "games": 96,
+        "wins": 44
+      },
+      "icarion": {
+        "games": 100,
+        "wins": 46
+      },
+      "the-siren": {
+        "games": 93,
+        "wins": 47
+      },
+      "tortuga-rex": {
+        "games": 86,
+        "wins": 28
+      },
+      "cyclops-brontes": {
+        "games": 99,
+        "wins": 27
+      },
+      "baba-yaga": {
+        "games": 80,
+        "wins": 30
+      },
+      "asterion": {
+        "games": 94,
+        "wins": 29
+      },
+      "nemesis": {
+        "games": 96,
+        "wins": 26
+      },
+      "the-forgotten-titan": {
+        "games": 73,
+        "wins": 14
+      },
+      "cerberus": {
+        "games": 85,
+        "wins": 31
+      },
+      "moonshot-maddox": {
+        "games": 82,
+        "wins": 46
+      },
+      "charon": {
+        "games": 91,
+        "wins": 31
+      },
+      "the-gambler": {
+        "games": 67,
+        "wins": 33
+      },
+      "patient-zero": {
+        "games": 86,
+        "wins": 18
+      },
+      "black-knight": {
+        "games": 94,
+        "wins": 26
+      },
+      "nine-tailed-trickster": {
+        "games": 92,
+        "wins": 31
+      },
+      "shiro": {
+        "games": 88,
+        "wins": 42
+      }
+    },
+    "mister-whiskers": {
+      "maestro-nocturne": {
+        "games": 83,
+        "wins": 53
+      },
+      "the-nameless-one": {
+        "games": 77,
+        "wins": 26
+      },
+      "emperor-zero": {
+        "games": 84,
+        "wins": 29
+      },
+      "icarion": {
+        "games": 84,
+        "wins": 34
+      },
+      "medusa": {
+        "games": 81,
+        "wins": 40
+      },
+      "cyclops-brontes": {
+        "games": 78,
+        "wins": 13
+      },
+      "charon": {
+        "games": 60,
+        "wins": 19
+      },
+      "the-forgotten-titan": {
+        "games": 85,
+        "wins": 18
+      },
+      "plague-doctor": {
+        "games": 88,
+        "wins": 31
+      },
+      "koschei": {
+        "games": 62,
+        "wins": 36
+      },
+      "shiro": {
+        "games": 78,
+        "wins": 44
+      },
+      "the-siren": {
+        "games": 73,
+        "wins": 38
+      },
+      "moonshot-maddox": {
+        "games": 69,
+        "wins": 40
+      },
+      "black-knight": {
+        "games": 83,
+        "wins": 28
+      },
+      "hecates-disciple": {
+        "games": 66,
+        "wins": 23
+      },
+      "malachar": {
+        "games": 76,
+        "wins": 43
+      },
+      "father-bell": {
+        "games": 74,
+        "wins": 34
+      },
+      "patient-zero": {
+        "games": 69,
+        "wins": 16
+      },
+      "cerberus": {
+        "games": 76,
+        "wins": 26
+      },
+      "the-oracle": {
+        "games": 89,
+        "wins": 30
+      },
+      "zeiron": {
+        "games": 100,
+        "wins": 45
+      },
+      "the-gambler": {
+        "games": 100,
+        "wins": 50
+      },
+      "behemoth": {
+        "games": 93,
+        "wins": 44
+      },
+      "the-referee": {
+        "games": 92,
+        "wins": 56
+      },
+      "tortuga-rex": {
+        "games": 84,
+        "wins": 26
+      },
+      "arachne": {
+        "games": 84,
+        "wins": 20
+      },
+      "asterion": {
+        "games": 71,
+        "wins": 20
+      },
+      "the-bronze-giant": {
+        "games": 80,
+        "wins": 21
+      },
+      "hydra": {
+        "games": 89,
+        "wins": 37
+      },
+      "nemesis": {
+        "games": 86,
+        "wins": 23
+      },
+      "baba-yaga": {
+        "games": 66,
+        "wins": 20
+      },
+      "nine-tailed-trickster": {
+        "games": 97,
+        "wins": 37
+      }
+    },
+    "nine-tailed-trickster": {
+      "maestro-nocturne": {
+        "games": 92,
+        "wins": 60
+      },
+      "the-nameless-one": {
+        "games": 103,
+        "wins": 42
+      },
+      "emperor-zero": {
+        "games": 81,
+        "wins": 37
+      },
+      "arachne": {
+        "games": 88,
+        "wins": 39
+      },
+      "the-oracle": {
+        "games": 86,
+        "wins": 43
+      },
+      "black-knight": {
+        "games": 87,
+        "wins": 42
+      },
+      "the-siren": {
+        "games": 89,
+        "wins": 55
+      },
+      "patient-zero": {
+        "games": 81,
+        "wins": 22
+      },
+      "father-bell": {
+        "games": 83,
+        "wins": 49
+      },
+      "asterion": {
+        "games": 82,
+        "wins": 27
+      },
+      "the-forgotten-titan": {
+        "games": 90,
+        "wins": 29
+      },
+      "cerberus": {
+        "games": 89,
+        "wins": 42
+      },
+      "hydra": {
+        "games": 73,
+        "wins": 34
+      },
+      "baba-yaga": {
+        "games": 84,
+        "wins": 42
+      },
+      "moonshot-maddox": {
+        "games": 76,
+        "wins": 51
+      },
+      "tortuga-rex": {
+        "games": 99,
+        "wins": 35
+      },
+      "plague-doctor": {
+        "games": 88,
+        "wins": 59
+      },
+      "the-bronze-giant": {
+        "games": 82,
+        "wins": 35
+      },
+      "shiro": {
+        "games": 90,
+        "wins": 42
+      },
+      "cyclops-brontes": {
+        "games": 101,
+        "wins": 28
+      },
+      "medusa": {
+        "games": 92,
+        "wins": 59
+      },
+      "malachar": {
+        "games": 72,
+        "wins": 48
+      },
+      "nemesis": {
+        "games": 78,
+        "wins": 29
+      },
+      "koschei": {
+        "games": 73,
+        "wins": 46
+      },
+      "icarion": {
+        "games": 84,
+        "wins": 34
+      },
+      "the-gambler": {
+        "games": 81,
+        "wins": 43
+      },
+      "hecates-disciple": {
+        "games": 83,
+        "wins": 31
+      },
+      "zeiron": {
+        "games": 92,
+        "wins": 53
+      },
+      "behemoth": {
+        "games": 81,
+        "wins": 40
+      },
+      "the-referee": {
+        "games": 68,
+        "wins": 39
+      },
+      "mister-whiskers": {
+        "games": 97,
+        "wins": 59
+      },
+      "charon": {
+        "games": 82,
+        "wins": 35
+      }
+    },
+    "maestro-nocturne": {
+      "mister-whiskers": {
+        "games": 83,
+        "wins": 30
+      },
+      "nine-tailed-trickster": {
+        "games": 92,
+        "wins": 32
+      },
+      "medusa": {
+        "games": 79,
+        "wins": 35
+      },
+      "the-siren": {
+        "games": 90,
+        "wins": 39
+      },
+      "moonshot-maddox": {
+        "games": 74,
+        "wins": 34
+      },
+      "black-knight": {
+        "games": 76,
+        "wins": 17
+      },
+      "arachne": {
+        "games": 78,
+        "wins": 19
+      },
+      "hydra": {
+        "games": 92,
+        "wins": 32
+      },
+      "father-bell": {
+        "games": 82,
+        "wins": 39
+      },
+      "behemoth": {
+        "games": 94,
+        "wins": 29
+      },
+      "emperor-zero": {
+        "games": 76,
+        "wins": 27
+      },
+      "hecates-disciple": {
+        "games": 80,
+        "wins": 17
+      },
+      "the-nameless-one": {
+        "games": 89,
+        "wins": 22
+      },
+      "malachar": {
+        "games": 77,
+        "wins": 43
+      },
+      "icarion": {
+        "games": 85,
+        "wins": 22
+      },
+      "zeiron": {
+        "games": 91,
+        "wins": 36
+      },
+      "nemesis": {
+        "games": 83,
+        "wins": 15
+      },
+      "asterion": {
+        "games": 105,
+        "wins": 17
+      },
+      "charon": {
+        "games": 81,
+        "wins": 16
+      },
+      "the-gambler": {
+        "games": 99,
+        "wins": 44
+      },
+      "the-oracle": {
+        "games": 87,
+        "wins": 22
+      },
+      "baba-yaga": {
+        "games": 87,
+        "wins": 23
+      },
+      "patient-zero": {
+        "games": 79,
+        "wins": 13
+      },
+      "koschei": {
+        "games": 94,
+        "wins": 39
+      },
+      "tortuga-rex": {
+        "games": 95,
+        "wins": 16
+      },
+      "shiro": {
+        "games": 87,
+        "wins": 30
+      },
+      "cyclops-brontes": {
+        "games": 90,
+        "wins": 13
+      },
+      "the-bronze-giant": {
+        "games": 93,
+        "wins": 14
+      },
+      "the-forgotten-titan": {
+        "games": 60,
+        "wins": 6
+      },
+      "cerberus": {
+        "games": 73,
+        "wins": 24
+      },
+      "plague-doctor": {
+        "games": 89,
+        "wins": 26
+      },
+      "the-referee": {
+        "games": 93,
+        "wins": 49
+      }
+    },
+    "the-nameless-one": {
+      "mister-whiskers": {
+        "games": 77,
+        "wins": 51
+      },
+      "nine-tailed-trickster": {
+        "games": 103,
+        "wins": 59
+      },
+      "medusa": {
+        "games": 92,
+        "wins": 60
+      },
+      "cerberus": {
+        "games": 89,
+        "wins": 43
+      },
+      "shiro": {
+        "games": 92,
+        "wins": 51
+      },
+      "cyclops-brontes": {
+        "games": 84,
+        "wins": 36
+      },
+      "moonshot-maddox": {
+        "games": 74,
+        "wins": 52
+      },
+      "plague-doctor": {
+        "games": 83,
+        "wins": 53
+      },
+      "maestro-nocturne": {
+        "games": 89,
+        "wins": 66
+      },
+      "the-oracle": {
+        "games": 91,
+        "wins": 59
+      },
+      "the-forgotten-titan": {
+        "games": 93,
+        "wins": 27
+      },
+      "emperor-zero": {
+        "games": 98,
+        "wins": 50
+      },
+      "hecates-disciple": {
+        "games": 90,
+        "wins": 48
+      },
+      "the-siren": {
+        "games": 97,
+        "wins": 67
+      },
+      "hydra": {
+        "games": 82,
+        "wins": 35
+      },
+      "father-bell": {
+        "games": 97,
+        "wins": 67
+      },
+      "black-knight": {
+        "games": 72,
+        "wins": 29
+      },
+      "icarion": {
+        "games": 91,
+        "wins": 52
+      },
+      "the-referee": {
+        "games": 87,
+        "wins": 63
+      },
+      "the-gambler": {
+        "games": 90,
+        "wins": 66
+      },
+      "tortuga-rex": {
+        "games": 87,
+        "wins": 40
+      },
+      "malachar": {
+        "games": 85,
+        "wins": 63
+      },
+      "asterion": {
+        "games": 94,
+        "wins": 39
+      },
+      "nemesis": {
+        "games": 79,
+        "wins": 30
+      },
+      "zeiron": {
+        "games": 82,
+        "wins": 58
+      },
+      "arachne": {
+        "games": 81,
+        "wins": 42
+      },
+      "charon": {
+        "games": 65,
+        "wins": 28
+      },
+      "patient-zero": {
+        "games": 81,
+        "wins": 31
+      },
+      "behemoth": {
+        "games": 85,
+        "wins": 53
+      },
+      "baba-yaga": {
+        "games": 95,
+        "wins": 52
+      },
+      "the-bronze-giant": {
+        "games": 86,
+        "wins": 31
+      },
+      "koschei": {
+        "games": 93,
+        "wins": 59
+      }
+    },
+    "emperor-zero": {
+      "mister-whiskers": {
+        "games": 84,
+        "wins": 55
+      },
+      "nine-tailed-trickster": {
+        "games": 81,
+        "wins": 43
+      },
+      "medusa": {
+        "games": 84,
+        "wins": 44
+      },
+      "father-bell": {
+        "games": 96,
+        "wins": 57
+      },
+      "the-forgotten-titan": {
+        "games": 90,
+        "wins": 38
+      },
+      "shiro": {
+        "games": 89,
+        "wins": 53
+      },
+      "charon": {
+        "games": 87,
+        "wins": 38
+      },
+      "the-bronze-giant": {
+        "games": 89,
+        "wins": 29
+      },
+      "hydra": {
+        "games": 79,
+        "wins": 39
+      },
+      "baba-yaga": {
+        "games": 70,
+        "wins": 36
+      },
+      "maestro-nocturne": {
+        "games": 76,
+        "wins": 49
+      },
+      "koschei": {
+        "games": 71,
+        "wins": 47
+      },
+      "plague-doctor": {
+        "games": 80,
+        "wins": 43
+      },
+      "the-nameless-one": {
+        "games": 98,
+        "wins": 48
+      },
+      "icarion": {
+        "games": 96,
+        "wins": 45
+      },
+      "cyclops-brontes": {
+        "games": 86,
+        "wins": 35
+      },
+      "zeiron": {
+        "games": 82,
+        "wins": 43
+      },
+      "malachar": {
+        "games": 78,
+        "wins": 49
+      },
+      "cerberus": {
+        "games": 95,
+        "wins": 45
+      },
+      "the-oracle": {
+        "games": 94,
+        "wins": 47
+      },
+      "patient-zero": {
+        "games": 81,
+        "wins": 14
+      },
+      "black-knight": {
+        "games": 82,
+        "wins": 36
+      },
+      "moonshot-maddox": {
+        "games": 86,
+        "wins": 50
+      },
+      "the-referee": {
+        "games": 95,
+        "wins": 68
+      },
+      "arachne": {
+        "games": 93,
+        "wins": 50
+      },
+      "hecates-disciple": {
+        "games": 82,
+        "wins": 36
+      },
+      "asterion": {
+        "games": 77,
+        "wins": 28
+      },
+      "behemoth": {
+        "games": 71,
+        "wins": 41
+      },
+      "tortuga-rex": {
+        "games": 85,
+        "wins": 36
+      },
+      "the-siren": {
+        "games": 86,
+        "wins": 49
+      },
+      "nemesis": {
+        "games": 77,
+        "wins": 28
+      },
+      "the-gambler": {
+        "games": 80,
+        "wins": 43
+      }
+    },
+    "behemoth": {
+      "arachne": {
+        "games": 77,
+        "wins": 32
+      },
+      "tortuga-rex": {
+        "games": 91,
+        "wins": 27
+      },
+      "hecates-disciple": {
+        "games": 77,
+        "wins": 29
+      },
+      "cerberus": {
+        "games": 91,
+        "wins": 30
+      },
+      "medusa": {
+        "games": 118,
+        "wins": 68
+      },
+      "shiro": {
+        "games": 74,
+        "wins": 39
+      },
+      "moonshot-maddox": {
+        "games": 77,
+        "wins": 43
+      },
+      "icarion": {
+        "games": 76,
+        "wins": 30
+      },
+      "the-siren": {
+        "games": 96,
+        "wins": 50
+      },
+      "black-knight": {
+        "games": 79,
+        "wins": 31
+      },
+      "maestro-nocturne": {
+        "games": 94,
+        "wins": 65
+      },
+      "koschei": {
+        "games": 85,
+        "wins": 46
+      },
+      "plague-doctor": {
+        "games": 99,
+        "wins": 47
+      },
+      "zeiron": {
+        "games": 75,
+        "wins": 38
+      },
+      "nemesis": {
+        "games": 77,
+        "wins": 26
+      },
+      "malachar": {
+        "games": 100,
+        "wins": 63
+      },
+      "mister-whiskers": {
+        "games": 93,
+        "wins": 49
+      },
+      "the-gambler": {
+        "games": 78,
+        "wins": 38
+      },
+      "the-bronze-giant": {
+        "games": 98,
+        "wins": 30
+      },
+      "the-forgotten-titan": {
+        "games": 87,
+        "wins": 15
+      },
+      "charon": {
+        "games": 90,
+        "wins": 29
+      },
+      "baba-yaga": {
+        "games": 91,
+        "wins": 33
+      },
+      "patient-zero": {
+        "games": 82,
+        "wins": 18
+      },
+      "cyclops-brontes": {
+        "games": 79,
+        "wins": 26
+      },
+      "the-nameless-one": {
+        "games": 85,
+        "wins": 32
+      },
+      "emperor-zero": {
+        "games": 71,
+        "wins": 30
+      },
+      "the-referee": {
+        "games": 86,
+        "wins": 54
+      },
+      "father-bell": {
+        "games": 86,
+        "wins": 44
+      },
+      "hydra": {
+        "games": 90,
+        "wins": 33
+      },
+      "asterion": {
+        "games": 88,
+        "wins": 19
+      },
+      "nine-tailed-trickster": {
+        "games": 81,
+        "wins": 41
+      },
+      "the-oracle": {
+        "games": 92,
+        "wins": 42
+      }
+    },
+    "koschei": {
+      "arachne": {
+        "games": 87,
+        "wins": 27
+      },
+      "tortuga-rex": {
+        "games": 109,
+        "wins": 23
+      },
+      "hecates-disciple": {
+        "games": 76,
+        "wins": 20
+      },
+      "nemesis": {
+        "games": 82,
+        "wins": 16
+      },
+      "the-forgotten-titan": {
+        "games": 95,
+        "wins": 23
+      },
+      "medusa": {
+        "games": 72,
+        "wins": 33
+      },
+      "asterion": {
+        "games": 73,
+        "wins": 10
+      },
+      "charon": {
+        "games": 87,
+        "wins": 23
+      },
+      "mister-whiskers": {
+        "games": 62,
+        "wins": 26
+      },
+      "behemoth": {
+        "games": 85,
+        "wins": 39
+      },
+      "hydra": {
+        "games": 89,
+        "wins": 20
+      },
+      "emperor-zero": {
+        "games": 71,
+        "wins": 24
+      },
+      "icarion": {
+        "games": 81,
+        "wins": 36
+      },
+      "the-siren": {
+        "games": 85,
+        "wins": 45
+      },
+      "patient-zero": {
+        "games": 101,
+        "wins": 15
+      },
+      "the-oracle": {
+        "games": 75,
+        "wins": 31
+      },
+      "baba-yaga": {
+        "games": 88,
+        "wins": 22
+      },
+      "shiro": {
+        "games": 82,
+        "wins": 31
+      },
+      "moonshot-maddox": {
+        "games": 94,
+        "wins": 44
+      },
+      "maestro-nocturne": {
+        "games": 94,
+        "wins": 53
+      },
+      "father-bell": {
+        "games": 85,
+        "wins": 34
+      },
+      "plague-doctor": {
+        "games": 98,
+        "wins": 34
+      },
+      "the-bronze-giant": {
+        "games": 79,
+        "wins": 13
+      },
+      "the-gambler": {
+        "games": 83,
+        "wins": 42
+      },
+      "zeiron": {
+        "games": 78,
+        "wins": 38
+      },
+      "black-knight": {
+        "games": 87,
+        "wins": 35
+      },
+      "nine-tailed-trickster": {
+        "games": 73,
+        "wins": 27
+      },
+      "the-nameless-one": {
+        "games": 93,
+        "wins": 32
+      },
+      "malachar": {
+        "games": 86,
+        "wins": 44
+      },
+      "the-referee": {
+        "games": 63,
+        "wins": 32
+      },
+      "cerberus": {
+        "games": 90,
+        "wins": 25
+      },
+      "cyclops-brontes": {
+        "games": 88,
+        "wins": 22
+      }
+    },
+    "asterion": {
+      "arachne": {
+        "games": 86,
+        "wins": 55
+      },
+      "tortuga-rex": {
+        "games": 90,
+        "wins": 43
+      },
+      "hecates-disciple": {
+        "games": 76,
+        "wins": 38
+      },
+      "koschei": {
+        "games": 73,
+        "wins": 63
+      },
+      "the-forgotten-titan": {
+        "games": 80,
+        "wins": 39
+      },
+      "shiro": {
+        "games": 78,
+        "wins": 60
+      },
+      "patient-zero": {
+        "games": 85,
+        "wins": 31
+      },
+      "cyclops-brontes": {
+        "games": 70,
+        "wins": 43
+      },
+      "moonshot-maddox": {
+        "games": 84,
+        "wins": 69
+      },
+      "malachar": {
+        "games": 99,
+        "wins": 84
+      },
+      "nine-tailed-trickster": {
+        "games": 82,
+        "wins": 55
+      },
+      "father-bell": {
+        "games": 82,
+        "wins": 61
+      },
+      "nemesis": {
+        "games": 88,
+        "wins": 50
+      },
+      "baba-yaga": {
+        "games": 91,
+        "wins": 55
+      },
+      "maestro-nocturne": {
+        "games": 105,
+        "wins": 87
+      },
+      "icarion": {
+        "games": 85,
+        "wins": 51
+      },
+      "the-referee": {
+        "games": 92,
+        "wins": 67
+      },
+      "zeiron": {
+        "games": 85,
+        "wins": 56
+      },
+      "the-oracle": {
+        "games": 86,
+        "wins": 57
+      },
+      "the-nameless-one": {
+        "games": 94,
+        "wins": 54
+      },
+      "medusa": {
+        "games": 94,
+        "wins": 64
+      },
+      "mister-whiskers": {
+        "games": 71,
+        "wins": 51
+      },
+      "hydra": {
+        "games": 84,
+        "wins": 52
+      },
+      "plague-doctor": {
+        "games": 91,
+        "wins": 61
+      },
+      "emperor-zero": {
+        "games": 77,
+        "wins": 47
+      },
+      "the-bronze-giant": {
+        "games": 108,
+        "wins": 50
+      },
+      "cerberus": {
+        "games": 82,
+        "wins": 39
+      },
+      "charon": {
+        "games": 73,
+        "wins": 40
+      },
+      "the-gambler": {
+        "games": 88,
+        "wins": 68
+      },
+      "behemoth": {
+        "games": 88,
+        "wins": 69
+      },
+      "black-knight": {
+        "games": 98,
+        "wins": 48
+      },
+      "the-siren": {
+        "games": 95,
+        "wins": 66
+      }
+    },
+    "arachne": {
+      "behemoth": {
+        "games": 77,
+        "wins": 45
+      },
+      "koschei": {
+        "games": 87,
+        "wins": 60
+      },
+      "asterion": {
+        "games": 86,
+        "wins": 31
+      },
+      "cyclops-brontes": {
+        "games": 91,
+        "wins": 42
+      },
+      "patient-zero": {
+        "games": 108,
+        "wins": 33
+      },
+      "charon": {
+        "games": 76,
+        "wins": 33
+      },
+      "moonshot-maddox": {
+        "games": 89,
+        "wins": 60
+      },
+      "plague-doctor": {
+        "games": 96,
+        "wins": 55
+      },
+      "maestro-nocturne": {
+        "games": 78,
+        "wins": 58
+      },
+      "medusa": {
+        "games": 80,
+        "wins": 43
+      },
+      "the-gambler": {
+        "games": 73,
+        "wins": 46
+      },
+      "nine-tailed-trickster": {
+        "games": 88,
+        "wins": 49
+      },
+      "the-siren": {
+        "games": 74,
+        "wins": 51
+      },
+      "nemesis": {
+        "games": 68,
+        "wins": 19
+      },
+      "icarion": {
+        "games": 91,
+        "wins": 45
+      },
+      "zeiron": {
+        "games": 99,
+        "wins": 58
+      },
+      "malachar": {
+        "games": 102,
+        "wins": 67
+      },
+      "shiro": {
+        "games": 90,
+        "wins": 48
+      },
+      "hecates-disciple": {
+        "games": 77,
+        "wins": 39
+      },
+      "hydra": {
+        "games": 89,
+        "wins": 52
+      },
+      "cerberus": {
+        "games": 80,
+        "wins": 35
+      },
+      "mister-whiskers": {
+        "games": 84,
+        "wins": 63
+      },
+      "the-oracle": {
+        "games": 80,
+        "wins": 48
+      },
+      "the-nameless-one": {
+        "games": 81,
+        "wins": 39
+      },
+      "black-knight": {
+        "games": 93,
+        "wins": 36
+      },
+      "emperor-zero": {
+        "games": 93,
+        "wins": 41
+      },
+      "the-referee": {
+        "games": 74,
+        "wins": 57
+      },
+      "the-forgotten-titan": {
+        "games": 92,
+        "wins": 36
+      },
+      "baba-yaga": {
+        "games": 95,
+        "wins": 51
+      },
+      "father-bell": {
+        "games": 85,
+        "wins": 53
+      },
+      "the-bronze-giant": {
+        "games": 82,
+        "wins": 41
+      },
+      "tortuga-rex": {
+        "games": 84,
+        "wins": 36
+      }
+    },
+    "tortuga-rex": {
+      "behemoth": {
+        "games": 91,
+        "wins": 64
+      },
+      "koschei": {
+        "games": 109,
+        "wins": 85
+      },
+      "asterion": {
+        "games": 90,
+        "wins": 46
+      },
+      "father-bell": {
+        "games": 79,
+        "wins": 58
+      },
+      "the-forgotten-titan": {
+        "games": 68,
+        "wins": 30
+      },
+      "charon": {
+        "games": 87,
+        "wins": 43
+      },
+      "zeiron": {
+        "games": 69,
+        "wins": 50
+      },
+      "moonshot-maddox": {
+        "games": 78,
+        "wins": 52
+      },
+      "the-gambler": {
+        "games": 89,
+        "wins": 61
+      },
+      "the-siren": {
+        "games": 97,
+        "wins": 66
+      },
+      "the-oracle": {
+        "games": 84,
+        "wins": 56
+      },
+      "patient-zero": {
+        "games": 91,
+        "wins": 39
+      },
+      "nemesis": {
+        "games": 72,
+        "wins": 37
+      },
+      "mister-whiskers": {
+        "games": 84,
+        "wins": 58
+      },
+      "the-nameless-one": {
+        "games": 87,
+        "wins": 46
+      },
+      "hecates-disciple": {
+        "games": 92,
+        "wins": 54
+      },
+      "medusa": {
+        "games": 86,
+        "wins": 57
+      },
+      "nine-tailed-trickster": {
+        "games": 99,
+        "wins": 62
+      },
+      "malachar": {
+        "games": 85,
+        "wins": 67
+      },
+      "maestro-nocturne": {
+        "games": 95,
+        "wins": 79
+      },
+      "the-referee": {
+        "games": 90,
+        "wins": 71
+      },
+      "hydra": {
+        "games": 78,
+        "wins": 46
+      },
+      "emperor-zero": {
+        "games": 85,
+        "wins": 49
+      },
+      "icarion": {
+        "games": 67,
+        "wins": 36
+      },
+      "cyclops-brontes": {
+        "games": 87,
+        "wins": 40
+      },
+      "plague-doctor": {
+        "games": 80,
+        "wins": 57
+      },
+      "cerberus": {
+        "games": 98,
+        "wins": 56
+      },
+      "the-bronze-giant": {
+        "games": 89,
+        "wins": 49
+      },
+      "black-knight": {
+        "games": 80,
+        "wins": 41
+      },
+      "baba-yaga": {
+        "games": 80,
+        "wins": 52
+      },
+      "arachne": {
+        "games": 84,
+        "wins": 48
+      },
+      "shiro": {
+        "games": 89,
+        "wins": 58
+      }
+    },
+    "hecates-disciple": {
+      "behemoth": {
+        "games": 77,
+        "wins": 47
+      },
+      "koschei": {
+        "games": 76,
+        "wins": 54
+      },
+      "asterion": {
+        "games": 76,
+        "wins": 37
+      },
+      "nemesis": {
+        "games": 92,
+        "wins": 39
+      },
+      "the-forgotten-titan": {
+        "games": 84,
+        "wins": 35
+      },
+      "medusa": {
+        "games": 100,
+        "wins": 61
+      },
+      "zeiron": {
+        "games": 89,
+        "wins": 52
+      },
+      "the-gambler": {
+        "games": 86,
+        "wins": 58
+      },
+      "the-oracle": {
+        "games": 78,
+        "wins": 45
+      },
+      "maestro-nocturne": {
+        "games": 80,
+        "wins": 63
+      },
+      "mister-whiskers": {
+        "games": 66,
+        "wins": 43
+      },
+      "the-nameless-one": {
+        "games": 90,
+        "wins": 40
+      },
+      "icarion": {
+        "games": 67,
+        "wins": 38
+      },
+      "cyclops-brontes": {
+        "games": 88,
+        "wins": 35
+      },
+      "father-bell": {
+        "games": 101,
+        "wins": 62
+      },
+      "black-knight": {
+        "games": 81,
+        "wins": 43
+      },
+      "patient-zero": {
+        "games": 79,
+        "wins": 31
+      },
+      "the-referee": {
+        "games": 79,
+        "wins": 61
+      },
+      "malachar": {
+        "games": 84,
+        "wins": 58
+      },
+      "arachne": {
+        "games": 77,
+        "wins": 38
+      },
+      "the-siren": {
+        "games": 90,
+        "wins": 60
+      },
+      "tortuga-rex": {
+        "games": 92,
+        "wins": 37
+      },
+      "plague-doctor": {
+        "games": 76,
+        "wins": 49
+      },
+      "emperor-zero": {
+        "games": 82,
+        "wins": 46
+      },
+      "the-bronze-giant": {
+        "games": 89,
+        "wins": 48
+      },
+      "shiro": {
+        "games": 72,
+        "wins": 42
+      },
+      "moonshot-maddox": {
+        "games": 78,
+        "wins": 54
+      },
+      "nine-tailed-trickster": {
+        "games": 83,
+        "wins": 48
+      },
+      "charon": {
+        "games": 63,
+        "wins": 26
+      },
+      "baba-yaga": {
+        "games": 83,
+        "wins": 42
+      },
+      "cerberus": {
+        "games": 75,
+        "wins": 36
+      },
+      "hydra": {
+        "games": 62,
+        "wins": 36
+      }
+    },
+    "baba-yaga": {
+      "father-bell": {
+        "games": 79,
+        "wins": 43
+      },
+      "the-forgotten-titan": {
+        "games": 97,
+        "wins": 38
+      },
+      "shiro": {
+        "games": 74,
+        "wins": 38
+      },
+      "cyclops-brontes": {
+        "games": 95,
+        "wins": 38
+      },
+      "patient-zero": {
+        "games": 85,
+        "wins": 26
+      },
+      "charon": {
+        "games": 89,
+        "wins": 35
+      },
+      "the-oracle": {
+        "games": 81,
+        "wins": 41
+      },
+      "malachar": {
+        "games": 88,
+        "wins": 58
+      },
+      "emperor-zero": {
+        "games": 70,
+        "wins": 34
+      },
+      "cerberus": {
+        "games": 93,
+        "wins": 38
+      },
+      "the-referee": {
+        "games": 87,
+        "wins": 64
+      },
+      "nemesis": {
+        "games": 82,
+        "wins": 37
+      },
+      "asterion": {
+        "games": 91,
+        "wins": 36
+      },
+      "nine-tailed-trickster": {
+        "games": 84,
+        "wins": 42
+      },
+      "zeiron": {
+        "games": 96,
+        "wins": 55
+      },
+      "black-knight": {
+        "games": 84,
+        "wins": 34
+      },
+      "koschei": {
+        "games": 88,
+        "wins": 65
+      },
+      "hydra": {
+        "games": 99,
+        "wins": 53
+      },
+      "medusa": {
+        "games": 80,
+        "wins": 50
+      },
+      "maestro-nocturne": {
+        "games": 87,
+        "wins": 64
+      },
+      "the-siren": {
+        "games": 77,
+        "wins": 46
+      },
+      "plague-doctor": {
+        "games": 85,
+        "wins": 50
+      },
+      "the-bronze-giant": {
+        "games": 79,
+        "wins": 29
+      },
+      "behemoth": {
+        "games": 91,
+        "wins": 57
+      },
+      "mister-whiskers": {
+        "games": 66,
+        "wins": 46
+      },
+      "the-nameless-one": {
+        "games": 95,
+        "wins": 42
+      },
+      "the-gambler": {
+        "games": 87,
+        "wins": 55
+      },
+      "moonshot-maddox": {
+        "games": 89,
+        "wins": 66
+      },
+      "arachne": {
+        "games": 95,
+        "wins": 43
+      },
+      "hecates-disciple": {
+        "games": 83,
+        "wins": 40
+      },
+      "tortuga-rex": {
+        "games": 80,
+        "wins": 28
+      },
+      "icarion": {
+        "games": 83,
+        "wins": 37
+      }
+    },
+    "the-gambler": {
+      "father-bell": {
+        "games": 106,
+        "wins": 46
+      },
+      "the-forgotten-titan": {
+        "games": 93,
+        "wins": 15
+      },
+      "shiro": {
+        "games": 107,
+        "wins": 42
+      },
+      "charon": {
+        "games": 78,
+        "wins": 19
+      },
+      "hecates-disciple": {
+        "games": 86,
+        "wins": 27
+      },
+      "black-knight": {
+        "games": 86,
+        "wins": 35
+      },
+      "nemesis": {
+        "games": 90,
+        "wins": 22
+      },
+      "arachne": {
+        "games": 73,
+        "wins": 27
+      },
+      "hydra": {
+        "games": 94,
+        "wins": 28
+      },
+      "tortuga-rex": {
+        "games": 89,
+        "wins": 28
+      },
+      "mister-whiskers": {
+        "games": 100,
+        "wins": 49
+      },
+      "the-nameless-one": {
+        "games": 90,
+        "wins": 24
+      },
+      "behemoth": {
+        "games": 78,
+        "wins": 40
+      },
+      "plague-doctor": {
+        "games": 97,
+        "wins": 38
+      },
+      "cerberus": {
+        "games": 88,
+        "wins": 26
+      },
+      "maestro-nocturne": {
+        "games": 99,
+        "wins": 53
+      },
+      "zeiron": {
+        "games": 87,
+        "wins": 38
+      },
+      "icarion": {
+        "games": 73,
+        "wins": 25
+      },
+      "medusa": {
+        "games": 67,
+        "wins": 33
+      },
+      "patient-zero": {
+        "games": 87,
+        "wins": 11
+      },
+      "moonshot-maddox": {
+        "games": 85,
+        "wins": 42
+      },
+      "koschei": {
+        "games": 83,
+        "wins": 41
+      },
+      "the-bronze-giant": {
+        "games": 90,
+        "wins": 26
+      },
+      "the-siren": {
+        "games": 97,
+        "wins": 45
+      },
+      "baba-yaga": {
+        "games": 87,
+        "wins": 32
+      },
+      "malachar": {
+        "games": 87,
+        "wins": 44
+      },
+      "the-oracle": {
+        "games": 75,
+        "wins": 30
+      },
+      "asterion": {
+        "games": 88,
+        "wins": 20
+      },
+      "the-referee": {
+        "games": 95,
+        "wins": 52
+      },
+      "nine-tailed-trickster": {
+        "games": 81,
+        "wins": 38
+      },
+      "emperor-zero": {
+        "games": 80,
+        "wins": 37
+      },
+      "cyclops-brontes": {
+        "games": 92,
+        "wins": 20
+      }
+    },
+    "father-bell": {
+      "baba-yaga": {
+        "games": 79,
+        "wins": 36
+      },
+      "emperor-zero": {
+        "games": 96,
+        "wins": 39
+      },
+      "the-gambler": {
+        "games": 106,
+        "wins": 59
+      },
+      "hydra": {
+        "games": 76,
+        "wins": 31
+      },
+      "shiro": {
+        "games": 89,
+        "wins": 38
+      },
+      "charon": {
+        "games": 89,
+        "wins": 21
+      },
+      "the-forgotten-titan": {
+        "games": 69,
+        "wins": 17
+      },
+      "plague-doctor": {
+        "games": 90,
+        "wins": 44
+      },
+      "cyclops-brontes": {
+        "games": 77,
+        "wins": 25
+      },
+      "moonshot-maddox": {
+        "games": 78,
+        "wins": 43
+      },
+      "tortuga-rex": {
+        "games": 79,
+        "wins": 21
+      },
+      "maestro-nocturne": {
+        "games": 82,
+        "wins": 42
+      },
+      "medusa": {
+        "games": 67,
+        "wins": 32
+      },
+      "nine-tailed-trickster": {
+        "games": 83,
+        "wins": 33
+      },
+      "icarion": {
+        "games": 76,
+        "wins": 38
+      },
+      "the-oracle": {
+        "games": 72,
+        "wins": 33
+      },
+      "mister-whiskers": {
+        "games": 74,
+        "wins": 40
+      },
+      "hecates-disciple": {
+        "games": 101,
+        "wins": 39
+      },
+      "the-nameless-one": {
+        "games": 97,
+        "wins": 30
+      },
+      "patient-zero": {
+        "games": 84,
+        "wins": 22
+      },
+      "zeiron": {
+        "games": 73,
+        "wins": 31
+      },
+      "the-bronze-giant": {
+        "games": 89,
+        "wins": 25
+      },
+      "nemesis": {
+        "games": 95,
+        "wins": 26
+      },
+      "asterion": {
+        "games": 82,
+        "wins": 20
+      },
+      "malachar": {
+        "games": 76,
+        "wins": 55
+      },
+      "black-knight": {
+        "games": 89,
+        "wins": 32
+      },
+      "the-referee": {
+        "games": 76,
+        "wins": 41
+      },
+      "koschei": {
+        "games": 85,
+        "wins": 50
+      },
+      "the-siren": {
+        "games": 86,
+        "wins": 43
+      },
+      "arachne": {
+        "games": 85,
+        "wins": 32
+      },
+      "cerberus": {
+        "games": 81,
+        "wins": 27
+      },
+      "behemoth": {
+        "games": 86,
+        "wins": 42
+      }
+    },
+    "the-forgotten-titan": {
+      "baba-yaga": {
+        "games": 97,
+        "wins": 59
+      },
+      "emperor-zero": {
+        "games": 90,
+        "wins": 52
+      },
+      "the-gambler": {
+        "games": 93,
+        "wins": 78
+      },
+      "koschei": {
+        "games": 95,
+        "wins": 71
+      },
+      "zeiron": {
+        "games": 85,
+        "wins": 69
+      },
+      "hecates-disciple": {
+        "games": 84,
+        "wins": 48
+      },
+      "cerberus": {
+        "games": 89,
+        "wins": 46
+      },
+      "mister-whiskers": {
+        "games": 85,
+        "wins": 67
+      },
+      "father-bell": {
+        "games": 69,
+        "wins": 52
+      },
+      "asterion": {
+        "games": 80,
+        "wins": 39
+      },
+      "charon": {
+        "games": 82,
+        "wins": 46
+      },
+      "tortuga-rex": {
+        "games": 68,
+        "wins": 38
+      },
+      "the-nameless-one": {
+        "games": 93,
+        "wins": 65
+      },
+      "icarion": {
+        "games": 77,
+        "wins": 53
+      },
+      "cyclops-brontes": {
+        "games": 80,
+        "wins": 44
+      },
+      "nine-tailed-trickster": {
+        "games": 90,
+        "wins": 60
+      },
+      "patient-zero": {
+        "games": 93,
+        "wins": 45
+      },
+      "the-oracle": {
+        "games": 96,
+        "wins": 63
+      },
+      "nemesis": {
+        "games": 83,
+        "wins": 39
+      },
+      "the-referee": {
+        "games": 82,
+        "wins": 63
+      },
+      "behemoth": {
+        "games": 87,
+        "wins": 72
+      },
+      "medusa": {
+        "games": 73,
+        "wins": 57
+      },
+      "malachar": {
+        "games": 93,
+        "wins": 80
+      },
+      "moonshot-maddox": {
+        "games": 79,
+        "wins": 58
+      },
+      "plague-doctor": {
+        "games": 77,
+        "wins": 59
+      },
+      "maestro-nocturne": {
+        "games": 60,
+        "wins": 54
+      },
+      "arachne": {
+        "games": 92,
+        "wins": 55
+      },
+      "shiro": {
+        "games": 84,
+        "wins": 65
+      },
+      "black-knight": {
+        "games": 94,
+        "wins": 51
+      },
+      "the-bronze-giant": {
+        "games": 86,
+        "wins": 38
+      },
+      "hydra": {
+        "games": 81,
+        "wins": 58
+      },
+      "the-siren": {
+        "games": 74,
+        "wins": 59
+      }
+    },
+    "shiro": {
+      "baba-yaga": {
+        "games": 74,
+        "wins": 36
+      },
+      "emperor-zero": {
+        "games": 89,
+        "wins": 35
+      },
+      "the-gambler": {
+        "games": 107,
+        "wins": 64
+      },
+      "father-bell": {
+        "games": 89,
+        "wins": 51
+      },
+      "charon": {
+        "games": 78,
+        "wins": 26
+      },
+      "the-bronze-giant": {
+        "games": 103,
+        "wins": 25
+      },
+      "behemoth": {
+        "games": 74,
+        "wins": 35
+      },
+      "malachar": {
+        "games": 82,
+        "wins": 60
+      },
+      "the-nameless-one": {
+        "games": 92,
+        "wins": 39
+      },
+      "asterion": {
+        "games": 78,
+        "wins": 18
+      },
+      "mister-whiskers": {
+        "games": 78,
+        "wins": 34
+      },
+      "the-siren": {
+        "games": 90,
+        "wins": 50
+      },
+      "patient-zero": {
+        "games": 76,
+        "wins": 15
+      },
+      "arachne": {
+        "games": 90,
+        "wins": 42
+      },
+      "zeiron": {
+        "games": 87,
+        "wins": 46
+      },
+      "moonshot-maddox": {
+        "games": 79,
+        "wins": 54
+      },
+      "koschei": {
+        "games": 82,
+        "wins": 51
+      },
+      "the-oracle": {
+        "games": 77,
+        "wins": 37
+      },
+      "maestro-nocturne": {
+        "games": 87,
+        "wins": 57
+      },
+      "the-referee": {
+        "games": 80,
+        "wins": 54
+      },
+      "black-knight": {
+        "games": 93,
+        "wins": 29
+      },
+      "plague-doctor": {
+        "games": 92,
+        "wins": 38
+      },
+      "hydra": {
+        "games": 102,
+        "wins": 39
+      },
+      "nine-tailed-trickster": {
+        "games": 90,
+        "wins": 45
+      },
+      "nemesis": {
+        "games": 80,
+        "wins": 26
+      },
+      "medusa": {
+        "games": 88,
+        "wins": 46
+      },
+      "the-forgotten-titan": {
+        "games": 84,
+        "wins": 19
+      },
+      "hecates-disciple": {
+        "games": 72,
+        "wins": 29
+      },
+      "cyclops-brontes": {
+        "games": 104,
+        "wins": 34
+      },
+      "icarion": {
+        "games": 87,
+        "wins": 35
+      },
+      "cerberus": {
+        "games": 93,
+        "wins": 24
+      },
+      "tortuga-rex": {
+        "games": 89,
+        "wins": 31
+      }
+    },
+    "nemesis": {
+      "koschei": {
+        "games": 82,
+        "wins": 65
+      },
+      "zeiron": {
+        "games": 91,
+        "wins": 61
+      },
+      "hecates-disciple": {
+        "games": 92,
+        "wins": 51
+      },
+      "cyclops-brontes": {
+        "games": 94,
+        "wins": 44
+      },
+      "patient-zero": {
+        "games": 70,
+        "wins": 30
+      },
+      "charon": {
+        "games": 92,
+        "wins": 50
+      },
+      "the-gambler": {
+        "games": 90,
+        "wins": 68
+      },
+      "the-oracle": {
+        "games": 97,
+        "wins": 59
+      },
+      "arachne": {
+        "games": 68,
+        "wins": 48
+      },
+      "malachar": {
+        "games": 80,
+        "wins": 63
+      },
+      "black-knight": {
+        "games": 86,
+        "wins": 48
+      },
+      "behemoth": {
+        "games": 77,
+        "wins": 51
+      },
+      "maestro-nocturne": {
+        "games": 83,
+        "wins": 66
+      },
+      "the-siren": {
+        "games": 80,
+        "wins": 58
+      },
+      "father-bell": {
+        "games": 95,
+        "wins": 68
+      },
+      "baba-yaga": {
+        "games": 82,
+        "wins": 45
+      },
+      "asterion": {
+        "games": 88,
+        "wins": 38
+      },
+      "tortuga-rex": {
+        "games": 72,
+        "wins": 34
+      },
+      "the-forgotten-titan": {
+        "games": 83,
+        "wins": 42
+      },
+      "the-nameless-one": {
+        "games": 79,
+        "wins": 48
+      },
+      "medusa": {
+        "games": 96,
+        "wins": 70
+      },
+      "hydra": {
+        "games": 64,
+        "wins": 35
+      },
+      "the-referee": {
+        "games": 79,
+        "wins": 64
+      },
+      "plague-doctor": {
+        "games": 79,
+        "wins": 48
+      },
+      "cerberus": {
+        "games": 95,
+        "wins": 53
+      },
+      "the-bronze-giant": {
+        "games": 85,
+        "wins": 45
+      },
+      "mister-whiskers": {
+        "games": 86,
+        "wins": 63
+      },
+      "shiro": {
+        "games": 80,
+        "wins": 52
+      },
+      "moonshot-maddox": {
+        "games": 73,
+        "wins": 56
+      },
+      "nine-tailed-trickster": {
+        "games": 78,
+        "wins": 47
+      },
+      "emperor-zero": {
+        "games": 77,
+        "wins": 47
+      },
+      "icarion": {
+        "games": 76,
+        "wins": 48
+      }
+    },
+    "charon": {
+      "hydra": {
+        "games": 81,
+        "wins": 49
+      },
+      "shiro": {
+        "games": 78,
+        "wins": 51
+      },
+      "emperor-zero": {
+        "games": 87,
+        "wins": 48
+      },
+      "baba-yaga": {
+        "games": 89,
+        "wins": 54
+      },
+      "nemesis": {
+        "games": 92,
+        "wins": 41
+      },
+      "arachne": {
+        "games": 76,
+        "wins": 43
+      },
+      "cerberus": {
+        "games": 76,
+        "wins": 37
+      },
+      "mister-whiskers": {
+        "games": 60,
+        "wins": 41
+      },
+      "father-bell": {
+        "games": 89,
+        "wins": 66
+      },
+      "koschei": {
+        "games": 87,
+        "wins": 64
+      },
+      "the-forgotten-titan": {
+        "games": 82,
+        "wins": 36
+      },
+      "the-gambler": {
+        "games": 78,
+        "wins": 59
+      },
+      "tortuga-rex": {
+        "games": 87,
+        "wins": 43
+      },
+      "malachar": {
+        "games": 91,
+        "wins": 72
+      },
+      "the-siren": {
+        "games": 84,
+        "wins": 64
+      },
+      "zeiron": {
+        "games": 80,
+        "wins": 57
+      },
+      "the-bronze-giant": {
+        "games": 72,
+        "wins": 38
+      },
+      "maestro-nocturne": {
+        "games": 81,
+        "wins": 65
+      },
+      "icarion": {
+        "games": 79,
+        "wins": 36
+      },
+      "cyclops-brontes": {
+        "games": 90,
+        "wins": 36
+      },
+      "the-referee": {
+        "games": 81,
+        "wins": 55
+      },
+      "black-knight": {
+        "games": 93,
+        "wins": 58
+      },
+      "behemoth": {
+        "games": 90,
+        "wins": 61
+      },
+      "the-nameless-one": {
+        "games": 65,
+        "wins": 35
+      },
+      "moonshot-maddox": {
+        "games": 82,
+        "wins": 69
+      },
+      "medusa": {
+        "games": 91,
+        "wins": 60
+      },
+      "the-oracle": {
+        "games": 83,
+        "wins": 53
+      },
+      "plague-doctor": {
+        "games": 76,
+        "wins": 48
+      },
+      "asterion": {
+        "games": 73,
+        "wins": 33
+      },
+      "patient-zero": {
+        "games": 92,
+        "wins": 32
+      },
+      "hecates-disciple": {
+        "games": 63,
+        "wins": 36
+      },
+      "nine-tailed-trickster": {
+        "games": 82,
+        "wins": 47
+      }
+    },
+    "the-oracle": {
+      "icarion": {
+        "games": 96,
+        "wins": 41
+      },
+      "medusa": {
+        "games": 93,
+        "wins": 48
+      },
+      "cyclops-brontes": {
+        "games": 95,
+        "wins": 33
+      },
+      "hecates-disciple": {
+        "games": 78,
+        "wins": 33
+      },
+      "black-knight": {
+        "games": 85,
+        "wins": 43
+      },
+      "nemesis": {
+        "games": 97,
+        "wins": 38
+      },
+      "hydra": {
+        "games": 94,
+        "wins": 49
+      },
+      "baba-yaga": {
+        "games": 81,
+        "wins": 39
+      },
+      "moonshot-maddox": {
+        "games": 73,
+        "wins": 43
+      },
+      "nine-tailed-trickster": {
+        "games": 86,
+        "wins": 43
+      },
+      "the-siren": {
+        "games": 76,
+        "wins": 41
+      },
+      "the-nameless-one": {
+        "games": 91,
+        "wins": 32
+      },
+      "malachar": {
+        "games": 77,
+        "wins": 52
+      },
+      "plague-doctor": {
+        "games": 80,
+        "wins": 42
+      },
+      "father-bell": {
+        "games": 72,
+        "wins": 39
+      },
+      "mister-whiskers": {
+        "games": 89,
+        "wins": 59
+      },
+      "the-bronze-giant": {
+        "games": 88,
+        "wins": 38
+      },
+      "tortuga-rex": {
+        "games": 84,
+        "wins": 28
+      },
+      "koschei": {
+        "games": 75,
+        "wins": 44
+      },
+      "the-forgotten-titan": {
+        "games": 96,
+        "wins": 31
+      },
+      "the-referee": {
+        "games": 85,
+        "wins": 51
+      },
+      "zeiron": {
+        "games": 65,
+        "wins": 33
+      },
+      "asterion": {
+        "games": 86,
+        "wins": 29
+      },
+      "cerberus": {
+        "games": 92,
+        "wins": 41
+      },
+      "maestro-nocturne": {
+        "games": 87,
+        "wins": 64
+      },
+      "arachne": {
+        "games": 80,
+        "wins": 31
+      },
+      "patient-zero": {
+        "games": 81,
+        "wins": 22
+      },
+      "shiro": {
+        "games": 77,
+        "wins": 40
+      },
+      "emperor-zero": {
+        "games": 94,
+        "wins": 44
+      },
+      "charon": {
+        "games": 83,
+        "wins": 30
+      },
+      "the-gambler": {
+        "games": 75,
+        "wins": 45
+      },
+      "behemoth": {
+        "games": 92,
+        "wins": 50
+      }
+    },
+    "icarion": {
+      "the-referee": {
+        "games": 81,
+        "wins": 59
+      },
+      "mister-whiskers": {
+        "games": 84,
+        "wins": 49
+      },
+      "the-oracle": {
+        "games": 96,
+        "wins": 55
+      },
+      "behemoth": {
+        "games": 76,
+        "wins": 46
+      },
+      "the-bronze-giant": {
+        "games": 71,
+        "wins": 28
+      },
+      "plague-doctor": {
+        "games": 82,
+        "wins": 50
+      },
+      "the-siren": {
+        "games": 87,
+        "wins": 57
+      },
+      "patient-zero": {
+        "games": 87,
+        "wins": 26
+      },
+      "father-bell": {
+        "games": 76,
+        "wins": 38
+      },
+      "arachne": {
+        "games": 91,
+        "wins": 46
+      },
+      "koschei": {
+        "games": 81,
+        "wins": 44
+      },
+      "malachar": {
+        "games": 86,
+        "wins": 59
+      },
+      "the-forgotten-titan": {
+        "games": 77,
+        "wins": 24
+      },
+      "emperor-zero": {
+        "games": 96,
+        "wins": 49
+      },
+      "hecates-disciple": {
+        "games": 67,
+        "wins": 29
+      },
+      "medusa": {
+        "games": 100,
+        "wins": 52
+      },
+      "hydra": {
+        "games": 73,
+        "wins": 35
+      },
+      "black-knight": {
+        "games": 82,
+        "wins": 44
+      },
+      "maestro-nocturne": {
+        "games": 85,
+        "wins": 62
+      },
+      "asterion": {
+        "games": 85,
+        "wins": 34
+      },
+      "the-nameless-one": {
+        "games": 91,
+        "wins": 38
+      },
+      "charon": {
+        "games": 79,
+        "wins": 43
+      },
+      "the-gambler": {
+        "games": 73,
+        "wins": 48
+      },
+      "cyclops-brontes": {
+        "games": 87,
+        "wins": 35
+      },
+      "moonshot-maddox": {
+        "games": 79,
+        "wins": 55
+      },
+      "zeiron": {
+        "games": 81,
+        "wins": 48
+      },
+      "tortuga-rex": {
+        "games": 67,
+        "wins": 31
+      },
+      "nine-tailed-trickster": {
+        "games": 84,
+        "wins": 50
+      },
+      "nemesis": {
+        "games": 76,
+        "wins": 27
+      },
+      "cerberus": {
+        "games": 75,
+        "wins": 24
+      },
+      "shiro": {
+        "games": 87,
+        "wins": 51
+      },
+      "baba-yaga": {
+        "games": 83,
+        "wins": 44
+      }
+    },
+    "cyclops-brontes": {
+      "the-referee": {
+        "games": 65,
+        "wins": 52
+      },
+      "mister-whiskers": {
+        "games": 78,
+        "wins": 65
+      },
+      "the-oracle": {
+        "games": 95,
+        "wins": 61
+      },
+      "baba-yaga": {
+        "games": 95,
+        "wins": 55
+      },
+      "nemesis": {
+        "games": 94,
+        "wins": 49
+      },
+      "arachne": {
+        "games": 91,
+        "wins": 46
+      },
+      "father-bell": {
+        "games": 77,
+        "wins": 51
+      },
+      "the-nameless-one": {
+        "games": 84,
+        "wins": 48
+      },
+      "zeiron": {
+        "games": 75,
+        "wins": 50
+      },
+      "the-bronze-giant": {
+        "games": 106,
+        "wins": 58
+      },
+      "asterion": {
+        "games": 70,
+        "wins": 27
+      },
+      "the-forgotten-titan": {
+        "games": 80,
+        "wins": 36
+      },
+      "emperor-zero": {
+        "games": 86,
+        "wins": 50
+      },
+      "hecates-disciple": {
+        "games": 88,
+        "wins": 49
+      },
+      "charon": {
+        "games": 90,
+        "wins": 53
+      },
+      "patient-zero": {
+        "games": 77,
+        "wins": 32
+      },
+      "medusa": {
+        "games": 99,
+        "wins": 68
+      },
+      "the-siren": {
+        "games": 91,
+        "wins": 67
+      },
+      "icarion": {
+        "games": 87,
+        "wins": 50
+      },
+      "black-knight": {
+        "games": 95,
+        "wins": 56
+      },
+      "maestro-nocturne": {
+        "games": 90,
+        "wins": 75
+      },
+      "moonshot-maddox": {
+        "games": 73,
+        "wins": 58
+      },
+      "nine-tailed-trickster": {
+        "games": 101,
+        "wins": 70
+      },
+      "behemoth": {
+        "games": 79,
+        "wins": 53
+      },
+      "tortuga-rex": {
+        "games": 87,
+        "wins": 46
+      },
+      "shiro": {
+        "games": 104,
+        "wins": 69
+      },
+      "koschei": {
+        "games": 88,
+        "wins": 65
+      },
+      "plague-doctor": {
+        "games": 83,
+        "wins": 63
+      },
+      "malachar": {
+        "games": 101,
+        "wins": 89
+      },
+      "hydra": {
+        "games": 88,
+        "wins": 54
+      },
+      "the-gambler": {
+        "games": 92,
+        "wins": 70
+      },
+      "cerberus": {
+        "games": 75,
+        "wins": 47
+      }
+    },
+    "malachar": {
+      "cerberus": {
+        "games": 89,
+        "wins": 15
+      },
+      "medusa": {
+        "games": 95,
+        "wins": 31
+      },
+      "shiro": {
+        "games": 82,
+        "wins": 22
+      },
+      "hydra": {
+        "games": 95,
+        "wins": 21
+      },
+      "baba-yaga": {
+        "games": 88,
+        "wins": 30
+      },
+      "nemesis": {
+        "games": 80,
+        "wins": 16
+      },
+      "charon": {
+        "games": 91,
+        "wins": 19
+      },
+      "icarion": {
+        "games": 86,
+        "wins": 26
+      },
+      "maestro-nocturne": {
+        "games": 77,
+        "wins": 33
+      },
+      "mister-whiskers": {
+        "games": 76,
+        "wins": 33
+      },
+      "the-oracle": {
+        "games": 77,
+        "wins": 25
+      },
+      "asterion": {
+        "games": 99,
+        "wins": 15
+      },
+      "arachne": {
+        "games": 102,
+        "wins": 35
+      },
+      "emperor-zero": {
+        "games": 78,
+        "wins": 29
+      },
+      "patient-zero": {
+        "games": 68,
+        "wins": 8
+      },
+      "behemoth": {
+        "games": 100,
+        "wins": 37
+      },
+      "hecates-disciple": {
+        "games": 84,
+        "wins": 26
+      },
+      "the-nameless-one": {
+        "games": 85,
+        "wins": 22
+      },
+      "father-bell": {
+        "games": 76,
+        "wins": 21
+      },
+      "plague-doctor": {
+        "games": 91,
+        "wins": 35
+      },
+      "moonshot-maddox": {
+        "games": 83,
+        "wins": 37
+      },
+      "the-bronze-giant": {
+        "games": 119,
+        "wins": 19
+      },
+      "zeiron": {
+        "games": 89,
+        "wins": 30
+      },
+      "tortuga-rex": {
+        "games": 85,
+        "wins": 18
+      },
+      "the-forgotten-titan": {
+        "games": 93,
+        "wins": 13
+      },
+      "the-siren": {
+        "games": 96,
+        "wins": 42
+      },
+      "nine-tailed-trickster": {
+        "games": 72,
+        "wins": 24
+      },
+      "the-gambler": {
+        "games": 87,
+        "wins": 43
+      },
+      "koschei": {
+        "games": 86,
+        "wins": 41
+      },
+      "cyclops-brontes": {
+        "games": 101,
+        "wins": 11
+      },
+      "the-referee": {
+        "games": 84,
+        "wins": 42
+      },
+      "black-knight": {
+        "games": 94,
+        "wins": 30
+      }
+    },
+    "patient-zero": {
+      "baba-yaga": {
+        "games": 85,
+        "wins": 58
+      },
+      "nemesis": {
+        "games": 70,
+        "wins": 38
+      },
+      "arachne": {
+        "games": 108,
+        "wins": 73
+      },
+      "nine-tailed-trickster": {
+        "games": 81,
+        "wins": 58
+      },
+      "icarion": {
+        "games": 87,
+        "wins": 59
+      },
+      "shiro": {
+        "games": 76,
+        "wins": 59
+      },
+      "zeiron": {
+        "games": 69,
+        "wins": 48
+      },
+      "the-bronze-giant": {
+        "games": 92,
+        "wins": 52
+      },
+      "asterion": {
+        "games": 85,
+        "wins": 54
+      },
+      "father-bell": {
+        "games": 84,
+        "wins": 60
+      },
+      "mister-whiskers": {
+        "games": 69,
+        "wins": 53
+      },
+      "black-knight": {
+        "games": 97,
+        "wins": 70
+      },
+      "the-forgotten-titan": {
+        "games": 93,
+        "wins": 48
+      },
+      "hecates-disciple": {
+        "games": 79,
+        "wins": 46
+      },
+      "malachar": {
+        "games": 68,
+        "wins": 60
+      },
+      "koschei": {
+        "games": 101,
+        "wins": 86
+      },
+      "tortuga-rex": {
+        "games": 91,
+        "wins": 50
+      },
+      "the-siren": {
+        "games": 93,
+        "wins": 63
+      },
+      "cyclops-brontes": {
+        "games": 77,
+        "wins": 39
+      },
+      "maestro-nocturne": {
+        "games": 79,
+        "wins": 65
+      },
+      "the-oracle": {
+        "games": 81,
+        "wins": 59
+      },
+      "the-referee": {
+        "games": 83,
+        "wins": 72
+      },
+      "emperor-zero": {
+        "games": 81,
+        "wins": 67
+      },
+      "the-nameless-one": {
+        "games": 81,
+        "wins": 50
+      },
+      "medusa": {
+        "games": 86,
+        "wins": 66
+      },
+      "the-gambler": {
+        "games": 87,
+        "wins": 76
+      },
+      "plague-doctor": {
+        "games": 88,
+        "wins": 70
+      },
+      "hydra": {
+        "games": 91,
+        "wins": 74
+      },
+      "behemoth": {
+        "games": 82,
+        "wins": 63
+      },
+      "cerberus": {
+        "games": 93,
+        "wins": 59
+      },
+      "charon": {
+        "games": 92,
+        "wins": 59
+      },
+      "moonshot-maddox": {
+        "games": 80,
+        "wins": 60
+      }
+    },
+    "plague-doctor": {
+      "cerberus": {
+        "games": 97,
+        "wins": 32
+      },
+      "mister-whiskers": {
+        "games": 88,
+        "wins": 57
+      },
+      "father-bell": {
+        "games": 90,
+        "wins": 45
+      },
+      "moonshot-maddox": {
+        "games": 80,
+        "wins": 44
+      },
+      "icarion": {
+        "games": 82,
+        "wins": 28
+      },
+      "the-siren": {
+        "games": 93,
+        "wins": 49
+      },
+      "arachne": {
+        "games": 96,
+        "wins": 39
+      },
+      "the-nameless-one": {
+        "games": 83,
+        "wins": 29
+      },
+      "behemoth": {
+        "games": 99,
+        "wins": 51
+      },
+      "hydra": {
+        "games": 82,
+        "wins": 35
+      },
+      "emperor-zero": {
+        "games": 80,
+        "wins": 34
+      },
+      "the-oracle": {
+        "games": 80,
+        "wins": 35
+      },
+      "medusa": {
+        "games": 96,
+        "wins": 50
+      },
+      "malachar": {
+        "games": 91,
+        "wins": 55
+      },
+      "the-gambler": {
+        "games": 97,
+        "wins": 58
+      },
+      "the-bronze-giant": {
+        "games": 88,
+        "wins": 21
+      },
+      "zeiron": {
+        "games": 85,
+        "wins": 43
+      },
+      "hecates-disciple": {
+        "games": 76,
+        "wins": 25
+      },
+      "nemesis": {
+        "games": 79,
+        "wins": 30
+      },
+      "nine-tailed-trickster": {
+        "games": 88,
+        "wins": 25
+      },
+      "koschei": {
+        "games": 98,
+        "wins": 61
+      },
+      "the-forgotten-titan": {
+        "games": 77,
+        "wins": 16
+      },
+      "shiro": {
+        "games": 92,
+        "wins": 53
+      },
+      "asterion": {
+        "games": 91,
+        "wins": 30
+      },
+      "patient-zero": {
+        "games": 88,
+        "wins": 17
+      },
+      "baba-yaga": {
+        "games": 85,
+        "wins": 35
+      },
+      "black-knight": {
+        "games": 104,
+        "wins": 31
+      },
+      "the-referee": {
+        "games": 92,
+        "wins": 60
+      },
+      "charon": {
+        "games": 76,
+        "wins": 27
+      },
+      "tortuga-rex": {
+        "games": 80,
+        "wins": 23
+      },
+      "maestro-nocturne": {
+        "games": 89,
+        "wins": 63
+      },
+      "cyclops-brontes": {
+        "games": 83,
+        "wins": 17
+      }
+    },
+    "moonshot-maddox": {
+      "behemoth": {
+        "games": 77,
+        "wins": 34
+      },
+      "the-bronze-giant": {
+        "games": 104,
+        "wins": 30
+      },
+      "plague-doctor": {
+        "games": 80,
+        "wins": 34
+      },
+      "arachne": {
+        "games": 89,
+        "wins": 28
+      },
+      "father-bell": {
+        "games": 78,
+        "wins": 34
+      },
+      "the-nameless-one": {
+        "games": 74,
+        "wins": 21
+      },
+      "mister-whiskers": {
+        "games": 69,
+        "wins": 29
+      },
+      "maestro-nocturne": {
+        "games": 74,
+        "wins": 40
+      },
+      "the-oracle": {
+        "games": 73,
+        "wins": 29
+      },
+      "black-knight": {
+        "games": 81,
+        "wins": 19
+      },
+      "zeiron": {
+        "games": 81,
+        "wins": 37
+      },
+      "asterion": {
+        "games": 84,
+        "wins": 14
+      },
+      "tortuga-rex": {
+        "games": 78,
+        "wins": 26
+      },
+      "shiro": {
+        "games": 79,
+        "wins": 25
+      },
+      "the-referee": {
+        "games": 93,
+        "wins": 50
+      },
+      "hydra": {
+        "games": 78,
+        "wins": 26
+      },
+      "malachar": {
+        "games": 83,
+        "wins": 45
+      },
+      "nine-tailed-trickster": {
+        "games": 76,
+        "wins": 25
+      },
+      "koschei": {
+        "games": 94,
+        "wins": 49
+      },
+      "medusa": {
+        "games": 82,
+        "wins": 35
+      },
+      "charon": {
+        "games": 82,
+        "wins": 13
+      },
+      "the-forgotten-titan": {
+        "games": 79,
+        "wins": 21
+      },
+      "the-siren": {
+        "games": 102,
+        "wins": 41
+      },
+      "cyclops-brontes": {
+        "games": 73,
+        "wins": 15
+      },
+      "emperor-zero": {
+        "games": 86,
+        "wins": 36
+      },
+      "icarion": {
+        "games": 79,
+        "wins": 24
+      },
+      "the-gambler": {
+        "games": 85,
+        "wins": 43
+      },
+      "nemesis": {
+        "games": 73,
+        "wins": 16
+      },
+      "baba-yaga": {
+        "games": 89,
+        "wins": 22
+      },
+      "hecates-disciple": {
+        "games": 78,
+        "wins": 24
+      },
+      "cerberus": {
+        "games": 89,
+        "wins": 25
+      },
+      "patient-zero": {
+        "games": 80,
+        "wins": 20
+      }
+    },
+    "the-siren": {
+      "behemoth": {
+        "games": 96,
+        "wins": 45
+      },
+      "the-bronze-giant": {
+        "games": 89,
+        "wins": 23
+      },
+      "plague-doctor": {
+        "games": 93,
+        "wins": 42
+      },
+      "mister-whiskers": {
+        "games": 73,
+        "wins": 35
+      },
+      "maestro-nocturne": {
+        "games": 90,
+        "wins": 51
+      },
+      "arachne": {
+        "games": 74,
+        "wins": 22
+      },
+      "the-oracle": {
+        "games": 76,
+        "wins": 34
+      },
+      "black-knight": {
+        "games": 83,
+        "wins": 29
+      },
+      "nine-tailed-trickster": {
+        "games": 89,
+        "wins": 33
+      },
+      "icarion": {
+        "games": 87,
+        "wins": 29
+      },
+      "shiro": {
+        "games": 90,
+        "wins": 40
+      },
+      "koschei": {
+        "games": 85,
+        "wins": 38
+      },
+      "zeiron": {
+        "games": 85,
+        "wins": 41
+      },
+      "the-nameless-one": {
+        "games": 97,
+        "wins": 28
+      },
+      "charon": {
+        "games": 84,
+        "wins": 20
+      },
+      "medusa": {
+        "games": 93,
+        "wins": 43
+      },
+      "nemesis": {
+        "games": 80,
+        "wins": 22
+      },
+      "tortuga-rex": {
+        "games": 97,
+        "wins": 31
+      },
+      "patient-zero": {
+        "games": 93,
+        "wins": 27
+      },
+      "hecates-disciple": {
+        "games": 90,
+        "wins": 29
+      },
+      "hydra": {
+        "games": 87,
+        "wins": 34
+      },
+      "the-referee": {
+        "games": 85,
+        "wins": 48
+      },
+      "cerberus": {
+        "games": 103,
+        "wins": 27
+      },
+      "moonshot-maddox": {
+        "games": 102,
+        "wins": 60
+      },
+      "cyclops-brontes": {
+        "games": 91,
+        "wins": 23
+      },
+      "father-bell": {
+        "games": 86,
+        "wins": 43
+      },
+      "baba-yaga": {
+        "games": 77,
+        "wins": 31
+      },
+      "malachar": {
+        "games": 96,
+        "wins": 51
+      },
+      "the-gambler": {
+        "games": 97,
+        "wins": 50
+      },
+      "emperor-zero": {
+        "games": 86,
+        "wins": 37
+      },
+      "asterion": {
+        "games": 95,
+        "wins": 29
+      },
+      "the-forgotten-titan": {
+        "games": 74,
+        "wins": 15
+      }
+    },
+    "black-knight": {
+      "zeiron": {
+        "games": 86,
+        "wins": 64
+      },
+      "the-gambler": {
+        "games": 86,
+        "wins": 51
+      },
+      "the-oracle": {
+        "games": 85,
+        "wins": 42
+      },
+      "mister-whiskers": {
+        "games": 83,
+        "wins": 55
+      },
+      "maestro-nocturne": {
+        "games": 76,
+        "wins": 59
+      },
+      "behemoth": {
+        "games": 79,
+        "wins": 48
+      },
+      "moonshot-maddox": {
+        "games": 81,
+        "wins": 62
+      },
+      "nine-tailed-trickster": {
+        "games": 87,
+        "wins": 45
+      },
+      "the-siren": {
+        "games": 83,
+        "wins": 53
+      },
+      "hecates-disciple": {
+        "games": 81,
+        "wins": 37
+      },
+      "the-nameless-one": {
+        "games": 72,
+        "wins": 42
+      },
+      "patient-zero": {
+        "games": 97,
+        "wins": 27
+      },
+      "icarion": {
+        "games": 82,
+        "wins": 38
+      },
+      "nemesis": {
+        "games": 86,
+        "wins": 36
+      },
+      "the-referee": {
+        "games": 87,
+        "wins": 54
+      },
+      "father-bell": {
+        "games": 89,
+        "wins": 57
+      },
+      "hydra": {
+        "games": 78,
+        "wins": 42
+      },
+      "baba-yaga": {
+        "games": 84,
+        "wins": 50
+      },
+      "charon": {
+        "games": 93,
+        "wins": 35
+      },
+      "cerberus": {
+        "games": 94,
+        "wins": 42
+      },
+      "arachne": {
+        "games": 93,
+        "wins": 56
+      },
+      "cyclops-brontes": {
+        "games": 95,
+        "wins": 39
+      },
+      "emperor-zero": {
+        "games": 82,
+        "wins": 45
+      },
+      "shiro": {
+        "games": 93,
+        "wins": 64
+      },
+      "plague-doctor": {
+        "games": 104,
+        "wins": 73
+      },
+      "the-bronze-giant": {
+        "games": 93,
+        "wins": 37
+      },
+      "medusa": {
+        "games": 94,
+        "wins": 68
+      },
+      "the-forgotten-titan": {
+        "games": 94,
+        "wins": 43
+      },
+      "koschei": {
+        "games": 87,
+        "wins": 52
+      },
+      "malachar": {
+        "games": 94,
+        "wins": 64
+      },
+      "asterion": {
+        "games": 98,
+        "wins": 50
+      },
+      "tortuga-rex": {
+        "games": 80,
+        "wins": 39
+      }
+    }
+  },
+  "detectors": {
+    "turn-limit": {
+      "count": 110,
+      "examples": [
+        {
+          "seed": 1503174112,
+          "teamA": [
+            "icarion",
+            "koschei",
+            "zeiron"
+          ],
+          "teamB": [
+            "emperor-zero",
+            "arachne",
+            "the-siren"
+          ],
+          "detail": "reached turn 41"
+        },
+        {
+          "seed": 1885476202,
+          "teamA": [
+            "father-bell",
+            "shiro",
+            "arachne"
+          ],
+          "teamB": [
+            "black-knight",
+            "plague-doctor",
+            "emperor-zero"
+          ],
+          "detail": "reached turn 41"
+        },
+        {
+          "seed": 287104609,
+          "teamA": [
+            "koschei",
+            "hecates-disciple",
+            "cyclops-brontes"
+          ],
+          "teamB": [
+            "the-nameless-one",
+            "shiro",
+            "tortuga-rex"
+          ],
+          "detail": "reached turn 41"
+        },
+        {
+          "seed": 1928689811,
+          "teamA": [
+            "hydra",
+            "the-nameless-one",
+            "charon"
+          ],
+          "teamB": [
+            "behemoth",
+            "the-forgotten-titan",
+            "the-referee"
+          ],
+          "detail": "reached turn 41"
+        },
+        {
+          "seed": 669527903,
+          "teamA": [
+            "tortuga-rex",
+            "medusa",
+            "cerberus"
+          ],
+          "teamB": [
+            "the-bronze-giant",
+            "moonshot-maddox",
+            "charon"
+          ],
+          "detail": "reached turn 41"
+        }
+      ]
+    },
+    "state-loop": {
+      "count": 0,
+      "examples": []
+    },
+    "perpetual-stun": {
+      "count": 0,
+      "examples": []
+    },
+    "energy-lockout": {
+      "count": 1543,
+      "examples": [
+        {
+          "seed": 975249669,
+          "teamA": [
+            "mister-whiskers",
+            "nine-tailed-trickster",
+            "medusa"
+          ],
+          "teamB": [
+            "maestro-nocturne",
+            "the-nameless-one",
+            "emperor-zero"
+          ],
+          "detail": "playerA had no legal action for 3 turns (turn 11)"
+        },
+        {
+          "seed": 1974469137,
+          "teamA": [
+            "behemoth",
+            "malachar",
+            "the-nameless-one"
+          ],
+          "teamB": [
+            "cerberus",
+            "medusa",
+            "shiro"
+          ],
+          "detail": "playerA had no legal action for 3 turns (turn 23)"
+        },
+        {
+          "seed": 1383196265,
+          "teamA": [
+            "asterion",
+            "charon",
+            "mister-whiskers"
+          ],
+          "teamB": [
+            "koschei",
+            "the-forgotten-titan",
+            "shiro"
+          ],
+          "detail": "playerB had no legal action for 3 turns (turn 16)"
+        },
+        {
+          "seed": 2064534736,
+          "teamA": [
+            "behemoth",
+            "the-bronze-giant",
+            "plague-doctor"
+          ],
+          "teamB": [
+            "moonshot-maddox",
+            "icarion",
+            "the-siren"
+          ],
+          "detail": "playerA had no legal action for 3 turns (turn 9)"
+        },
+        {
+          "seed": 2064534736,
+          "teamA": [
+            "behemoth",
+            "the-bronze-giant",
+            "plague-doctor"
+          ],
+          "teamB": [
+            "moonshot-maddox",
+            "icarion",
+            "the-siren"
+          ],
+          "detail": "playerA had no legal action for 3 turns (turn 14)"
+        }
+      ]
+    },
+    "one-turn-kill": {
+      "count": 13,
+      "examples": [
+        {
+          "seed": 1519103088,
+          "teamA": [
+            "the-oracle",
+            "charon",
+            "the-nameless-one"
+          ],
+          "teamB": [
+            "the-gambler",
+            "emperor-zero",
+            "cerberus"
+          ],
+          "detail": "the-gambler killed from full health on turn 7"
+        },
+        {
+          "seed": 1272027336,
+          "teamA": [
+            "emperor-zero",
+            "the-oracle",
+            "cerberus"
+          ],
+          "teamB": [
+            "the-siren",
+            "arachne",
+            "the-forgotten-titan"
+          ],
+          "detail": "the-siren killed from full health on turn 17"
+        },
+        {
+          "seed": 1881150461,
+          "teamA": [
+            "cyclops-brontes",
+            "shiro",
+            "tortuga-rex"
+          ],
+          "teamB": [
+            "koschei",
+            "emperor-zero",
+            "plague-doctor"
+          ],
+          "detail": "emperor-zero killed from full health on turn 7"
+        },
+        {
+          "seed": 368531993,
+          "teamA": [
+            "medusa",
+            "the-gambler",
+            "asterion"
+          ],
+          "teamB": [
+            "tortuga-rex",
+            "hecates-disciple",
+            "the-referee"
+          ],
+          "detail": "the-referee killed from full health on turn 7"
+        },
+        {
+          "seed": 2040806021,
+          "teamA": [
+            "charon",
+            "black-knight",
+            "the-oracle"
+          ],
+          "teamB": [
+            "moonshot-maddox",
+            "medusa",
+            "the-gambler"
+          ],
+          "detail": "moonshot-maddox killed from full health on turn 9"
+        }
+      ]
+    },
+    "resurrection-loop": {
+      "count": 0,
+      "examples": []
+    },
+    "rewind-loop": {
+      "count": 0,
+      "examples": []
+    },
+    "illegal-bot-action": {
+      "count": 0,
+      "examples": []
+    },
+    "engine-error": {
+      "count": 0,
+      "examples": []
+    },
+    "stalled": {
+      "count": 0,
+      "examples": []
+    }
+  },
+  "errors": []
+}
