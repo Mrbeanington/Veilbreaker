@@ -242,6 +242,8 @@ Phase 07's real bot levels), OQ-38 (no React error boundary yet — a runtime ex
 the whole app with no recovery UI), OQ-39 (animation-speed and turn-timer settings are session-only;
 Phase 09's persistence layer will need to own them for real).
 
+**Addendum (CI):** jsdom 30 (added for component tests) crashes on Node 20's bundled undici (`webidl.util.markAsUncloneable is not a function`) — invisible locally (Node 24) and caught only by checking GitHub Actions. Both workflows now run Node 24, matching the local dev toolchain.
+
 ## Custom script registry
 | Script id | Character | Why components couldn't express it | Added in phase |
 |---|---|---|---|
