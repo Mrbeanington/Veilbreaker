@@ -1,8 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ABILITY_LIBRARY, CHARACTER_LIBRARY, defaultEnergyRules, type Ability, type EnergyRules } from "@veilbreak/content";
 import { canAct, getEffectiveCost, payCost, resolveTurn, validateAction, type EnergyPool, type BattleEvent, type BattleState, type PlayerAction } from "@veilbreak/engine";
 import { matchDeps, startMatch } from "../game/setup";
 import { remainingPool } from "../game/energyBudget";
+import type { RecordedTurn } from "../game/replay";
+import type { BotLevel } from "@veilbreak/ai";
 import { useBotWorker } from "../game/useBotWorker";
 import { describeValidationError } from "../game/describeValidationError";
 import { useSettings, TURN_TIMER_SECONDS } from "../settings/SettingsContext";
@@ -20,6 +22,12 @@ export interface MatchOutcome {
   winnerPlayerId: string | null;
   /** The finished match's battle log, for the Codex (spec/05: entries unlock from the player's own history). */
   eventLog?: readonly BattleEvent[];
+  /** Everything a replay and the profile need (phase-09). */
+  turnLog?: RecordedTurn[];
+  turns?: number;
+  seed?: number;
+  energyRules?: EnergyRules;
+  finalCharacters?: Record<string, { hp: number; alive: boolean }>;
 }
 
 export interface MatchScreenProps {
@@ -27,6 +35,8 @@ export interface MatchScreenProps {
   teamAIds: string[];
   teamBIds: string[];
   seed: number;
+  /** Overrides the Settings bot skill (Legend trials use LEGEND_BOSS). */
+  botLevel?: BotLevel;
   onMatchOver: (outcome: MatchOutcome) => void;
   /** Defaults to spec/01's real EnergyRules; component tests override it (e.g. "fixed" mode) for deterministic affordability. */
   energyRules?: EnergyRules;
@@ -46,7 +56,7 @@ const PLAYER_LABELS: Record<string, string> = { playerA: "Player 1", playerB: "P
  * changes via `createBattle`/`resolveTurn` — this component never computes
  * a combat result itself (the phase's own acceptance criterion).
  */
-export function MatchScreen({ mode, teamAIds, teamBIds, seed, onMatchOver, energyRules = defaultEnergyRules }: MatchScreenProps) {
+export function MatchScreen({ mode, teamAIds, teamBIds, seed, botLevel, onMatchOver, energyRules = defaultEnergyRules }: MatchScreenProps) {
   const [battleState, setBattleState] = useState<BattleState>(() => startMatch(teamAIds, teamBIds, seed, energyRules));
   const [step, setStep] = useState<TurnStep>(
     mode === "hotseat" ? { kind: "pass-device", forPlayerId: "playerA", label: PLAYER_LABELS.playerA! } : { kind: "selecting", playerId: "playerA" },
@@ -61,6 +71,7 @@ export function MatchScreen({ mode, teamAIds, teamBIds, seed, onMatchOver, energ
   const [secondsLeft, setSecondsLeft] = useState(TURN_TIMER_SECONDS);
   const { requestBotActions } = useBotWorker();
   const { turnTimerEnabled, settings } = useSettings();
+  const turnLog = useRef<RecordedTurn[]>([]);
 
   const deps = useMemo(() => matchDeps(energyRules), [energyRules]);
 
@@ -198,6 +209,7 @@ export function MatchScreen({ mode, teamAIds, teamBIds, seed, onMatchOver, energ
       setError("One of the queued actions became illegal before the turn resolved — please try again.");
       return;
     }
+    turnLog.current = [...turnLog.current, { a: actionsA, b: actionsB }];
     setBattleState(result.state);
     playBattleSounds(result.events);
     setPendingActionsA({});
@@ -212,7 +224,16 @@ export function MatchScreen({ mode, teamAIds, teamBIds, seed, onMatchOver, energ
     );
     if (endEvent) {
       const winnerPlayerId = typeof endEvent.payload?.winnerPlayerId === "string" ? endEvent.payload.winnerPlayerId : null;
-      onMatchOver({ result: endEvent.type === "matchEndedInDraw" ? "draw" : "win", winnerPlayerId, eventLog: result.state.eventLog });
+      onMatchOver({
+        result: endEvent.type === "matchEndedInDraw" ? "draw" : "win",
+        winnerPlayerId,
+        eventLog: result.state.eventLog,
+        turnLog: turnLog.current,
+        turns: Math.max(0, result.state.turn - 1),
+        seed,
+        energyRules,
+        finalCharacters: Object.fromEntries(Object.entries(result.state.characters).map(([id, c]) => [id, { hp: c.currentHp, alive: c.alive }])),
+      });
       return;
     }
 
@@ -236,7 +257,7 @@ export function MatchScreen({ mode, teamAIds, teamBIds, seed, onMatchOver, energ
     // vs. bot: player A just confirmed — ask the worker for player B's move.
     setIsResolving(true);
     try {
-      const botActions = await requestBotActions(battleState, "playerB", settings.botLevel);
+      const botActions = await requestBotActions(battleState, "playerB", botLevel ?? settings.botLevel);
       await runTurn(Object.values(pendingActionsA), botActions);
     } finally {
       setIsResolving(false);

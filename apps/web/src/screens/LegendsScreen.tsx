@@ -4,6 +4,7 @@ import { CharacterSheet } from "../components/CharacterSheet";
 import { Icon } from "../components/Icon";
 import { Portrait } from "../components/Portrait";
 import { isDiscovered } from "../game/knowledge";
+import { legendUnlocked, namelessGateOpen } from "../game/progression";
 import { useProfile } from "../profile/ProfileContext";
 import type { Profile } from "@veilbreak/persistence";
 
@@ -33,17 +34,18 @@ export const LEGEND_SLOTS: LegendSlot[] = [
   { slot: 12, characterId: "the-nameless-one", symbol: "?" },
 ];
 
-export type SlotState = "awake" | "sleeping" | "unbuilt" | "sealed";
+export type SlotState = "awake" | "met" | "sleeping" | "unbuilt" | "sealed";
 
 /** The Nameless One stays sealed until the other eleven Legends are unlocked (spec/03). */
 export function slotState(slot: LegendSlot, profile: Profile): SlotState {
   if (!slot.characterId) return "unbuilt";
   if (slot.slot === 12) {
-    const others = LEGEND_SLOTS.filter((s) => s.slot !== 12);
-    const allOthers = others.every((s) => s.characterId && isDiscovered(profile, s.characterId));
-    return allOthers && isDiscovered(profile, slot.characterId) ? "awake" : "sealed";
+    const gate = namelessGateOpen(profile);
+    if (profile.settings.showAllCharacters || legendUnlocked(profile, slot.characterId)) return "awake";
+    return gate && isDiscovered(profile, slot.characterId) ? "met" : "sealed";
   }
-  return isDiscovered(profile, slot.characterId) || profile.settings.showAllCharacters ? "awake" : "sleeping";
+  if (profile.settings.showAllCharacters || legendUnlocked(profile, slot.characterId)) return "awake";
+  return isDiscovered(profile, slot.characterId) ? "met" : "sleeping";
 }
 
 export function LegendsScreen() {
@@ -57,7 +59,7 @@ export function LegendsScreen() {
     <div>
       <h2 className="title small">Legend Chamber</h2>
       <p className="subtitle">
-        {awake} of {LEGEND_SLOTS.length} Legends awake. Meet a Legend in battle and its place in the hall lights up.
+        {awake} of {LEGEND_SLOTS.length} Legends awake. Meet a Legend in battle, then win its trial to wake its place in the hall.
       </p>
 
       <div className={`chamber chamber-lit-${awake}`} role="group" aria-label="Legend Chamber">
@@ -76,6 +78,8 @@ export function LegendsScreen() {
           const label =
             state === "awake" && character
               ? character.displayName
+              : state === "met" && character
+                ? `${character.displayName} (trial awaits)`
               : state === "sealed"
                 ? "???"
                 : state === "sleeping"
@@ -92,7 +96,7 @@ export function LegendsScreen() {
               disabled={state === "unbuilt"}
               onClick={() => setOpenSlot(openSlot === s.slot ? null : s.slot)}
             >
-              {state === "awake" && character ? (
+              {(state === "awake" || state === "met") && character ? (
                 <Portrait characterId={character.id} displayName={character.displayName} size={s.slot === 12 ? 64 : 48} />
               ) : (
                 <span className="symbol" aria-hidden="true">
@@ -105,11 +109,11 @@ export function LegendsScreen() {
       </div>
 
       <div className="panel" aria-live="polite">
-        {open && openCharacter && slotState(open, profile) === "awake" ? (
+        {open && openCharacter && ["awake", "met"].includes(slotState(open, profile)) ? (
           <CharacterSheet character={openCharacter} profile={profile} mode="codex" />
         ) : open ? (
           <p>
-            <Icon name="lock" size={16} /> {slotState(open, profile) === "sealed" ? "Sealed until every other Legend has been met." : "Not yet met. Find it in battle."}
+            <Icon name="lock" size={16} /> {slotState(open, profile) === "sealed" ? "Sealed until every other Legend is unlocked and its boss encounter is won." : "Not yet met. Find it in battle."}
           </p>
         ) : (
           <p className="hp-text">Choose a position to learn more.</p>

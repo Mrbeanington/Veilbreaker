@@ -76,8 +76,13 @@ export default defineConfig({
         // separately-audited (see that script's VENDOR_CHUNK_PATTERN
         // comment) rather than pattern-matching strings inside a framework
         // we don't control, like React-DOM's SVG/MathML namespace URIs.
-        manualChunks: {
-          vendor: ["react", "react-dom"],
+        // Every third-party module lives in the "vendor" chunk (React, plus phase
+        // 09's qrcode, jsqr and fflate and their dependencies), which
+        // scripts/verify-client-only.mjs audits by hand instead of scanning.
+        // Audited: qrcode's SVG writer embeds the W3C xmlns identifier (never
+        // fetched); jsqr and fflate contain no URLs.
+        manualChunks(id: string) {
+          return id.includes("node_modules") ? "vendor" : undefined;
         },
       },
     },

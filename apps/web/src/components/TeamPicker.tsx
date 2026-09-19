@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { PICKABLE_CHARACTERS, TEAM_SIZE } from "../game/roster";
 import { filterCharacters, filterOptions, NO_FILTERS, type CharacterFilters } from "../game/filters";
-import { characterVisibility } from "../game/knowledge";
+import { characterVisibility, isUnlocked } from "../game/knowledge";
 import { useProfile } from "../profile/ProfileContext";
 import { CharacterFilterBar } from "./CharacterFilterBar";
 import { Icon } from "./Icon";
@@ -68,6 +68,7 @@ export function TeamPicker({ label, picked, onChange, showPresets = true }: Team
         {visible.length === 0 && <p className="hp-text">No characters match these filters.</p>}
         {visible.map((character) => {
           const locked = characterVisibility(character, profile) !== "full";
+          const legendLocked = !isUnlocked(character, profile);
           const isPicked = picked.includes(character.id);
           const isFavorite = profile.favorites.includes(character.id);
           if (locked) {
@@ -78,6 +79,15 @@ export function TeamPicker({ label, picked, onChange, showPresets = true }: Team
                 </span>
                 <span>Unknown fighter</span>
                 <span className="hp-text">Meet them in a match to unlock</span>
+              </div>
+            );
+          }
+          if (legendLocked) {
+            return (
+              <div key={character.id} role="listitem" className="roster-card locked">
+                <Portrait characterId={character.id} displayName={character.displayName} size={56} />
+                <span>{character.displayName}</span>
+                <span className="hp-text">Win its trial to unlock</span>
               </div>
             );
           }

@@ -1,6 +1,6 @@
 # Progress
 
-**Current phase:** 08 complete. Next: Phase 09 (local profile, persistence, progression).
+**Current phase:** 09 complete. Next: Phase 10 (friend matches).
 
 | Phase | Title | Status |
 |---|---|---|
@@ -13,7 +13,7 @@
 | 06 | Remaining 15 prototypes | ✅ done |
 | 07 | Bots and headless simulation | ✅ done |
 | 08 | Full client UI | ✅ done |
-| 09 | Local profile, persistence, progression, unlocks | ☐ |
+| 09 | Local profile, persistence, progression, unlocks | ✅ done |
 | 10 | Friend matches (serverless) | ☐ |
 | 11 | Local ranked | ☐ |
 | 12 | Dev-mode balance tools and local analytics | ☐ |
@@ -414,3 +414,6 @@ The Referee (Fouls/ejection), Maestro Nocturne (tempo), The Black Knight (Legend
 
 ### 2026-09-19 — Phase 08 (full client UI)
 Main navigation (Play, Characters, Teams, Ranked, Codex, Missions, Legends, Profile, Settings) with keyboard navigation, skip link and focus management; character select with search, role, origin, rarity, mastery, availability, favorites and recently played filters; team presets; Codex with knowledge levels fed by the player's own match logs; Legend Chamber (12 non-grid positions, Nameless One crowning, evolves with unlocks); full settings (interface size, high contrast, animation speed, reduced motion, sound, turn timer, bot skill, spoiler switch) persisted to IndexedDB through `packages/persistence`; silent sound-event hooks; self-hosted Cinzel font and inline SVG icons; bot skill wired through the Worker. Engine now logs `abilityUsed`. **Owner-delegated balance decision:** energy rules changed to 2 per living character and no turn-1 skip (first player 36.8% to 50.3%, lockouts down 68%, matches 36% shorter; see `docs/balance/report-2026-09-19.md`). **Bug fixed:** the match UI let a team queue more energy than it owned (crashed resolution). **Tests:** 351 (up from 320). ADR-017; OQ-44/45 resolved, OQ-48 to OQ-50 opened. **Files:** `packages/persistence/src/*`, `packages/engine/src/resolver.ts`, `packages/content/src/config/energy-rules.json`, `apps/web/src/{App,main,styles}`, `apps/web/src/{components,screens,game,settings,profile,sound}/*`, docs. **Custom scripts:** none. **Recommended next step:** Phase 09.
+
+### 2026-09-19 — Phase 09 (local profile, persistence, progression)
+`packages/persistence`: atomic saves with checksummed envelopes and 3 rolling backups, corrupted-write recovery, profile v2 with a migration runner, JSON backup export/import, compressed transfer codes with QR drawing and decoding, replay records and codes, hostile-input handling. Web: first-launch install screen and gentle re-ask, storage persistence and a "Progress protection" status, Profile screen (level, transfer send/receive with in-app camera scanner and paste, share-sheet backup, restore, optional auto-save to a file, match history, replay viewer with file import and `#replay=` links), Missions screen (missions, faction challenges, secret achievements), Legend trials with Legend unlocks and the Nameless One gate, replays recorded for every match. Bugs fixed: turn-limit end never reached the match screen; multi-key IndexedDB write did not abort on a bad value. **Tests:** 445 (up from 351). ADR-018; OQ-51 to OQ-55. **Not done:** Playwright/Lighthouse (OQ-51), local ranked and friend matches (later phases). **Custom scripts:** none. **Recommended next step:** Phase 10.

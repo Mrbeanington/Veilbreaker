@@ -5,7 +5,10 @@
 export interface KeyValueStore {
   get(key: string): Promise<unknown>;
   set(key: string, value: unknown): Promise<void>;
+  /** Writes every entry or none of them (one IndexedDB transaction): what makes a save atomic. */
+  setMany(entries: Record<string, unknown>): Promise<void>;
   delete(key: string): Promise<void>;
+  keys(): Promise<string[]>;
 }
 
 function clone<T>(value: T): T {
@@ -20,10 +23,16 @@ export function createMemoryStore(initial: Record<string, unknown> = {}): KeyVal
       data.set(key, clone(value));
       return Promise.resolve();
     },
+    setMany: (entries) => {
+      const copies = Object.entries(entries).map(([k, v]) => [k, clone(v)] as const); // clone first: all or nothing
+      for (const [k, v] of copies) data.set(k, v);
+      return Promise.resolve();
+    },
     delete: (key) => {
       data.delete(key);
       return Promise.resolve();
     },
+    keys: () => Promise.resolve([...data.keys()]),
   };
 }
 
@@ -55,9 +64,28 @@ export function createIndexedDbStore(databaseName = "veilbreak", factory: IDBFac
     set: async (key, value) => {
       await request((await store("readwrite")).put(value, key));
     },
+    setMany: async (entries) => {
+      const db = await open();
+      await new Promise<void>((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, "readwrite");
+        const objectStore = tx.objectStore(STORE_NAME);
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error ?? new Error("save failed"));
+        tx.onabort = () => reject(tx.error ?? new Error("save aborted"));
+        try {
+          for (const [key, value] of Object.entries(entries)) objectStore.put(value, key);
+        } catch (error) {
+          // A value that cannot be stored must undo the entries already queued,
+          // otherwise the transaction would still commit half a save.
+          tx.abort();
+          reject(error);
+        }
+      });
+    },
     delete: async (key) => {
       await request((await store("readwrite")).delete(key));
     },
+    keys: async () => (await request((await store("readonly")).getAllKeys())).map(String),
   };
 }
 

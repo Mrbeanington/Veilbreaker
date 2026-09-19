@@ -4,6 +4,9 @@ import { PICKABLE_CHARACTERS, TEAM_SIZE } from "../game/roster";
 
 interface SetupScreenProps {
   mode: "hotseat" | "bot";
+  /** A fixed opposing team (a Legend trial): the player only chooses their own. */
+  opponentIds?: readonly string[];
+  title?: string;
   onReady: (teamAIds: string[], teamBIds: string[]) => void;
   onBack: () => void;
 }
@@ -14,21 +17,21 @@ function randomTeam(exclude: string[], pool: { id: string }[]): string[] {
   return shuffled.slice(0, TEAM_SIZE).map((c) => c.id);
 }
 
-export function SetupScreen({ mode, onReady, onBack }: SetupScreenProps) {
+export function SetupScreen({ mode, opponentIds, title, onReady, onBack }: SetupScreenProps) {
   const [teamA, setTeamA] = useState<string[]>([]);
   const [teamB, setTeamB] = useState<string[]>([]);
 
   const teamAReady = teamA.length === TEAM_SIZE;
-  const teamBReady = mode === "bot" || teamB.length === TEAM_SIZE;
+  const teamBReady = mode === "bot" || opponentIds !== undefined || teamB.length === TEAM_SIZE;
 
   function handleContinue() {
-    onReady(teamA, mode === "bot" ? randomTeam(teamA, PICKABLE_CHARACTERS) : teamB);
+    onReady(teamA, opponentIds ? [...opponentIds] : mode === "bot" ? randomTeam(teamA, PICKABLE_CHARACTERS) : teamB);
   }
 
   return (
     <div>
       <h2 className="title" style={{ fontSize: "1.6rem" }}>
-        Choose your team{mode === "hotseat" ? "s" : ""}
+        {title ?? `Choose your team${mode === "hotseat" ? "s" : ""}`}
       </h2>
       <p className="subtitle">Pick exactly {TEAM_SIZE} characters. The same character may appear on both sides.</p>
 

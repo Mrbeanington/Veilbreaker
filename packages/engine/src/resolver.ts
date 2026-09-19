@@ -660,20 +660,17 @@ export function resolveTurn(
     const percentA = hpPercent(teamA);
     const percentB = hpPercent(teamB);
     const winnerPlayerId = percentA === percentB ? null : percentA > percentB ? teamA.playerId : teamB.playerId;
-    nextState = {
-      ...nextState,
-      eventLog: [
-        ...nextState.eventLog,
-        {
-          turn: state.turn,
-          tierId: RESOURCE_GENERATION_TIER_ID,
-          turnRelativeSequence: sequence,
-          type: "matchEndedByTurnLimit",
-          payload: { winnerPlayerId, teamAHpPercent: percentA, teamBHpPercent: percentB },
-          knowledgeLevel: "PUBLIC",
-        },
-      ],
-    };
+    // The event belongs in this turn's returned events too (not only the log), so
+    // callers watching `events` see the match end at the turn limit.
+    events.push({
+      turn: state.turn,
+      tierId: RESOURCE_GENERATION_TIER_ID,
+      turnRelativeSequence: sequence,
+      type: "matchEndedByTurnLimit",
+      payload: { winnerPlayerId, teamAHpPercent: percentA, teamBHpPercent: percentB },
+      knowledgeLevel: "PUBLIC",
+    });
+    nextState = { ...nextState, eventLog: [...state.eventLog, ...events] };
     sequence += 1;
   }
 

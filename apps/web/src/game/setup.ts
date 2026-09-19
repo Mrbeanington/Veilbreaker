@@ -21,7 +21,7 @@ import { createBattle, type BattleState, type CreateBattleTeamInput, type Resolv
 
 export const BALANCE_VERSION_ID = "phase-05-v1";
 
-function buildTeamInput(playerId: string, characterIds: readonly string[]): CreateBattleTeamInput {
+export function buildTeamInput(playerId: string, characterIds: readonly string[]): CreateBattleTeamInput {
   return {
     playerId,
     characters: characterIds.map((id) => {

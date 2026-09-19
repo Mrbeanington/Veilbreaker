@@ -36,7 +36,9 @@ const ALLOWLIST = ["sw.js"];
 // to open manually, never something React fetches. Rather than pattern-match
 // around a specific vendor's internals (fragile across version bumps), the
 // vendor chunk is excluded from this scan entirely; audit it once by hand
-// whenever a new production dependency is added to `manualChunks.vendor`.
+// whenever a new production dependency is added to `manualChunks.vendor`
+// (phase 09 added qrcode, jsqr and fflate; qrcode's SVG writer embeds the same
+// xmlns identifier, and nothing in the three makes a network request).
 const VENDOR_CHUNK_PATTERN = /[\\/]vendor-[^\\/]*\.[cm]?js$/;
 
 import { readdir, readFile } from "node:fs/promises";

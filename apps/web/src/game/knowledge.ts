@@ -27,9 +27,15 @@ export function characterVisibility(character: CharacterDefinition, profile: Pro
   return "full";
 }
 
-/** Only fully revealed characters may be picked for a team. */
+/** Legends are accomplishments (spec/06): meeting one reveals it, but only winning its trial unlocks it for your team. */
+export function isUnlocked(character: CharacterDefinition, profile: Profile): boolean {
+  if (character.rarity !== "LEGENDARY") return true;
+  return profile.settings.showAllCharacters || profile.unlocks.legends.includes(character.id);
+}
+
+/** Only revealed, unlocked characters may be picked for a team. */
 export function isPickable(character: CharacterDefinition, profile: Profile): boolean {
-  return characterVisibility(character, profile) === "full";
+  return characterVisibility(character, profile) === "full" && isUnlocked(character, profile);
 }
 
 const REVEALED_BY_DEFAULT: KnowledgeLevel = "PUBLIC";
@@ -93,7 +99,7 @@ export function rolesOf(character: CharacterDefinition): string[] {
 export function unlockHint(character: CharacterDefinition): string {
   switch (character.rarity) {
     case "LEGENDARY":
-      return "A Legend. Meet one in battle to learn its name.";
+      return "A Legend. Meet one in battle to learn its name, then win its trial to unlock it.";
     case "SECRET":
       return "A secret fighter. Face it in a match to uncover it.";
     default:

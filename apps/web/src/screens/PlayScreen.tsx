@@ -2,7 +2,7 @@ import { GAME_TITLE } from "@veilbreak/content";
 import { Icon } from "../components/Icon";
 
 interface PlayScreenProps {
-  onStart: (mode: "hotseat" | "bot") => void;
+  onStart: (mode: "hotseat" | "bot" | "trials" | "replays") => void;
 }
 
 // spec/05: PLAY offers Vs. AI, PvE/Trials, Local Hotseat, Friend Match and
@@ -25,10 +25,19 @@ export function PlayScreen({ onStart }: PlayScreenProps) {
           <strong>Local Hotseat</strong>
           <span>Two players, one device.</span>
         </button>
+        <button type="button" className="mode-card" onClick={() => onStart("trials")}>
+          <Icon name="legends" size={22} />
+          <strong>Legend Trials</strong>
+          <span>Beat a Legend to unlock it for your teams.</span>
+        </button>
+        <button type="button" className="mode-card" onClick={() => onStart("replays")}>
+          <Icon name="clock" size={22} />
+          <strong>Replays</strong>
+          <span>Watch a finished match again.</span>
+        </button>
         {[
-          ["Trials (PvE)", "Special challenges against Legends."],
           ["Friend Match", "Play a friend with a shared code."],
-          ["Replays", "Watch a finished match again."],
+          ["Ranked ladder", "Climb divisions against bots."],
         ].map(([title, text]) => (
           <div key={title} className="mode-card unavailable" aria-disabled="true">
             <Icon name="lock" size={22} />

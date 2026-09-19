@@ -390,6 +390,16 @@ describe("resolveTurn — max-turn rule (OQ-14)", () => {
     expect(endEvent).toBeDefined();
     expect(endEvent?.payload.winnerPlayerId).toBe("playerA");
   });
+
+  // Regression: the turn-limit end was only in the log, so a UI watching the
+  // turn's returned events never saw the match end and played on past the limit.
+  it("also returns the turn-limit event in the turn's own events", () => {
+    const state = freshBattle(1, { ...defaultMatchFormat, maxTurns: 1 });
+    const result = resolveTurn(state, [{ playerId: "playerA", characterId: "a1", abilityId: strike30.id, targetIds: ["b1"] }], [], deps());
+    if (!result.ok) throw new Error("expected a legal turn");
+    expect(result.events.some((e) => e.type === "matchEndedByTurnLimit")).toBe(true);
+    expect(result.state.eventLog.filter((e) => e.type === "matchEndedByTurnLimit")).toHaveLength(1);
+  });
 });
 
 describe("resolveTurn — initiative alternation (OQ-02)", () => {

@@ -1,12 +1,11 @@
 import { z } from "zod";
-import type { KeyValueStore } from "./store";
 
 // The local profile (spec/06): created automatically on first launch, no
-// account. Versioned from day one so later phases can migrate it. Phase 08
-// stores what the UI needs: settings, favorites, team presets, mastery
-// counters, and the Codex discovery state. Phase 09 adds progression.
-export const PROFILE_VERSION = 1;
-const PROFILE_KEY = "profile";
+// account. Versioned with forward migrations (`MIGRATIONS`), each tested.
+//   v1 (Phase 08): settings, favorites, recents, presets, Codex discoveries.
+//   v2 (Phase 09): adds xp, Legend unlocks, missions, achievements, match
+//                  history, install state.
+export const PROFILE_VERSION = 2;
 
 const pairTable = z.record(z.string(), z.record(z.string(), z.number().int().min(0)));
 
@@ -24,9 +23,9 @@ export const settingsSchema = z.object({
 export type Settings = z.infer<typeof settingsSchema>;
 
 export const teamPresetSchema = z.object({
-  id: z.string().min(1),
+  id: z.string().min(1).max(60),
   name: z.string().min(1).max(40),
-  characterIds: z.array(z.string().min(1)).max(6),
+  characterIds: z.array(z.string().min(1).max(80)).max(6),
 });
 export type TeamPreset = z.infer<typeof teamPresetSchema>;
 
@@ -37,6 +36,21 @@ export const discoverySchema = z.object({
   transformations: z.array(z.string()).default([]),
 });
 export type Discovery = z.infer<typeof discoverySchema>;
+
+export const historyEntrySchema = z.object({
+  id: z.string().min(1).max(60),
+  playedAt: z.number().int().min(0),
+  mode: z.enum(["bot", "hotseat", "trial"]),
+  teamAIds: z.array(z.string()).max(6),
+  teamBIds: z.array(z.string()).max(6),
+  winnerPlayerId: z.string().nullable(),
+  turns: z.number().int().min(0),
+  replayId: z.string().optional(),
+  trialId: z.string().optional(),
+});
+export type HistoryEntry = z.infer<typeof historyEntrySchema>;
+
+export const MAX_HISTORY = 50;
 
 export const profileSchema = z.object({
   version: z.literal(PROFILE_VERSION),
@@ -51,6 +65,32 @@ export const profileSchema = z.object({
   /** wonWith[a][b]: matches won with a and b on the same team. */
   wonWith: pairTable.default({}),
   matchesPlayed: z.number().int().min(0).default(0),
+  // ---- v2
+  xp: z.number().int().min(0).default(0),
+  unlocks: z
+    .object({
+      legends: z.array(z.string()).default([]),
+      namelessBossDefeated: z.boolean().default(false),
+    })
+    .default({}),
+  trialsWon: z.array(z.string()).default([]),
+  missions: z
+    .object({
+      progress: z.record(z.string(), z.number().int().min(0)).default({}),
+      completed: z.array(z.string()).default([]),
+    })
+    .default({}),
+  achievements: z.array(z.string()).default([]),
+  history: z.array(historyEntrySchema).max(MAX_HISTORY).default([]),
+  install: z
+    .object({
+      firstLaunchHandled: z.boolean().default(false),
+      installed: z.boolean().default(false),
+      asks: z.number().int().min(0).default(0),
+      lastAskAt: z.number().int().min(0).optional(),
+    })
+    .default({}),
+  lastPlayedAt: z.number().int().min(0).optional(),
 });
 export type Profile = z.infer<typeof profileSchema>;
 
@@ -58,27 +98,93 @@ export function createDefaultProfile(): Profile {
   return profileSchema.parse({ version: PROFILE_VERSION });
 }
 
-/** Turns whatever was stored into a valid current-version profile. Unknown, damaged or future data falls back to defaults rather than crashing the game. */
+// ---------------------------------------------------------------- levels
+
+const XP_PER_LEVEL_BASE = 100;
+
+/** Account level from total xp: level 1 at 0 xp, each level needs 100 more than the last (100, 200, 300...). */
+export function levelForXp(xp: number): number {
+  let level = 1;
+  let needed = XP_PER_LEVEL_BASE;
+  let remaining = Math.max(0, Math.floor(xp));
+  while (remaining >= needed) {
+    remaining -= needed;
+    level += 1;
+    needed += XP_PER_LEVEL_BASE;
+  }
+  return level;
+}
+
+/** Progress inside the current level: `{ into, needed }`. */
+export function levelProgress(xp: number): { level: number; into: number; needed: number } {
+  let level = 1;
+  let needed = XP_PER_LEVEL_BASE;
+  let remaining = Math.max(0, Math.floor(xp));
+  while (remaining >= needed) {
+    remaining -= needed;
+    level += 1;
+    needed += XP_PER_LEVEL_BASE;
+  }
+  return { level, into: remaining, needed };
+}
+
+// ---------------------------------------------------------------- migrations
+
+type Raw = Record<string, unknown>;
+
+/** MIGRATIONS[n] upgrades a version-n profile to version n+1. Every entry has a test. */
+export const MIGRATIONS: Record<number, (data: Raw) => Raw> = {
+  // v1 -> v2: the new blocks all have defaults; only the version changes.
+  1: (data) => ({ ...data, version: 2 }),
+};
+
+export type ParseResult = { ok: true; profile: Profile; migratedFrom?: number } | { ok: false; reason: string };
+
+/** Strict: migrates a stored profile forward and validates it. Never guesses. */
+export function parseProfile(raw: unknown): ParseResult {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return { ok: false, reason: "not a profile" };
+  const data = raw as Raw;
+  const version = data.version;
+  if (typeof version !== "number" || !Number.isInteger(version) || version < 1) return { ok: false, reason: "missing or invalid version" };
+  if (version > PROFILE_VERSION) return { ok: false, reason: `saved by a newer version of the game (v${version})` };
+
+  let current: Raw = data;
+  for (let v = version; v < PROFILE_VERSION; v += 1) {
+    const step = MIGRATIONS[v];
+    if (!step) return { ok: false, reason: `no migration from version ${v}` };
+    current = step(current);
+  }
+  const parsed = profileSchema.safeParse(current);
+  if (!parsed.success) return { ok: false, reason: parsed.error.issues[0]?.message ?? "invalid profile" };
+  return { ok: true, profile: parsed.data, migratedFrom: version < PROFILE_VERSION ? version : undefined };
+}
+
+/** Lenient: like `parseProfile`, but a damaged settings block is dropped (not the whole profile), and anything else unusable becomes a fresh profile. */
 export function migrateProfile(raw: unknown): Profile {
-  if (raw && typeof raw === "object") {
-    const parsed = profileSchema.safeParse(raw);
-    if (parsed.success) return parsed.data;
-    // Keep what still parses: one bad block must not wipe the whole profile.
-    const record = raw as Record<string, unknown>;
-    const salvage = profileSchema.safeParse({ ...record, version: PROFILE_VERSION, settings: undefined });
-    if (salvage.success && record.version === PROFILE_VERSION) return salvage.data;
+  const strict = parseProfile(raw);
+  if (strict.ok) return strict.profile;
+  if (raw && typeof raw === "object" && !Array.isArray(raw) && (raw as Raw).version === PROFILE_VERSION) {
+    const salvage = parseProfile({ ...(raw as Raw), settings: undefined });
+    if (salvage.ok) return salvage.profile;
   }
   return createDefaultProfile();
 }
 
-export async function loadProfile(store: KeyValueStore): Promise<Profile> {
-  try {
-    return migrateProfile(await store.get(PROFILE_KEY));
-  } catch {
-    return createDefaultProfile();
-  }
+// ---------------------------------------------------------------- summaries
+
+export interface ProfileSummary {
+  level: number;
+  legends: number;
+  matches: number;
+  lastPlayedAt?: number;
 }
 
-export async function saveProfile(store: KeyValueStore, profile: Profile): Promise<void> {
-  await store.set(PROFILE_KEY, profile);
+/** What the overwrite-confirmation shows: "Level 23 · 7 Legends · last played Sept 12". */
+export function summarizeProfile(profile: Profile): ProfileSummary {
+  return {
+    level: levelForXp(profile.xp),
+    legends: profile.unlocks.legends.length,
+    matches: profile.matchesPlayed,
+    lastPlayedAt: profile.lastPlayedAt,
+  };
 }
