@@ -26,6 +26,7 @@ import { decrementSummonDurations } from "./summons";
 import { resolveTargets } from "./targeting";
 import { deriveGameEvents, evaluateEvent, type GameEvent, type TriggerDeps } from "./triggers";
 import { createRng, nextUint32, type RngState } from "./rng";
+import { restoreFromSnapshot, snapshotBattleState } from "./snapshot";
 import type { AppliedEvent } from "./types";
 
 // spec/01 "Resolution stack": abilities without an explicit
@@ -46,6 +47,8 @@ export interface CreateBattleCharacterInput {
   abilityIds?: string[];
   passiveId?: string;
   resources?: Record<string, number>;
+  /** Character definition tags (ADR-015), read by `hasTag` conditions. */
+  tags?: string[];
 }
 
 export interface CreateBattleTeamInput {
@@ -88,6 +91,7 @@ export function createBattle(
         resources: c.resources ?? {},
         abilityIds: c.abilityIds ?? [],
         passiveId: c.passiveId,
+        tags: c.tags ?? [],
         abilityHistory: [],
         stats: { damageDealt: 0, damageReceived: 0, healingDone: 0, kills: 0, deaths: 0 },
         pendingRngModifiers: [],
@@ -236,6 +240,8 @@ export function resolveTurn(
   // Most recent damager per target this turn — used to attribute onKill /
   // the "death" event's sourceId, since death itself carries no such data.
   const lastDamageSourceByTarget = new Map<string, string>();
+  // ADR-015 / OQ-06: set when a rewindTurn effect fires; the turn is then abandoned and the turn-start state restored.
+  const rewind: { request?: { sourceId: string; persistResourceId: string } } = {};
 
   function pushEvent(
     tierId: string,
@@ -287,6 +293,9 @@ export function resolveTurn(
       pushEvent(tierId, event.type, event.sourceId, event.targetId, event.payload);
       if (event.type === "statusApplied" && event.targetId && typeof event.payload?.statusId === "string") {
         statusesAppliedThisTurn.add(`${event.targetId}:${event.payload.statusId}`);
+      }
+      if (event.type === "rewindRequested" && event.sourceId && typeof event.payload?.persistResourceId === "string") {
+        rewind.request ??= { sourceId: event.sourceId, persistResourceId: event.payload.persistResourceId };
       }
       if (event.type === "damageDealt" && event.sourceId && event.targetId) {
         lastDamageSourceByTarget.set(event.targetId, event.sourceId);
@@ -468,6 +477,11 @@ export function resolveTurn(
     }
 
     if (tier.id === DEATH_CHECK_TIER_ID) {
+      // ADR-015: give "when I would die" passives (rewind) a chance to act before anyone is marked dead.
+      for (const [characterId, character] of Object.entries(characters)) {
+        if (character.alive && character.currentHp <= 0) fireEvent(tier.id, { event: "onWouldDie", subjectId: characterId });
+      }
+      if (rewind.request) break;
       for (const [characterId, character] of Object.entries(characters)) {
         if (character.alive && character.currentHp <= 0) {
           const killerId = lastDamageSourceByTarget.get(characterId);
@@ -560,6 +574,30 @@ export function resolveTurn(
         rngState = generated.nextRngState;
       }
     }
+  }
+
+  // ADR-015 / OQ-06 rewind: abandon this turn's outcome and return the turn-start
+  // state (both teams, same turn number, same initiative). What survives the
+  // rewind: the advanced RNG stream (no identical re-roll), the append-only log,
+  // and the requester's spent charge (once per battle, even if the replayed turn
+  // kills them again). Energy is restored too, so both players re-plan from scratch.
+  const rewindRequest = rewind.request;
+  if (rewindRequest) {
+    const requester = state.characters[rewindRequest.sourceId];
+    const spent = characters[rewindRequest.sourceId]?.resources[rewindRequest.persistResourceId];
+    const restoredCharacters =
+      requester && spent !== undefined
+        ? {
+            ...state.characters,
+            [rewindRequest.sourceId]: {
+              ...requester,
+              resources: { ...requester.resources, [rewindRequest.persistResourceId]: spent },
+            },
+          }
+        : state.characters;
+    pushEvent(DEATH_CHECK_TIER_ID, "turnRewound", rewindRequest.sourceId, undefined, { restoredTurn: state.turn });
+    const restored = restoreFromSnapshot(snapshotBattleState({ ...state, characters: restoredCharacters }));
+    return { ok: true, state: { ...restored, rngState, eventLog: [...state.eventLog, ...events] }, events };
   }
 
   // spec/02 onTurnEnd: mirrors onTurnStart, fired once per living character

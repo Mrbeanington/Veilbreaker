@@ -18,6 +18,7 @@ export function testCharacter(
     statuses: [],
     resources: {},
     abilityIds: [],
+    tags: [],
     abilityHistory: [],
     stats: { damageDealt: 0, damageReceived: 0, healingDone: 0, kills: 0, deaths: 0 },
     pendingRngModifiers: [],

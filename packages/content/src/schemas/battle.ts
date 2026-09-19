@@ -101,6 +101,8 @@ export const characterRuntimeStateSchema = z.object({
   resources: z.record(idSchema, z.number().int()).default({}),
   abilityIds: z.array(idSchema).default([]),
   passiveId: idSchema.optional(),
+  // ADR-015: the character definition's tags (e.g. LEGENDARY), so `hasTag` conditions work.
+  tags: z.array(z.string()).default([]),
   // Most recent last; capped in length by the engine, not the schema.
   abilityHistory: z.array(idSchema).default([]),
   stats: characterStatsSchema.default({

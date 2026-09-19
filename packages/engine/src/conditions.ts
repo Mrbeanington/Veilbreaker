@@ -63,11 +63,10 @@ export function evaluateCondition(state: ConditionState, condition: Condition, c
       return character ? hasStatus(character, condition.statusId) : false;
     }
 
-    case "hasTag":
-      // Tags live on CharacterDefinition (content), which no engine runtime
-      // state references yet — no roster exists before Phase 04. Always
-      // false until a content lookup is threaded through here.
-      return false;
+    case "hasTag": {
+      const character = resolveCharacter(state, ctx, condition.target);
+      return character ? (character.tags ?? []).includes(condition.tag) : false;
+    }
 
     case "resourceAtLeast": {
       const character = resolveCharacter(state, ctx, condition.target);
@@ -121,6 +120,12 @@ export function evaluateCondition(state: ConditionState, condition: Condition, c
       const recent = character.abilityHistory.slice(-condition.sequence.length);
       if (recent.length !== condition.sequence.length) return false;
       return recent.every((abilityId, i) => abilityId === condition.sequence[i]);
+    }
+
+    case "repeatedAbility": {
+      const character = resolveCharacter(state, ctx, condition.target);
+      const history = character?.abilityHistory ?? [];
+      return history.length >= 2 && history[history.length - 1] === history[history.length - 2];
     }
 
     case "secretScript":

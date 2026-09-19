@@ -57,6 +57,8 @@ function describeEffect(effect: Effect): string {
       return "Transform.";
     case "erase":
       return "Erase the target, bypassing death effects.";
+    case "rewindTurn":
+      return "Rewind the turn: everyone returns to how they started it.";
     case "resurrect":
       return `Resurrect at ${effect.healthPercent ?? 50}% HP.`;
     case "modifyRandomOutcome":

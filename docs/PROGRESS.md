@@ -1,6 +1,6 @@
 # Progress
 
-**Current phase:** 06 (batches 1-2 of 3 complete: 10 of 15 characters). Next: 06 batch 3.
+**Current phase:** 06 (all 3 batches complete: 15 of 15 characters). Next: Phase 07.
 
 | Phase | Title | Status |
 |---|---|---|
@@ -10,7 +10,7 @@
 | 03 | Advanced systems | ☑ |
 | 04 | First five prototypes | ☑ |
 | 05 | Playable local 3v3 | ☑ |
-| 06 | Remaining 15 prototypes | ◐ batch 2/3 |
+| 06 | Remaining 15 prototypes | ✅ done |
 | 07 | Bots and headless simulation | ☐ |
 | 08 | Full client UI | ☐ |
 | 09 | Local profile, persistence, progression, unlocks | ☐ |
@@ -405,3 +405,6 @@ Father Bell, The Plague Doctor, Behemoth (Legend), Shiro (Legend), Hydra: full d
 
 ### 2026-09-19 — Phase 06, batch 2
 Koschei (Death Seals), Baba Yaga, The Nine-Tailed Trickster (tails -> Ascension), The Gambler (probability/Chips), Zeiron (Legend): data, art specs, design notes, coverage regenerated, ADR-014. No engine changes. 18 new scenario tests in `batch2.scenario.test.ts` (Seals surviving a lethal blow; Ascension at 9 tails; Fox Fire Burn blocking Hydra's Regrow; Gambler roll consistency/determinism/Loaded Dice; Baba Yaga hut/flight/passive; Zeiron Wrath, Hush counter, Broken Crown). OQ-41 resolved. **Remaining:** The Referee, Maestro Nocturne, Black Knight, Emperor Zero, The Nameless One.
+
+### 2026-09-19 — Phase 06, batch 3 (Phase 06 complete)
+The Referee (Fouls/ejection), Maestro Nocturne (tempo), The Black Knight (Legend), Emperor Zero (Legend), The Nameless One (Final Legend, rewind): data, art specs (Legend reveal prompts; Nameless One locked silhouette and unlocked reveal), design notes, coverage regenerated. **Generic engine additions (ADR-015):** `repeatedAbility` condition, runtime `tags` (real `hasTag`), the `@lastUsed` ability token, the `onWouldDie` trigger and the `rewindTurn` effect (resolver restores the turn-start state, keeping the RNG stream, append-only log and spent charge). 33 new tests in `batch3.scenario.test.ts`, covering all of spec/07's rewind list (every state field, RNG, once-per-battle, death-prevention precedence, simultaneous death, erasure bypass, log, replay determinism). Web: `tags` passed into `createBattle`, `turnRewound` log line. **Files:** `packages/content/src/schemas/{condition,effect,battle}.ts`, `packages/content/src/{tooltip,coverage}.ts`, five new `packages/content/src/data/characters/*.ts` plus `index.ts`, `packages/engine/src/{conditions,effects,resolver,test-support}.ts`, `packages/engine/src/scenarios/batch3.scenario.test.ts`, `apps/web/src/game/{setup,describeEvent}.ts`, five design notes, `packages/content/coverage.md`, DECISIONS/OPEN-QUESTIONS. OQ-40 resolved; OQ-42 (rewind vs friend-match commit-reveal), OQ-43 (Ability Lock is single-slot) opened. **Custom scripts:** none. **Recommended next step:** Phase 07.

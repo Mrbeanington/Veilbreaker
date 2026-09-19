@@ -86,6 +86,10 @@ export function describeBattleEvent(event: BattleEvent): string | null {
       return `${source} redirects a queued action.`;
     case "death":
       return `${target} has fallen${event.sourceId ? `, defeated by ${source}` : ""}.`;
+    case "rewindRequested":
+      return null; // the turnRewound line that follows says it for the player
+    case "turnRewound":
+      return `${source} unwrites the turn: everything returns to how it started. Both sides plan again.`;
     case "recursionGuardTripped":
       return null; // internal safety valve, not meaningful to a player
     case "actionSkippedActorNotAlive":

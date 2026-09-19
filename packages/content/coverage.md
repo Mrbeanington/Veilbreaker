@@ -1,26 +1,26 @@
 # Mechanical Coverage Matrix
 
-Generated from `packages/content/src/data/characters/**` by `pnpm run generate-coverage` (`packages/content/scripts/generate-coverage.ts`) — do not hand-edit. Maps each of spec/03's required mechanics to the characters currently using it. A mechanic with no characters listed is a real gap, not a script bug: only 16 of the roster's 120 characters exist yet (Phase 04).
+Generated from `packages/content/src/data/characters/**` by `pnpm run generate-coverage` (`packages/content/scripts/generate-coverage.ts`) — do not hand-edit. Maps each of spec/03's required mechanics to the characters currently using it. A mechanic with no characters listed is a real gap, not a script bug: only 21 of the roster's 120 characters exist yet (Phase 04).
 
 | Mechanic | Characters |
 |---|---|
-| raw damage | ???, Baba Yaga, Behemoth, Father Bell, Hydra, Koschei the Deathless, Malachar, Lord of the Last Breath, Mason "Moonshot" Maddox, Mister Whiskers, Patient Zero, Shiro, the Last Brush, The Gambler, The Nine-Tailed Trickster, The Plague Doctor, Tortuga Rex, Zeiron, the God Who Refused Olympus |
+| raw damage | ???, Baba Yaga, Behemoth, Emperor Zero, Father Bell, Hydra, Koschei the Deathless, Maestro Nocturne, Malachar, Lord of the Last Breath, Mason "Moonshot" Maddox, Mister Whiskers, Patient Zero, Shiro, the Last Brush, The Black Knight, The Gambler, The Nameless One, The Nine-Tailed Trickster, The Plague Doctor, The Referee, Tortuga Rex, Zeiron, the God Who Refused Olympus |
 | DoT | Baba Yaga, Hydra, Patient Zero, The Nine-Tailed Trickster, The Plague Doctor |
-| armor | Behemoth, Mason "Moonshot" Maddox, Tortuga Rex |
-| shielding | Father Bell |
+| armor | Behemoth, Emperor Zero, Mason "Moonshot" Maddox, The Black Knight, Tortuga Rex |
+| shielding | Father Bell, The Referee |
 | counterattacks | Zeiron, the God Who Refused Olympus |
 | reflection | _none yet_ |
 | healing | Baba Yaga, Father Bell, Hydra, Tortuga Rex |
 | anti-healing | The Plague Doctor |
 | energy stealing | Mister Whiskers |
 | energy generation | _none yet_ |
-| cooldown manipulation | _none yet_ |
-| stuns | Koschei the Deathless, Mason "Moonshot" Maddox, The Nine-Tailed Trickster |
-| silences | Father Bell |
-| ability locks | _none yet_ |
+| cooldown manipulation | Emperor Zero, Maestro Nocturne |
+| stuns | Koschei the Deathless, Mason "Moonshot" Maddox, The Nine-Tailed Trickster, The Referee |
+| silences | Father Bell, The Black Knight, The Nameless One |
+| ability locks | Emperor Zero |
 | target manipulation | Mister Whiskers |
 | summons | Baba Yaga, Malachar, Lord of the Last Breath |
-| death | Baba Yaga, Malachar, Lord of the Last Breath, Shiro, the Last Brush |
+| death | Baba Yaga, Malachar, Lord of the Last Breath, Shiro, the Last Brush, The Nameless One |
 | resurrection | _none yet_ |
 | anti-resurrection | Father Bell |
 | transformations | Malachar, Lord of the Last Breath, Patient Zero, The Nine-Tailed Trickster |

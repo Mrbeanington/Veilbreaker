@@ -136,7 +136,7 @@ function usesCombosOrSequenceConditions(profile: CharacterProfile): boolean {
 
 function referencesDeathEvents(character: CharacterDefinition, profile: CharacterProfile): boolean {
   const passive = character.passiveId ? PASSIVE_LIBRARY[character.passiveId] : undefined;
-  const passiveListensToDeath = passive?.trigger.event === "onDeath" || passive?.trigger.event === "onKill";
+  const passiveListensToDeath = passive?.trigger.event === "onDeath" || passive?.trigger.event === "onKill" || passive?.trigger.event === "onWouldDie";
   return passiveListensToDeath || hasKind(profile, "erase") || hasKind(profile, "resurrect");
 }
 

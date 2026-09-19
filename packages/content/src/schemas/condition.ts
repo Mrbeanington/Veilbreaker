@@ -32,6 +32,8 @@ export type Condition =
   // checked against CharacterRuntimeState.abilityHistory (most recent last).
   | { type: "usedAbilityLastTurn"; target: z.infer<typeof targetRefSchema>; abilityId: string }
   | { type: "abilitySequenceMatches"; target: z.infer<typeof targetRefSchema>; sequence: string[] }
+  // phase-06 batch 3 (ADR-015, OQ-40): true when the character's two most recent abilities were the same one.
+  | { type: "repeatedAbility"; target: z.infer<typeof targetRefSchema> }
   // An escape hatch for a mechanic components genuinely cannot express
   // (CLAUDE.md rule 3). `scriptId` must be registered in DECISIONS.md under
   // "Custom script registry" before it is used by any character.
@@ -108,6 +110,7 @@ export const conditionSchema: z.ZodType<Condition> = z.lazy(() =>
       target: targetRefSchema,
       sequence: z.array(idSchema).min(1),
     }),
+    z.object({ type: z.literal("repeatedAbility"), target: targetRefSchema }),
     z.object({
       type: z.literal("secretScript"),
       scriptId: idSchema,
@@ -133,6 +136,8 @@ export const triggerEventSchema = z.enum([
   "onResourceChanged",
   "onHpThreshold",
   "onDeath",
+  // Fired in the death-check tier for a character at 0 HP, just BEFORE it is marked dead (ADR-015).
+  "onWouldDie",
   "onKill",
   "onResurrection",
 ]);

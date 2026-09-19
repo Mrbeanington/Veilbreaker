@@ -10,7 +10,7 @@ import type {
   TargetRule,
   Transformation,
 } from "@veilbreak/content";
-import { RESURRECTION_LOCK, SOUL_CONSECRATION } from "@veilbreak/content";
+import { LAST_USED_ABILITY, RESURRECTION_LOCK, SOUL_CONSECRATION } from "@veilbreak/content";
 import { createEmptyPool, richestFamily } from "./energy";
 import { resolveDamage, resolveHeal } from "./damage";
 import { applyStatusToCharacter, dispelCharacter, hasStatus, removeStatusFromCharacter } from "./statuses";
@@ -56,6 +56,12 @@ export interface EffectResult {
 
 function ownerOf(teams: [BattleTeam, BattleTeam], characterId: string): string | undefined {
   return teams.find((team) => team.characterIds.includes(characterId))?.playerId;
+}
+
+/** ADR-015: resolves the `@lastUsed` token to the target's most recently used ability; any other value passes through. */
+function resolveAbilityToken(value: string | undefined, target: { abilityHistory: readonly string[] }): string | undefined {
+  if (value !== LAST_USED_ABILITY) return value;
+  return target.abilityHistory[target.abilityHistory.length - 1];
 }
 
 function conditionStateOf(state: EffectState, ctx: EffectContext): ConditionState {
@@ -131,20 +137,22 @@ export function applyEffect(
       for (const targetId of ctx.targetIds) {
         const target = characters[targetId];
         if (!target?.alive) continue;
+        const param = resolveAbilityToken(effect.param, target);
+        if (effect.param === LAST_USED_ABILITY && param === undefined) continue;
         characters = {
           ...characters,
           [targetId]: applyStatusToCharacter(target, definition, {
             durationTurns: effect.durationTurns,
             stacks: effect.stacks,
             magnitude: effect.magnitude,
-            param: effect.param,
+            param,
           }),
         };
         events.push({
           type: "statusApplied",
           sourceId: ctx.sourceId,
           targetId,
-          payload: { statusId: effect.statusId, magnitude: effect.magnitude ?? 0, param: effect.param },
+          payload: { statusId: effect.statusId, magnitude: effect.magnitude ?? 0, param },
         });
       }
       return { state: { ...state, characters }, events, nextRngState: rngState };
@@ -231,17 +239,19 @@ export function applyEffect(
       for (const targetId of ctx.targetIds) {
         const target = characters[targetId];
         if (!target) continue;
-        const current = target.cooldowns[effect.abilityId] ?? 0;
+        const abilityId = resolveAbilityToken(effect.abilityId, target);
+        if (abilityId === undefined) continue;
+        const current = target.cooldowns[abilityId] ?? 0;
         const next = Math.max(0, effect.mode === "set" ? effect.amount : current + effect.amount);
         characters = {
           ...characters,
-          [targetId]: { ...target, cooldowns: { ...target.cooldowns, [effect.abilityId]: next } },
+          [targetId]: { ...target, cooldowns: { ...target.cooldowns, [abilityId]: next } },
         };
         events.push({
           type: "cooldownModified",
           sourceId: ctx.sourceId,
           targetId,
-          payload: { abilityId: effect.abilityId, turnsRemaining: next },
+          payload: { abilityId, turnsRemaining: next },
         });
       }
       return { state: { ...state, characters }, events, nextRngState: rngState };
@@ -405,6 +415,15 @@ export function applyEffect(
         queuedRetargets: [{ queuedCharacterId, newTargetIds }],
       };
     }
+
+    case "rewindTurn":
+      // The resolver owns the actual restore (it holds the turn-start state);
+      // this only records the request. See ADR-015.
+      return {
+        state,
+        events: [{ type: "rewindRequested", sourceId: ctx.sourceId, payload: { persistResourceId: effect.persistResourceId } }],
+        nextRngState: rngState,
+      };
 
     case "conditional": {
       const isTrue = evaluateCondition(conditionStateOf(state, ctx), effect.condition, {

@@ -34,6 +34,7 @@ function buildTeamInput(playerId: string, characterIds: readonly string[]): Crea
         maxHp: definition.baseHp,
         abilityIds: definition.abilityIds,
         passiveId: definition.passiveId,
+        tags: definition.tags,
         resources: defaultResourcesFor(definition),
       };
     }),

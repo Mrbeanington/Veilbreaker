@@ -2,6 +2,10 @@ import { z } from "zod";
 import { energyFamilySchema, idSchema, targetRuleSchema, type TargetRule } from "./common";
 import { conditionSchema, type Condition } from "./condition";
 
+// ADR-015: a modifyCooldown `abilityId` or applyStatus `param` of this value is resolved per target to the
+// ability that target used most recently (a no-op if it has not used one yet).
+export const LAST_USED_ABILITY = "@lastUsed";
+
 // spec/02 "Healing classes" (see also OQ-04): anti-heal and "cannot be
 // healed" effects check the class, not just the numeric sign.
 export const healingClassSchema = z.enum(["heal", "lifeTransfer", "setHp"]);
@@ -95,6 +99,9 @@ export type Effect =
   // "redirect whichever enemy I targeted into attacking me instead." See
   // docs/DECISIONS.md ADR-011.
   | { kind: "retargetQueuedAction"; queuedCharacterId?: string; newTargetIds?: string[] }
+  // ADR-015 / OQ-06: restore the state from the start of the current turn (both teams). The named resource
+  // keeps its post-resolution value on the source, so a once-per-battle charge stays spent.
+  | { kind: "rewindTurn"; persistResourceId: string }
   | { kind: "randomOutcome"; outcome: RandomOutcome }
   | { kind: "conditional"; condition: Condition; ifTrue: Effect[]; ifFalse?: Effect[] }
   | { kind: "sequence"; effects: Effect[] };
@@ -154,7 +161,7 @@ export const effectSchema: z.ZodType<Effect, z.ZodTypeDef, unknown> = z.lazy(() 
     }),
     z.object({
       kind: z.literal("modifyCooldown"),
-      abilityId: idSchema,
+      abilityId: z.union([idSchema, z.literal(LAST_USED_ABILITY)]),
       mode: z.enum(["set", "delta"]),
       amount: z.number().int(),
       target: targetRuleSchema.optional(),
@@ -186,6 +193,7 @@ export const effectSchema: z.ZodType<Effect, z.ZodTypeDef, unknown> = z.lazy(() 
       queuedCharacterId: idSchema.optional(),
       newTargetIds: z.array(idSchema).optional(),
     }),
+    z.object({ kind: z.literal("rewindTurn"), persistResourceId: idSchema }),
     z.object({ kind: z.literal("randomOutcome"), outcome: randomOutcomeSchema }),
     z.object({
       kind: z.literal("conditional"),
