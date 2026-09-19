@@ -200,6 +200,19 @@ describe("settings persist to the local profile", () => {
   });
 });
 
+describe("install stays reachable after choosing Not now", () => {
+  it("Settings has an Install section with the protection status and the delete-the-app warning", async () => {
+    const user = userEvent.setup();
+    await renderApp(); // install pitch already handled ("Not now")
+    await user.click(screen.getByRole("button", { name: "Settings" }));
+    expect(screen.getByText("Install the game", { selector: ".section-title" })).toBeInTheDocument();
+    expect(screen.getByText(/Progress protection:/)).toBeInTheDocument();
+    expect(screen.getByText(/delete the app/i)).toBeInTheDocument();
+    // jsdom has no install prompt, so the panel explains where to find it instead of showing a dead button.
+    expect(screen.getByText(/install icon|Add to Home Screen|Install the game/i)).toBeInTheDocument();
+  });
+});
+
 describe("favorites", () => {
   it("toggle from the roster and persist", async () => {
     const user = userEvent.setup();

@@ -228,7 +228,7 @@ export function AppShell() {
             {section === "missions" && <MissionsScreen />}
             {section === "legends" && <LegendsScreen />}
             {section === "profile" && <ProfileScreen initialTransferCode={initial.transfer} initialReplayCode={initial.replay} />}
-            {section === "settings" && <SettingsScreen />}
+            {section === "settings" && <SettingsScreen install={{ platform, canPrompt, installed: env.standalone || profile.install.installed, onInstall: () => void install() }} />}
           </>
         )}
       </main>
