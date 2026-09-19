@@ -1,6 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { App } from "./App";
+import "@fontsource/cinzel/latin-600.css";
 import "./styles.css";
 import { registerServiceWorker } from "./registerServiceWorker";
 

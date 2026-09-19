@@ -1,6 +1,6 @@
 # Progress
 
-**Current phase:** 07 complete. Next: Phase 08 (full client UI).
+**Current phase:** 08 complete. Next: Phase 09 (local profile, persistence, progression).
 
 | Phase | Title | Status |
 |---|---|---|
@@ -12,7 +12,7 @@
 | 05 | Playable local 3v3 | ☑ |
 | 06 | Remaining 15 prototypes | ✅ done |
 | 07 | Bots and headless simulation | ✅ done |
-| 08 | Full client UI | ☐ |
+| 08 | Full client UI | ✅ done |
 | 09 | Local profile, persistence, progression, unlocks | ☐ |
 | 10 | Friend matches (serverless) | ☐ |
 | 11 | Local ranked | ☐ |
@@ -411,3 +411,6 @@ The Referee (Fouls/ejection), Maestro Nocturne (tempo), The Black Knight (Legend
 
 ### 2026-09-19 — Phase 07 (bots and headless simulation)
 `packages/ai`: BEGINNER, INTERMEDIATE, ADVANCED, EXPERT and a LEGEND_BOSS framework (`bots.ts`, `heuristics.ts`, `evaluate.ts`, `candidates.ts`, `prng.ts`); headless simulator with ten degenerate-pattern detectors, stats and markdown/JSON report (`simulate.ts`, `report.ts`); Node CLI `pnpm sim` (`packages/ai/scripts/sim.ts`). Web bot worker now runs the ladder with a time budget. `PLAYABLE_CHARACTERS` exported from content. **Acceptance:** 3 x 10,000 matches (BEGINNER, INTERMEDIATE, EXPERT) over the 20 prototypes with 0 engine errors; reports in `docs/balance/`, summary and recommendations in `report-2026-09-19.md` (recommendations only, nothing changed). **Headline findings:** second player wins ~64% (caused by the OQ-03 turn-1 energy skip); widespread energy starvation; Patient Zero and Hydra strong, Maestro weak. **Tests:** 320 (up from 301). ADR-016; OQ-44 to OQ-47. **Files:** `packages/ai/src/*`, `packages/ai/scripts/sim.ts`, `packages/ai/package.json`, root `package.json`, `packages/content/src/data/characters/index.ts`, `apps/web/src/game/{bot.worker,roster}.ts`, `docs/balance/*`, docs. **Custom scripts:** none. **Recommended next step:** Phase 08.
+
+### 2026-09-19 — Phase 08 (full client UI)
+Main navigation (Play, Characters, Teams, Ranked, Codex, Missions, Legends, Profile, Settings) with keyboard navigation, skip link and focus management; character select with search, role, origin, rarity, mastery, availability, favorites and recently played filters; team presets; Codex with knowledge levels fed by the player's own match logs; Legend Chamber (12 non-grid positions, Nameless One crowning, evolves with unlocks); full settings (interface size, high contrast, animation speed, reduced motion, sound, turn timer, bot skill, spoiler switch) persisted to IndexedDB through `packages/persistence`; silent sound-event hooks; self-hosted Cinzel font and inline SVG icons; bot skill wired through the Worker. Engine now logs `abilityUsed`. **Owner-delegated balance decision:** energy rules changed to 2 per living character and no turn-1 skip (first player 36.8% to 50.3%, lockouts down 68%, matches 36% shorter; see `docs/balance/report-2026-09-19.md`). **Bug fixed:** the match UI let a team queue more energy than it owned (crashed resolution). **Tests:** 351 (up from 320). ADR-017; OQ-44/45 resolved, OQ-48 to OQ-50 opened. **Files:** `packages/persistence/src/*`, `packages/engine/src/resolver.ts`, `packages/content/src/config/energy-rules.json`, `apps/web/src/{App,main,styles}`, `apps/web/src/{components,screens,game,settings,profile,sound}/*`, docs. **Custom scripts:** none. **Recommended next step:** Phase 09.

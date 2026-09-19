@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { ABILITY_LIBRARY, CHARACTER_LIBRARY, defaultEnergyRules, type Ability, type EnergyRules } from "@veilbreak/content";
-import { canAct, resolveTurn, validateAction, type BattleState, type PlayerAction } from "@veilbreak/engine";
+import { canAct, getEffectiveCost, payCost, resolveTurn, validateAction, type EnergyPool, type BattleEvent, type BattleState, type PlayerAction } from "@veilbreak/engine";
 import { matchDeps, startMatch } from "../game/setup";
+import { remainingPool } from "../game/energyBudget";
 import { useBotWorker } from "../game/useBotWorker";
 import { describeValidationError } from "../game/describeValidationError";
 import { useSettings, TURN_TIMER_SECONDS } from "../settings/SettingsContext";
@@ -12,10 +13,13 @@ import { BattleLog } from "../components/BattleLog";
 import { EnergyRow } from "../components/EnergyRow";
 import { PassDeviceScreen } from "../components/PassDeviceScreen";
 import { TurnTimer } from "../components/TurnTimer";
+import { playBattleSounds, soundBus } from "../sound/soundBus";
 
 export interface MatchOutcome {
   result: "win" | "draw";
   winnerPlayerId: string | null;
+  /** The finished match's battle log, for the Codex (spec/05: entries unlock from the player's own history). */
+  eventLog?: readonly BattleEvent[];
 }
 
 export interface MatchScreenProps {
@@ -56,7 +60,7 @@ export function MatchScreen({ mode, teamAIds, teamBIds, seed, onMatchOver, energ
   const [isResolving, setIsResolving] = useState(false);
   const [secondsLeft, setSecondsLeft] = useState(TURN_TIMER_SECONDS);
   const { requestBotActions } = useBotWorker();
-  const { turnTimerEnabled } = useSettings();
+  const { turnTimerEnabled, settings } = useSettings();
 
   const deps = useMemo(() => matchDeps(energyRules), [energyRules]);
 
@@ -107,11 +111,21 @@ export function MatchScreen({ mode, teamAIds, teamBIds, seed, onMatchOver, energ
     else setSkippedB(updater);
   }
 
+  function remainingPoolFor(playerId: string, excludeCharacterId?: string): EnergyPool | undefined {
+    return remainingPool(battleState, playerId, Object.values(actionsFor(playerId)), ABILITY_LIBRARY, excludeCharacterId);
+  }
+
   function queueAction(playerId: string, characterId: string, ability: Ability, targetIds: string[]) {
     const action: PlayerAction = { playerId, characterId, abilityId: ability.id, targetIds };
     const errors = validateAction(battleState, action, ABILITY_LIBRARY);
     if (errors.length > 0) {
       setError(describeValidationError(errors[0]!));
+      return;
+    }
+    const actor = battleState.characters[characterId];
+    const left = remainingPoolFor(playerId, characterId);
+    if (actor && left && !payCost(left, getEffectiveCost(ability, actor))) {
+      setError("Your team does not have enough energy left for that after your other queued actions.");
       return;
     }
     setError(null);
@@ -142,6 +156,7 @@ export function MatchScreen({ mode, teamAIds, teamBIds, seed, onMatchOver, energ
     } else if (ability.target.scope !== "single") {
       queueAction(playerId, characterId, ability, []);
     } else {
+      soundBus.emit("selection", characterId);
       setPendingAbility({ characterId, ability });
     }
   }
@@ -167,7 +182,15 @@ export function MatchScreen({ mode, teamAIds, teamBIds, seed, onMatchOver, energ
   }
 
   async function runTurn(actionsA: PlayerAction[], actionsB: PlayerAction[]) {
-    const result = resolveTurn(battleState, actionsA, actionsB, deps);
+    let result: ReturnType<typeof resolveTurn>;
+    try {
+      result = resolveTurn(battleState, actionsA, actionsB, deps);
+    } catch {
+      setError("Something went wrong resolving that turn. Please choose your actions again.");
+      setPendingActionsA({});
+      setPendingActionsB({});
+      return;
+    }
     if (!result.ok) {
       // Every queued action was already validated individually above, so
       // this should be unreachable — surfaced anyway rather than silently
@@ -176,6 +199,7 @@ export function MatchScreen({ mode, teamAIds, teamBIds, seed, onMatchOver, energ
       return;
     }
     setBattleState(result.state);
+    playBattleSounds(result.events);
     setPendingActionsA({});
     setPendingActionsB({});
     setSkippedA(new Set());
@@ -188,7 +212,7 @@ export function MatchScreen({ mode, teamAIds, teamBIds, seed, onMatchOver, energ
     );
     if (endEvent) {
       const winnerPlayerId = typeof endEvent.payload?.winnerPlayerId === "string" ? endEvent.payload.winnerPlayerId : null;
-      onMatchOver({ result: endEvent.type === "matchEndedInDraw" ? "draw" : "win", winnerPlayerId });
+      onMatchOver({ result: endEvent.type === "matchEndedInDraw" ? "draw" : "win", winnerPlayerId, eventLog: result.state.eventLog });
       return;
     }
 
@@ -212,7 +236,7 @@ export function MatchScreen({ mode, teamAIds, teamBIds, seed, onMatchOver, energ
     // vs. bot: player A just confirmed — ask the worker for player B's move.
     setIsResolving(true);
     try {
-      const botActions = await requestBotActions(battleState, "playerB");
+      const botActions = await requestBotActions(battleState, "playerB", settings.botLevel);
       await runTurn(Object.values(pendingActionsA), botActions);
     } finally {
       setIsResolving(false);
@@ -228,7 +252,8 @@ export function MatchScreen({ mode, teamAIds, teamBIds, seed, onMatchOver, energ
   const skips = skipsFor(playerId);
   const activeCharacterId = readyIds.find((id) => !actionsFor(playerId)[id] && !skips.has(id));
   const activeCharacter = activeCharacterId ? battleState.characters[activeCharacterId] : undefined;
-  const pool = battleState.energyPools[playerId];
+  const fullPool = battleState.energyPools[playerId];
+  const pool = remainingPoolFor(playerId);
 
   return (
     <div>
@@ -241,6 +266,7 @@ export function MatchScreen({ mode, teamAIds, teamBIds, seed, onMatchOver, energ
         </div>
       )}
       {pool && <EnergyRow pool={pool} />}
+      {pool && fullPool && pool !== fullPool && <p className="hp-text">Energy shown is what is left after your queued actions.</p>}
 
       <div className="match-grid">
         <div className="team-column">

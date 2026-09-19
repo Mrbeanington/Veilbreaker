@@ -103,6 +103,7 @@ export function describeBattleEvent(event: BattleEvent): string | null {
       return "The match is decided — one team has fallen.";
     case "matchEndedByTurnLimit":
       return "The match reaches its turn limit.";
+    case "abilityUsed":
     case "onAbilityUsed":
       return `${source} uses ${abilityName(payload.abilityId)}.`;
     default:

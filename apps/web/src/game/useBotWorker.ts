@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import type { BotLevel } from "@veilbreak/ai";
 import type { BattleState } from "@veilbreak/engine";
 import type { BotRequest, BotResponse } from "./bot.worker";
 
@@ -12,7 +13,7 @@ export function useBotWorker() {
     return () => worker.terminate();
   }, []);
 
-  function requestBotActions(state: BattleState, playerId: string): Promise<BotResponse> {
+  function requestBotActions(state: BattleState, playerId: string, level?: BotLevel): Promise<BotResponse> {
     return new Promise((resolve, reject) => {
       const worker = workerRef.current;
       if (!worker) {
@@ -24,7 +25,7 @@ export function useBotWorker() {
         resolve(event.data);
       };
       worker.addEventListener("message", handleMessage);
-      const request: BotRequest = { state, playerId };
+      const request: BotRequest = { state, playerId, level };
       worker.postMessage(request);
     });
   }

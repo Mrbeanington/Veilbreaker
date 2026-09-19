@@ -400,6 +400,13 @@ export function resolveTurn(
         continue;
       }
 
+      // Discoverability (CLAUDE.md rule 9) and the Codex (spec/05): every ability
+      // use is announced in the log before its effects land.
+      pushEvent(tier.id, "abilityUsed", action.characterId, undefined, {
+        abilityId: ability.id,
+        targetIds: targetResult.targetIds,
+      });
+
       for (const effect of ability.effects) {
         const result = applyEffect(
           { characters, energyPools, summons },

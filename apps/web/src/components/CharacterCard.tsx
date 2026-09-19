@@ -1,5 +1,6 @@
 import { RESOURCE_LIBRARY, STATUS_LIBRARY } from "@veilbreak/content";
 import type { CharacterRuntimeState } from "@veilbreak/engine";
+import { Icon, statusIconName } from "./Icon";
 import { Portrait } from "./Portrait";
 
 interface CharacterCardProps {
@@ -43,7 +44,7 @@ export function CharacterCard({ character, displayName, targetable, acting, onCl
             const magnitudeLabel = active.magnitude > 0 ? ` ${active.magnitude * active.stacks}` : "";
             return (
               <span key={active.statusId} className="status-chip" title={def?.tooltip}>
-                {label}
+                <Icon name={statusIconName(active.statusId)} size={12} /> {label}
                 {magnitudeLabel}
                 {active.remainingTurns !== null ? ` (${active.remainingTurns})` : ""}
               </span>

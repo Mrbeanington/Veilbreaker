@@ -1,23 +1,41 @@
+import { useMemo, useState } from "react";
 import { PICKABLE_CHARACTERS, TEAM_SIZE } from "../game/roster";
+import { filterCharacters, filterOptions, NO_FILTERS, type CharacterFilters } from "../game/filters";
+import { characterVisibility } from "../game/knowledge";
+import { useProfile } from "../profile/ProfileContext";
+import { CharacterFilterBar } from "./CharacterFilterBar";
+import { Icon } from "./Icon";
 import { Portrait } from "./Portrait";
 
 interface TeamPickerProps {
   label: string;
   picked: string[];
   onChange: (picked: string[]) => void;
+  /** Saved presets can fill the team in one click. */
+  showPresets?: boolean;
 }
 
-// phase-05-local-playable.md "Team picker limited to the implemented
-// roster, with duplicates disallowed" — spec/03 OQ-15: no duplicates
-// *within* one team; the same character on both sides (a mirror) is fine,
-// so this component only prevents re-picking within its own `picked` list.
-export function TeamPicker({ label, picked, onChange }: TeamPickerProps) {
+// phase-05 "Team picker limited to the implemented roster, with duplicates
+// disallowed" — spec/03 OQ-15: no duplicates *within* one team; a mirror across
+// teams is fine. Phase 08 adds the full filter bar, favorites, presets and
+// hidden/locked characters (spec/05 "Secret characters should create mystery").
+export function TeamPicker({ label, picked, onChange, showPresets = true }: TeamPickerProps) {
+  const { profile, update } = useProfile();
+  const [filters, setFilters] = useState<CharacterFilters>(NO_FILTERS);
+  const idPrefix = useMemo(() => `picker-${label.replace(/\W+/g, "-").toLowerCase()}`, [label]);
+  const options = useMemo(() => filterOptions(PICKABLE_CHARACTERS, profile), [profile]);
+  const visible = useMemo(() => filterCharacters(PICKABLE_CHARACTERS, filters, profile), [filters, profile]);
+
   function toggle(characterId: string) {
-    if (picked.includes(characterId)) {
-      onChange(picked.filter((id) => id !== characterId));
-    } else if (picked.length < TEAM_SIZE) {
-      onChange([...picked, characterId]);
-    }
+    if (picked.includes(characterId)) onChange(picked.filter((id) => id !== characterId));
+    else if (picked.length < TEAM_SIZE) onChange([...picked, characterId]);
+  }
+
+  function toggleFavorite(characterId: string) {
+    update((p) => ({
+      ...p,
+      favorites: p.favorites.includes(characterId) ? p.favorites.filter((id) => id !== characterId) : [...p.favorites, characterId],
+    }));
   }
 
   return (
@@ -25,22 +43,66 @@ export function TeamPicker({ label, picked, onChange }: TeamPickerProps) {
       <div className="section-title">
         {label} ({picked.length}/{TEAM_SIZE})
       </div>
-      <div className="roster-grid">
-        {PICKABLE_CHARACTERS.map((character) => {
+      {showPresets && profile.presets.length > 0 && (
+        <div className="preset-row">
+          <label htmlFor={`${idPrefix}-preset`}>Team preset</label>{" "}
+          <select
+            id={`${idPrefix}-preset`}
+            value=""
+            onChange={(e) => {
+              const preset = profile.presets.find((p) => p.id === e.target.value);
+              if (preset) onChange(preset.characterIds.filter((id) => PICKABLE_CHARACTERS.some((c) => c.id === id)).slice(0, TEAM_SIZE));
+            }}
+          >
+            <option value="">Load a preset…</option>
+            {profile.presets.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+      <CharacterFilterBar filters={filters} options={options} onChange={setFilters} idPrefix={idPrefix} />
+      <div className="roster-grid" role="list">
+        {visible.length === 0 && <p className="hp-text">No characters match these filters.</p>}
+        {visible.map((character) => {
+          const locked = characterVisibility(character, profile) !== "full";
           const isPicked = picked.includes(character.id);
-          const disabled = !isPicked && picked.length >= TEAM_SIZE;
+          const isFavorite = profile.favorites.includes(character.id);
+          if (locked) {
+            return (
+              <div key={character.id} role="listitem" className="roster-card locked">
+                <span className="portrait silhouette" aria-hidden="true">
+                  <Icon name="lock" size={22} />
+                </span>
+                <span>Unknown fighter</span>
+                <span className="hp-text">Meet them in a match to unlock</span>
+              </div>
+            );
+          }
           return (
-            <button
-              key={character.id}
-              type="button"
-              className={`roster-card${isPicked ? " picked" : ""}`}
-              onClick={() => toggle(character.id)}
-              disabled={disabled}
-              aria-pressed={isPicked}
-            >
-              <Portrait characterId={character.id} displayName={character.displayName} size={56} />
-              <span>{character.displayName}</span>
-            </button>
+            <div key={character.id} role="listitem" className="roster-item">
+              <button
+                type="button"
+                className={`roster-card${isPicked ? " picked" : ""}`}
+                onClick={() => toggle(character.id)}
+                disabled={!isPicked && picked.length >= TEAM_SIZE}
+                aria-pressed={isPicked}
+              >
+                <Portrait characterId={character.id} displayName={character.displayName} size={56} />
+                <span>{character.displayName}</span>
+              </button>
+              <button
+                type="button"
+                className={`fav-btn${isFavorite ? " on" : ""}`}
+                aria-pressed={isFavorite}
+                aria-label={`${isFavorite ? "Remove" : "Add"} ${character.displayName} ${isFavorite ? "from" : "to"} favorites`}
+                onClick={() => toggleFavorite(character.id)}
+              >
+                <Icon name="star" size={16} />
+              </button>
+            </div>
           );
         })}
       </div>
