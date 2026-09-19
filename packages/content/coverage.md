@@ -1,28 +1,28 @@
 # Mechanical Coverage Matrix
 
-Generated from `packages/content/src/data/characters/**` by `pnpm run generate-coverage` (`packages/content/scripts/generate-coverage.ts`) — do not hand-edit. Maps each of spec/03's required mechanics to the characters currently using it. A mechanic with no characters listed is a real gap, not a script bug: only 6 of the roster's 120 characters exist yet (Phase 04).
+Generated from `packages/content/src/data/characters/**` by `pnpm run generate-coverage` (`packages/content/scripts/generate-coverage.ts`) — do not hand-edit. Maps each of spec/03's required mechanics to the characters currently using it. A mechanic with no characters listed is a real gap, not a script bug: only 11 of the roster's 120 characters exist yet (Phase 04).
 
 | Mechanic | Characters |
 |---|---|
-| raw damage | ???, Malachar, Lord of the Last Breath, Mason "Moonshot" Maddox, Mister Whiskers, Patient Zero, Tortuga Rex |
-| DoT | Patient Zero |
-| armor | Mason "Moonshot" Maddox, Tortuga Rex |
-| shielding | _none yet_ |
+| raw damage | ???, Behemoth, Father Bell, Hydra, Malachar, Lord of the Last Breath, Mason "Moonshot" Maddox, Mister Whiskers, Patient Zero, Shiro, the Last Brush, The Plague Doctor, Tortuga Rex |
+| DoT | Hydra, Patient Zero, The Plague Doctor |
+| armor | Behemoth, Mason "Moonshot" Maddox, Tortuga Rex |
+| shielding | Father Bell |
 | counterattacks | _none yet_ |
 | reflection | _none yet_ |
-| healing | Tortuga Rex |
-| anti-healing | _none yet_ |
+| healing | Father Bell, Hydra, Tortuga Rex |
+| anti-healing | The Plague Doctor |
 | energy stealing | Mister Whiskers |
 | energy generation | _none yet_ |
 | cooldown manipulation | _none yet_ |
 | stuns | Mason "Moonshot" Maddox |
-| silences | _none yet_ |
+| silences | Father Bell |
 | ability locks | _none yet_ |
 | target manipulation | Mister Whiskers |
 | summons | Malachar, Lord of the Last Breath |
-| death | Malachar, Lord of the Last Breath |
+| death | Malachar, Lord of the Last Breath, Shiro, the Last Brush |
 | resurrection | _none yet_ |
-| anti-resurrection | _none yet_ |
+| anti-resurrection | Father Bell |
 | transformations | Malachar, Lord of the Last Breath, Patient Zero |
 | randomness | Mister Whiskers |
 | probability manipulation | Mister Whiskers |
@@ -33,7 +33,7 @@ Generated from `packages/content/src/data/characters/**` by `pnpm run generate-c
 | sports mechanics | Mason "Moonshot" Maddox |
 | musical sequences | _none yet_ |
 | pets | _none yet_ |
-| poison | _none yet_ |
+| poison | Hydra, The Plague Doctor |
 | infection | Patient Zero |
 | fire | _none yet_ |
 | ice | _none yet_ |

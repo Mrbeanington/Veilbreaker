@@ -1,6 +1,6 @@
 # Progress
 
-**Current phase:** 05 (complete, verified green — see session log). Next: 06.
+**Current phase:** 06 (batch 1 of 3 complete: 5 of 15 characters). Next: 06 batch 2.
 
 | Phase | Title | Status |
 |---|---|---|
@@ -10,7 +10,7 @@
 | 03 | Advanced systems | ☑ |
 | 04 | First five prototypes | ☑ |
 | 05 | Playable local 3v3 | ☑ |
-| 06 | Remaining 15 prototypes | ☐ |
+| 06 | Remaining 15 prototypes | ◐ batch 1/3 |
 | 07 | Bots and headless simulation | ☐ |
 | 08 | Full client UI | ☐ |
 | 09 | Local profile, persistence, progression, unlocks | ☐ |
@@ -399,3 +399,6 @@ pass, timer expiry), 4 bot tests, 1 RESOURCE_LIBRARY test. `pnpm run ci` green.
 boundary), OQ-39 (settings not persisted). **Custom scripts:** none.
 
 **Recommended next step:** Phase 06 ("Remaining 15 prototypes").
+
+### 2026-09-19 — Phase 06, batch 1
+Father Bell, The Plague Doctor, Behemoth (Legend), Shiro (Legend), Hydra: full data, art specs (Legends with reveal prompts), design notes (`docs/design/characters/`), coverage matrix regenerated. New `status.unhealable`; ADR-013. Required tests in `packages/engine/src/scenarios/batch1.scenario.test.ts`: Malachar vs. the real Father Bell, Behemoth no-heal (incl. dispel), Plague Doctor anti-heal/reduction vs. each healing class, Shiro erasure vs. death triggers, Hydra heads. Both Legends name two roster counters. **Tests:** 250 (up from 237). **Open:** OQ-40, OQ-41. **Remaining:** Koschei, Baba Yaga, Nine-Tailed Trickster, Referee, Gambler, Maestro Nocturne, Zeiron, Black Knight, Emperor Zero, Nameless One.

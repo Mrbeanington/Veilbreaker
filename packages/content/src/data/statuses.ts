@@ -154,6 +154,19 @@ export const ANTI_HEAL = status({
   tooltip: "Blocks conventional healing entirely. Life transfer and HP-setting effects are unaffected.",
 });
 
+// phase-06: Behemoth's "cannot receive healing" (spec/03). Unlike Anti-Heal it is
+// permanent and not dispellable, so a cleanse can't undo a Legend's defining
+// drawback. Same scope as Anti-Heal per OQ-04: blocks the `heal` class only.
+export const UNHEALABLE = status({
+  id: "status.unhealable",
+  displayName: "Unhealable",
+  source: "passive",
+  defaultTarget: selfTarget,
+  duration: { turns: 0, permanent: true },
+  dispellable: false,
+  tooltip: "Cannot receive conventional healing. Life transfer and HP-setting effects are unaffected.",
+});
+
 export const HEALING_REDUCTION = status({
   id: "status.healing-reduction",
   displayName: "Healing Reduction",
@@ -340,6 +353,7 @@ export const STATUS_LIBRARY: Record<string, StatusDefinition> = Object.fromEntri
     BURN,
     POISON,
     ANTI_HEAL,
+    UNHEALABLE,
     HEALING_REDUCTION,
     HEALING_AMPLIFICATION,
     COOLDOWN_INCREASE,

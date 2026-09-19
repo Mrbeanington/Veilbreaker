@@ -9,6 +9,7 @@ import {
   INVULNERABLE,
   REFLECT,
   SHIELD,
+  UNHEALABLE,
   WEAKNESS,
   type CharacterRuntimeState,
   type DamageType,
@@ -260,10 +261,10 @@ export function resolveHeal(
     return { characters, events: [] };
   }
 
-  if (healingClass === "heal" && hasStatus(target, ANTI_HEAL.id)) {
+  if (healingClass === "heal" && (hasStatus(target, ANTI_HEAL.id) || hasStatus(target, UNHEALABLE.id))) {
     return {
       characters,
-      events: [{ type: "healBlocked", sourceId, targetId, payload: { reason: "anti-heal", amount: rawAmount } }],
+      events: [{ type: "healBlocked", sourceId, targetId, payload: { reason: hasStatus(target, UNHEALABLE.id) ? "unhealable" : "anti-heal", amount: rawAmount } }],
     };
   }
 

@@ -1,5 +1,54 @@
 import type { TargetRule } from "../../schemas/common";
 import { abilitySchema, type Ability } from "../../schemas/ability";
+import {
+  characterArtSpecSchema,
+  characterVisualBibleSchema,
+  composePrompt,
+  type CharacterArtSpec,
+  type CharacterVisualBible,
+} from "../../schemas/art";
+
+// phase-06: compact builder for the visual bible + art spec pair every
+// character needs (spec/04). Every prompt is composed from the bible
+// (composePrompt), so nothing here can drift from the identity anchors.
+export interface ArtInput {
+  bible: Omit<CharacterVisualBible, "baseArtSpecId" | "transformationArt" | "abilityIcons">;
+  region: string;
+  visualTheme: string;
+  environment: string;
+  lighting: string;
+  paletteConcept: string;
+  avoid: string[];
+  splashScene: string;
+  portraitScene: string;
+  avatarScene: string;
+  iconScenes: string[];
+  legendRevealScene?: string;
+  secretSilhouetteScene?: string;
+}
+
+export function buildArt(input: ArtInput): { bible: CharacterVisualBible; art: CharacterArtSpec } {
+  const id = input.bible.characterId;
+  const bible = characterVisualBibleSchema.parse({ ...input.bible, baseArtSpecId: id });
+  const art = characterArtSpecSchema.parse({
+    characterId: id,
+    region: input.region,
+    visualTheme: input.visualTheme,
+    environment: input.environment,
+    lighting: input.lighting,
+    paletteConcept: input.paletteConcept,
+    avoid: input.avoid,
+    splashPrompt: composePrompt(bible, "splash", input.splashScene),
+    portraitPrompt: composePrompt(bible, "portrait", input.portraitScene),
+    battleAvatarPrompt: composePrompt(bible, "battleAvatar", input.avatarScene),
+    abilityIconPrompts: input.iconScenes.map((scene) => composePrompt(bible, "abilityIcon", scene)),
+    legendRevealPrompt: input.legendRevealScene ? composePrompt(bible, "legendReveal", input.legendRevealScene) : undefined,
+    secretSilhouettePrompt: input.secretSilhouetteScene
+      ? composePrompt(bible, "secretSilhouette", input.secretSilhouetteScene)
+      : undefined,
+  });
+  return { bible, art };
+}
 
 // phase-04-first-five.md: every character file below builds abilities out of
 // the same handful of TargetRule shapes — named here once rather than

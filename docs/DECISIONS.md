@@ -244,6 +244,11 @@ Phase 09's persistence layer will need to own them for real).
 
 **Addendum (CI):** jsdom 30 (added for component tests) crashes on Node 20's bundled undici (`webidl.util.markAsUncloneable is not a function`) — invisible locally (Node 24) and caught only by checking GitHub Actions. Both workflows now run Node 24, matching the local dev toolchain.
 
+## ADR-013 — Phase 06 batch 1: Father Bell, Plague Doctor, Behemoth, Shiro, Hydra — Accepted (2026-09-19)
+**Context:** phase-06-remaining-prototypes.md says to work in batches of ~5. Batch 1 picks the characters whose required signature tests need no new engine machinery beyond one status.
+**Decision:** (1) New `status.unhealable` (permanent, undispellable, blocks the `heal` class only, per OQ-04) with a check in `resolveHeal`; Behemoth re-applies it each turn start via its passive. It is a status rather than an engine flag so the battle log and UI show it. (2) Father Bell consecrates on `onHpThreshold` (below 25%, relation any) because a dead character cannot receive a status; this makes the Malachar interaction work with the real characters. (3) Hydra's head loss keys on `onDamaged` self, so DoT ticks (self-damage) also cost heads — an accepted quirk that gives Patient Zero a real counter. (4) `buildArt` helper (characters/helpers.ts) builds bible + art spec so every prompt is composed from the bible. (5) Batch 2/3 (Koschei, Baba Yaga, Nine-Tails, Referee, Gambler, Maestro, Zeiron, Black Knight, Emperor Zero, Nameless One) are still open; Black Knight needs a working `hasTag` (OQ-31b) and Referee needs a repeat-ability condition.
+**Consequences:** 25 new tests (`batch1.scenario.test.ts`, coverage/status counts). Zero custom scripts.
+
 ## Custom script registry
 | Script id | Character | Why components couldn't express it | Added in phase |
 |---|---|---|---|

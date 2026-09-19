@@ -13,6 +13,11 @@ export * from "./whiskers-devourer-of-worlds";
 export * from "./patient-zero";
 export * from "./moonshot-maddox";
 export * from "./malachar";
+export * from "./father-bell";
+export * from "./plague-doctor";
+export * from "./behemoth";
+export * from "./shiro";
+export * from "./hydra";
 
 import { TORTUGA_REX, TORTUGA_REX_ABILITIES, TORTUGA_REX_ART, TORTUGA_REX_VISUAL_BIBLE } from "./tortuga-rex";
 import {
@@ -54,9 +59,15 @@ import {
   TO_DEATH_KING,
 } from "./malachar";
 
+import { FATHER_BELL, FATHER_BELL_ABILITIES, FATHER_BELL_ART, FATHER_BELL_VISUAL_BIBLE, LET_THE_DEAD_REST } from "./father-bell";
+import { PLAGUE_DOCTOR, PLAGUE_DOCTOR_ABILITIES, PLAGUE_DOCTOR_ART, PLAGUE_DOCTOR_VISUAL_BIBLE } from "./plague-doctor";
+import { BEHEMOTH, BEHEMOTH_ABILITIES, BEHEMOTH_ART, BEHEMOTH_VISUAL_BIBLE, PRIMORDIAL_HIDE } from "./behemoth";
+import { SHIRO, SHIRO_ABILITIES, SHIRO_ART, SHIRO_VISUAL_BIBLE } from "./shiro";
+import { CUT_ONE_TWO_GROW, HYDRA, HYDRA_ABILITIES, HYDRA_ART, HYDRA_VISUAL_BIBLE } from "./hydra";
+
 /** phase-04-first-five.md's five prototypes, plus the stubbed Devourer-of-Worlds hook. */
 export const CHARACTER_LIBRARY: Record<string, CharacterDefinition> = Object.fromEntries(
-  [TORTUGA_REX, MISTER_WHISKERS, WHISKERS_DEVOURER_OF_WORLDS, PATIENT_ZERO, MOONSHOT_MADDOX, MALACHAR].map((c) => [c.id, c]),
+  [TORTUGA_REX, MISTER_WHISKERS, WHISKERS_DEVOURER_OF_WORLDS, PATIENT_ZERO, MOONSHOT_MADDOX, MALACHAR, FATHER_BELL, PLAGUE_DOCTOR, BEHEMOTH, SHIRO, HYDRA].map((c) => [c.id, c]),
 );
 
 export const ABILITY_LIBRARY: Record<string, Ability> = Object.fromEntries(
@@ -67,11 +78,16 @@ export const ABILITY_LIBRARY: Record<string, Ability> = Object.fromEntries(
     ...PATIENT_ZERO_ABILITIES,
     ...MOONSHOT_MADDOX_ABILITIES,
     ...MALACHAR_ABILITIES,
+    ...FATHER_BELL_ABILITIES,
+    ...PLAGUE_DOCTOR_ABILITIES,
+    ...BEHEMOTH_ABILITIES,
+    ...SHIRO_ABILITIES,
+    ...HYDRA_ABILITIES,
   ].map((a) => [a.id, a]),
 );
 
 export const PASSIVE_LIBRARY: Record<string, PassiveDefinition> = Object.fromEntries(
-  [NINE_LIVES, THE_HUNGER_GROWS, AT_THE_PLATE, THE_DEAD_REMEMBER].map((p) => [p.id, p]),
+  [NINE_LIVES, THE_HUNGER_GROWS, AT_THE_PLATE, THE_DEAD_REMEMBER, LET_THE_DEAD_REST, PRIMORDIAL_HIDE, CUT_ONE_TWO_GROW].map((p) => [p.id, p]),
 );
 
 export const TRANSFORMATION_LIBRARY: Record<string, Transformation> = Object.fromEntries(
@@ -88,7 +104,7 @@ export const RESOURCE_LIBRARY: Record<string, Resource> = Object.fromEntries(
 );
 
 export const CHARACTER_ART_LIBRARY: Record<string, CharacterArtSpec> = Object.fromEntries(
-  [TORTUGA_REX_ART, MISTER_WHISKERS_ART, WHISKERS_DEVOURER_OF_WORLDS_ART, PATIENT_ZERO_ART, MOONSHOT_MADDOX_ART, MALACHAR_ART].map((a) => [
+  [TORTUGA_REX_ART, MISTER_WHISKERS_ART, WHISKERS_DEVOURER_OF_WORLDS_ART, PATIENT_ZERO_ART, MOONSHOT_MADDOX_ART, MALACHAR_ART, FATHER_BELL_ART, PLAGUE_DOCTOR_ART, BEHEMOTH_ART, SHIRO_ART, HYDRA_ART].map((a) => [
     a.characterId,
     a,
   ]),
@@ -102,5 +118,10 @@ export const CHARACTER_VISUAL_BIBLE_LIBRARY: Record<string, CharacterVisualBible
     PATIENT_ZERO_VISUAL_BIBLE,
     MOONSHOT_MADDOX_VISUAL_BIBLE,
     MALACHAR_VISUAL_BIBLE,
+    FATHER_BELL_VISUAL_BIBLE,
+    PLAGUE_DOCTOR_VISUAL_BIBLE,
+    BEHEMOTH_VISUAL_BIBLE,
+    SHIRO_VISUAL_BIBLE,
+    HYDRA_VISUAL_BIBLE,
   ].map((b) => [b.characterId, b]),
 );
