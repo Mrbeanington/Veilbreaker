@@ -40,7 +40,7 @@ export type Discovery = z.infer<typeof discoverySchema>;
 export const historyEntrySchema = z.object({
   id: z.string().min(1).max(60),
   playedAt: z.number().int().min(0),
-  mode: z.enum(["bot", "hotseat", "trial"]),
+  mode: z.enum(["bot", "hotseat", "trial", "friend"]),
   teamAIds: z.array(z.string()).max(6),
   teamBIds: z.array(z.string()).max(6),
   winnerPlayerId: z.string().nullable(),

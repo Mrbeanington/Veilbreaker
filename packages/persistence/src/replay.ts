@@ -17,14 +17,23 @@ export const replayRecordSchema = z.object({
   version: z.literal(1),
   id: z.string().min(1).max(60),
   playedAt: z.number().int().min(0),
-  mode: z.enum(["bot", "hotseat", "trial"]),
+  mode: z.enum(["bot", "hotseat", "trial", "friend"]),
   seed: z.number().int().min(0),
   balanceVersionId: z.string().min(1).max(60),
   energyRules: energyRulesSchema,
   teamAIds: z.array(z.string().min(1).max(80)).min(1).max(6),
   teamBIds: z.array(z.string().min(1).max(80)).min(1).max(6),
   /** One entry per resolved turn, including turns a Nameless One rewind replayed. */
-  turns: z.array(z.object({ a: z.array(actionSchema).max(6), b: z.array(actionSchema).max(6) })).max(200),
+  turns: z
+    .array(
+      z.object({
+        a: z.array(actionSchema).max(6),
+        b: z.array(actionSchema).max(6),
+        /** Friend matches mix both players' salts into the RNG each turn; this is the resulting RNG state, applied before the turn. */
+        rng: z.string().regex(/^\d{1,10}$/).optional(),
+      }),
+    )
+    .max(200),
   winnerPlayerId: z.string().nullable(),
 });
 export type ReplayRecord = z.infer<typeof replayRecordSchema>;

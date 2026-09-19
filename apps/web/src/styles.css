@@ -820,3 +820,23 @@ textarea {
 .result-report p {
   margin: 4px 0;
 }
+
+/* ---- phase 10: friend matches ---- */
+.badge {
+  display: inline-block;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 1px 10px;
+  font-size: 0.8rem;
+}
+.badge.good {
+  border-color: var(--good);
+  color: var(--good);
+}
+.badge.bad {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+.friend-status {
+  font-size: 1.05rem;
+}

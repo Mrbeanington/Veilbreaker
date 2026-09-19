@@ -59,4 +59,8 @@ The source spec leaves these ambiguous. Each has a **proposed default** so work 
 | OQ-53 | (Phase 09) Legend trials use the LEGEND_BOSS bot without any rule bending; the hooks exist but no encounter uses them. Trial teams (Legend plus two allies) are a first guess and untuned. Trial difficulty against EXPERT-level play is unmeasured. | Simulate trials and tune in the balance pass. |
 | OQ-54 | (Phase 09) XP values, mission goals and rewards are first-pass numbers. The camera scanner on real devices (iOS especially) is untested here. | Balance pass and device testing. |
 | OQ-55 | (Phase 09) Only six of twelve Legends exist, so the eleven-Legend gate for the Nameless One cannot be met in play yet; it is tested with synthetic profiles. | Expected until the rest are built. |
+| OQ-56 | (Phase 10) Friend matches are honor-based in two ways no server-less design can close: the last player to reveal can abort to avoid a bad outcome, and "own unlocks" cannot be verified. Both are stated in the UI. | Accepted; matches are meant for friends. |
+| OQ-57 | (Phase 10) There is no turn timer or timeout in friend matches (they are asynchronous), so a friend who never replies leaves the match open forever. | Resign or remove it from the list; consider an optional agreed deadline later. |
+| OQ-58 | (Phase 10) The RNG is a 32-bit state, so the seed and the mixed per-turn state are 32 bits. Fine for fairness between friends, not a cryptographic guarantee. | Accepted. |
+| OQ-59 | (Phase 10) Live WebRTC (stretch) was not built. The game has not been tested across two real devices or browsers; two-client behavior is covered by simulation and by UI tests with two separate stores. | Manual two-device test, then Playwright with two contexts (see OQ-51). |
 

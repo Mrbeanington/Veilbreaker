@@ -35,6 +35,8 @@ export {
   decodeTransfer,
   encodeReplay,
   encodeTransfer,
+  packCode,
+  unpackCode,
   exportBackup,
   extractTransferCode,
   importBackup,

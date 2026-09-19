@@ -157,17 +157,17 @@ const abilities: Record<string, Ability> = {
 const TEAM_A: CreateBattleTeamInput = {
   playerId: "playerA",
   characters: [
-    { characterId: "a1", maxHp: 100 },
-    { characterId: "a2", maxHp: 100 },
-    { characterId: "a3", maxHp: 100 },
+    { characterId: "a1", maxHp: 100, abilityIds: Object.keys(abilities) },
+    { characterId: "a2", maxHp: 100, abilityIds: Object.keys(abilities) },
+    { characterId: "a3", maxHp: 100, abilityIds: Object.keys(abilities) },
   ],
 };
 const TEAM_B: CreateBattleTeamInput = {
   playerId: "playerB",
   characters: [
-    { characterId: "b1", maxHp: 100 },
-    { characterId: "b2", maxHp: 100 },
-    { characterId: "b3", maxHp: 100 },
+    { characterId: "b1", maxHp: 100, abilityIds: Object.keys(abilities) },
+    { characterId: "b2", maxHp: 100, abilityIds: Object.keys(abilities) },
+    { characterId: "b3", maxHp: 100, abilityIds: Object.keys(abilities) },
   ],
 };
 
@@ -191,6 +191,24 @@ function freshBattle(seed = 1, matchFormat: MatchFormat = defaultMatchFormat) {
     energyRules: testEnergyRules,
   });
 }
+
+describe("resolveTurn — ability ownership (friend-match hardening)", () => {
+  it("rejects an ability that is not in the character's own kit", () => {
+    const state = createBattle(
+      [
+        { playerId: "playerA", characters: [{ characterId: "a1", maxHp: 100, abilityIds: [strike30.id] }] },
+        TEAM_B,
+      ],
+      1,
+      { balanceVersionId: "t", matchFormat: defaultMatchFormat, energyRules: testEnergyRules },
+    );
+    const result = resolveTurn(state, [{ playerId: "playerA", characterId: "a1", abilityId: bigStrike.id, targetIds: ["b1"] }], [], deps());
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.errors[0]?.errors.some((e) => e.code === "abilityNotKnown")).toBe(true);
+    const ok = resolveTurn(state, [{ playerId: "playerA", characterId: "a1", abilityId: strike30.id, targetIds: ["b1"] }], [], deps());
+    expect(ok.ok).toBe(true);
+  });
+});
 
 describe("createBattle", () => {
   it("starts every character at full HP and alive", () => {
@@ -538,8 +556,8 @@ describe("resolveTurn — Cooldown Reduction status speeds up recovery", () => {
 
 describe("resolveTurn — simultaneous team wipe is a draw (OQ-09)", () => {
   it("both teams wiped in the same turn ends the match in a draw", () => {
-    const soloTeamA: CreateBattleTeamInput = { playerId: "playerA", characters: [{ characterId: "solo-a", maxHp: 50 }] };
-    const soloTeamB: CreateBattleTeamInput = { playerId: "playerB", characters: [{ characterId: "solo-b", maxHp: 50 }] };
+    const soloTeamA: CreateBattleTeamInput = { playerId: "playerA", characters: [{ characterId: "solo-a", maxHp: 50, abilityIds: Object.keys(abilities) }] };
+    const soloTeamB: CreateBattleTeamInput = { playerId: "playerB", characters: [{ characterId: "solo-b", maxHp: 50, abilityIds: Object.keys(abilities) }] };
     const state = createBattle([soloTeamA, soloTeamB], 1, {
       balanceVersionId: "test-balance-v1",
       matchFormat: defaultMatchFormat,
@@ -562,9 +580,9 @@ describe("resolveTurn — simultaneous team wipe is a draw (OQ-09)", () => {
   it("one team wiped (not both) declares the surviving team's player the winner", () => {
     const soloTeamA: CreateBattleTeamInput = {
       playerId: "playerA",
-      characters: [{ characterId: "solo-a", maxHp: 999 }],
+      characters: [{ characterId: "solo-a", maxHp: 999, abilityIds: Object.keys(abilities) }],
     };
-    const soloTeamB: CreateBattleTeamInput = { playerId: "playerB", characters: [{ characterId: "solo-b", maxHp: 50 }] };
+    const soloTeamB: CreateBattleTeamInput = { playerId: "playerB", characters: [{ characterId: "solo-b", maxHp: 50, abilityIds: Object.keys(abilities) }] };
     const state = createBattle([soloTeamA, soloTeamB], 1, {
       balanceVersionId: "test-balance-v1",
       matchFormat: defaultMatchFormat,
@@ -647,9 +665,9 @@ describe("resolveTurn — erasure bypasses onDeath triggers (spec/02)", () => {
     const teamAWithPassive: CreateBattleTeamInput = {
       playerId: "playerA",
       characters: [
-        { characterId: "a1", maxHp: 100, passiveId: deathWatcher.id },
-        { characterId: "a2", maxHp: 100 },
-        { characterId: "a3", maxHp: 100 },
+        { characterId: "a1", maxHp: 100, passiveId: deathWatcher.id, abilityIds: Object.keys(abilities) },
+        { characterId: "a2", maxHp: 100, abilityIds: Object.keys(abilities) },
+        { characterId: "a3", maxHp: 100, abilityIds: Object.keys(abilities) },
       ],
     };
     return createBattle([teamAWithPassive, TEAM_B], 1, {

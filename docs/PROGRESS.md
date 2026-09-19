@@ -1,6 +1,6 @@
 # Progress
 
-**Current phase:** 09 complete. Next: Phase 10 (friend matches).
+**Current phase:** 10 complete. Next: Phase 11.
 
 | Phase | Title | Status |
 |---|---|---|
@@ -14,7 +14,7 @@
 | 07 | Bots and headless simulation | ✅ done |
 | 08 | Full client UI | ✅ done |
 | 09 | Local profile, persistence, progression, unlocks | ✅ done |
-| 10 | Friend matches (serverless) | ☐ |
+| 10 | Friend matches (serverless) | ✅ done |
 | 11 | Local ranked | ☐ |
 | 12 | Dev-mode balance tools and local analytics | ☐ |
 | 13 | Roster scale to 120 | ☐ |
@@ -417,3 +417,6 @@ Main navigation (Play, Characters, Teams, Ranked, Codex, Missions, Legends, Prof
 
 ### 2026-09-19 — Phase 09 (local profile, persistence, progression)
 `packages/persistence`: atomic saves with checksummed envelopes and 3 rolling backups, corrupted-write recovery, profile v2 with a migration runner, JSON backup export/import, compressed transfer codes with QR drawing and decoding, replay records and codes, hostile-input handling. Web: first-launch install screen and gentle re-ask, storage persistence and a "Progress protection" status, Profile screen (level, transfer send/receive with in-app camera scanner and paste, share-sheet backup, restore, optional auto-save to a file, match history, replay viewer with file import and `#replay=` links), Missions screen (missions, faction challenges, secret achievements), Legend trials with Legend unlocks and the Nameless One gate, replays recorded for every match. Bugs fixed: turn-limit end never reached the match screen; multi-key IndexedDB write did not abort on a bad value. **Tests:** 445 (up from 351). ADR-018; OQ-51 to OQ-55. **Not done:** Playwright/Lighthouse (OQ-51), local ranked and friend matches (later phases). **Custom scripts:** none. **Recommended next step:** Phase 10.
+
+### 2026-09-19 — Phase 10 (friend matches, serverless)
+New package `packages/protocol`: message schemas, compressed bundle codes, SHA-256 (Web Crypto), seed commit-reveal, per-turn commit-reveal with salt mixed into the RNG, balance and content-hash handshake, state-hash desync detection, resign, resumable JSON sessions. Web: Friend Match (start, join, continue; copy, share and link; verification badge; resign; own-unlocks/everything-unlocked rule; asynchronous, saved in IndexedDB; finished matches recorded with a replay). `#match=` links open the right screen. **Bugs fixed:** the engine let an action use an ability outside the character's kit (`abilityNotKnown`); the planner now checks energy in the protocol's payment order. Stretch WebRTC: not attempted (logged in ADR-019). **Tests:** 484 (up from 445). ADR-019; OQ-56 to OQ-59. **Custom scripts:** none. **Recommended next step:** Phase 11.

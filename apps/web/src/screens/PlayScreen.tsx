@@ -2,7 +2,7 @@ import { GAME_TITLE } from "@veilbreak/content";
 import { Icon } from "../components/Icon";
 
 interface PlayScreenProps {
-  onStart: (mode: "hotseat" | "bot" | "trials" | "replays") => void;
+  onStart: (mode: "hotseat" | "bot" | "trials" | "replays" | "friend") => void;
 }
 
 // spec/05: PLAY offers Vs. AI, PvE/Trials, Local Hotseat, Friend Match and
@@ -35,8 +35,12 @@ export function PlayScreen({ onStart }: PlayScreenProps) {
           <strong>Replays</strong>
           <span>Watch a finished match again.</span>
         </button>
+        <button type="button" className="mode-card" onClick={() => onStart("friend")}>
+          <Icon name="teams" size={22} />
+          <strong>Friend Match</strong>
+          <span>Play a friend with codes, no server.</span>
+        </button>
         {[
-          ["Friend Match", "Play a friend with a shared code."],
           ["Ranked ladder", "Climb divisions against bots."],
         ].map(([title, text]) => (
           <div key={title} className="mode-card unavailable" aria-disabled="true">

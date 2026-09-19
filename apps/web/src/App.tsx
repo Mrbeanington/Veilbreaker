@@ -17,6 +17,7 @@ import { ProfileScreen } from "./screens/ProfileScreen";
 import { MissionsScreen } from "./screens/MissionsScreen";
 import { PlaceholderScreen } from "./screens/PlaceholderScreen";
 import { TrialsScreen } from "./screens/TrialsScreen";
+import { FriendScreen } from "./friend/FriendScreen";
 import { finishMatch } from "./game/finishMatch";
 import type { LegendTrial, ProgressReport } from "./game/progression";
 import { installPlan } from "./platform/install";
@@ -43,13 +44,14 @@ type PlayFlow =
   | { name: "home" }
   | { name: "setup"; mode: Mode }
   | { name: "trials" }
+  | { name: "friend"; code?: string }
   | { name: "trial-setup"; trial: LegendTrial }
   | { name: "match"; mode: Mode | "trial"; teamAIds: string[]; teamBIds: string[]; seed: number; trial?: LegendTrial }
   | { name: "result"; outcome: MatchOutcome; mode: Mode | "trial"; teamAIds: string[]; teamBIds: string[]; trial?: LegendTrial; revealed: string[]; report: ProgressReport };
 
-function PlaySection({ onOpenReplays }: { onOpenReplays: () => void }) {
+function PlaySection({ onOpenReplays, initialMatchCode }: { onOpenReplays: () => void; initialMatchCode?: string }) {
   const { profile, update, store } = useProfile();
-  const [flow, setFlow] = useState<PlayFlow>({ name: "home" });
+  const [flow, setFlow] = useState<PlayFlow>(initialMatchCode ? { name: "friend", code: initialMatchCode } : { name: "home" });
 
   function onMatchFinished(current: Extract<PlayFlow, { name: "match" }>, outcome: MatchOutcome) {
     const done = finishMatch(
@@ -69,7 +71,7 @@ function PlaySection({ onOpenReplays }: { onOpenReplays: () => void }) {
     case "home":
       return (
         <PlayScreen
-          onStart={(mode) => (mode === "trials" ? setFlow({ name: "trials" }) : mode === "replays" ? onOpenReplays() : setFlow({ name: "setup", mode }))}
+          onStart={(mode) => (mode === "trials" ? setFlow({ name: "trials" }) : mode === "friend" ? setFlow({ name: "friend" }) : mode === "replays" ? onOpenReplays() : setFlow({ name: "setup", mode }))}
         />
       );
     case "setup":
@@ -80,6 +82,8 @@ function PlaySection({ onOpenReplays }: { onOpenReplays: () => void }) {
           onReady={(teamAIds, teamBIds) => setFlow({ name: "match", mode: flow.mode, teamAIds, teamBIds, seed: Date.now() })}
         />
       );
+    case "friend":
+      return <FriendScreen initialCode={flow.code} onBack={() => setFlow({ name: "home" })} />;
     case "trials":
       return <TrialsScreen onBack={() => setFlow({ name: "home" })} onStart={(trial) => setFlow({ name: "trial-setup", trial })} />;
     case "trial-setup":
@@ -119,10 +123,14 @@ function PlaySection({ onOpenReplays }: { onOpenReplays: () => void }) {
 }
 
 /** `#transfer=<code>` and `#replay=<code>` links (the fragment never leaves the device). */
-function readHash(): { transfer?: string; replay?: string } {
+function readHash(): { transfer?: string; replay?: string; match?: string } {
   if (typeof location === "undefined") return {};
   const hash = location.hash;
-  return { transfer: /^#transfer=([A-Za-z0-9_.-]+)/.exec(hash)?.[1], replay: /^#replay=([A-Za-z0-9_.-]+)/.exec(hash)?.[1] };
+  return {
+    transfer: /^#transfer=([A-Za-z0-9_.-]+)/.exec(hash)?.[1],
+    replay: /^#replay=([A-Za-z0-9_.-]+)/.exec(hash)?.[1],
+    match: /^#match=([A-Za-z0-9_.-]+)/.exec(hash)?.[1],
+  };
 }
 
 export function AppShell() {
@@ -143,7 +151,7 @@ export function AppShell() {
 
   useEffect(() => {
     // Take the fragment out of the address bar once it has been read.
-    if ((initial.transfer || initial.replay) && typeof history !== "undefined") history.replaceState(null, "", location.pathname + location.search);
+    if ((initial.transfer || initial.replay || initial.match) && typeof history !== "undefined") history.replaceState(null, "", location.pathname + location.search);
   }, [initial]);
 
   // Optional auto-save to a chosen file: rewritten shortly after each save.
@@ -202,7 +210,7 @@ export function AppShell() {
         ) : (
           <>
             {plan === "banner" && <InstallBanner canPrompt={canPrompt} onInstall={() => void install()} onNotNow={() => asked()} />}
-            {section === "play" && <PlaySection onOpenReplays={() => go("profile")} />}
+            {section === "play" && <PlaySection onOpenReplays={() => go("profile")} initialMatchCode={initial.match} />}
             {section === "characters" && (
               <div>
                 <h2 className="title small">Characters</h2>

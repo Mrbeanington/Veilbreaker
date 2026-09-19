@@ -93,6 +93,6 @@ export default defineConfig({
   // packages/* are picked up on every request instead of only after a
   // pre-bundle cache invalidation.
   optimizeDeps: {
-    exclude: ["@veilbreak/content", "@veilbreak/engine", "@veilbreak/ai", "@veilbreak/persistence"],
+    exclude: ["@veilbreak/content", "@veilbreak/engine", "@veilbreak/ai", "@veilbreak/persistence", "@veilbreak/protocol"],
   },
 });

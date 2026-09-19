@@ -13,14 +13,17 @@ interface TeamPickerProps {
   onChange: (picked: string[]) => void;
   /** Saved presets can fill the team in one click. */
   showPresets?: boolean;
+  /** Friend matches with the "everything unlocked" rule: every fighter can be picked. */
+  everythingUnlocked?: boolean;
 }
 
 // phase-05 "Team picker limited to the implemented roster, with duplicates
 // disallowed" — spec/03 OQ-15: no duplicates *within* one team; a mirror across
 // teams is fine. Phase 08 adds the full filter bar, favorites, presets and
 // hidden/locked characters (spec/05 "Secret characters should create mystery").
-export function TeamPicker({ label, picked, onChange, showPresets = true }: TeamPickerProps) {
-  const { profile, update } = useProfile();
+export function TeamPicker({ label, picked, onChange, showPresets = true, everythingUnlocked = false }: TeamPickerProps) {
+  const { profile: saved, update } = useProfile();
+  const profile = useMemo(() => (everythingUnlocked ? { ...saved, settings: { ...saved.settings, showAllCharacters: true } } : saved), [saved, everythingUnlocked]);
   const [filters, setFilters] = useState<CharacterFilters>(NO_FILTERS);
   const idPrefix = useMemo(() => `picker-${label.replace(/\W+/g, "-").toLowerCase()}`, [label]);
   const options = useMemo(() => filterOptions(PICKABLE_CHARACTERS, profile), [profile]);

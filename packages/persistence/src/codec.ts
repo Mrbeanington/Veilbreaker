@@ -87,7 +87,7 @@ function inflateLimited(bytes: Uint8Array): Uint8Array | null {
 }
 
 /** prefix + base64url( [format byte][deflate(json)][crc32 of the previous bytes] ) */
-function packCode(prefix: string, json: unknown): string {
+export function packCode(prefix: string, json: unknown): string {
   const body = deflateSync(utf8(JSON.stringify(json)), { level: 9 });
   const bytes = new Uint8Array(1 + body.length + 4);
   bytes[0] = 1;
@@ -96,7 +96,7 @@ function packCode(prefix: string, json: unknown): string {
   return prefix + toBase64Url(bytes);
 }
 
-function unpackCode(prefix: string, code: string): { ok: true; json: unknown } | { ok: false; error: string } {
+export function unpackCode(prefix: string, code: string): { ok: true; json: unknown } | { ok: false; error: string } {
   const trimmed = code.trim();
   if (trimmed.length > MAX_CODE_CHARS) return { ok: false, error: "That code is too long." };
   if (!trimmed.startsWith(prefix)) return { ok: false, error: "That is not a Veilbreak code." };

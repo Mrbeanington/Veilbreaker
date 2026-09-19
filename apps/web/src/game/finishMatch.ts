@@ -4,8 +4,12 @@ import { buildReplayRecord } from "./replay";
 import type { MatchOutcome } from "../screens/MatchScreen";
 
 export interface FinishedMatchInput {
-  mode: "hotseat" | "bot" | "trial";
+  mode: "hotseat" | "bot" | "trial" | "friend";
+  /** Friend matches: which side this device played. */
+  humanSide?: "A" | "B";
   trialId?: string;
+  /** Overrides the generated id (friend matches use one both players can find again). */
+  replayId?: string;
   teamAIds: readonly string[];
   teamBIds: readonly string[];
   seed: number;
@@ -24,12 +28,12 @@ export interface FinishedMatch {
  * One pure function so the UI cannot set an unlock by hand (spec/06).
  */
 export function finishMatch(profile: Profile, input: FinishedMatchInput, outcome: MatchOutcome, now: number): FinishedMatch {
-  const replayId = outcome.turnLog && outcome.energyRules ? `m-${now.toString(36)}-${input.seed.toString(36)}` : undefined;
+  const replayId = outcome.turnLog && outcome.energyRules ? (input.replayId ?? `m-${now.toString(36)}-${input.seed.toString(36)}`) : undefined;
   const match: ProgressMatch = {
     teamAIds: input.teamAIds,
     teamBIds: input.teamBIds,
     winnerPlayerId: outcome.winnerPlayerId,
-    humanTeams: input.mode === "hotseat" ? ["A", "B"] : ["A"],
+    humanTeams: input.mode === "hotseat" ? ["A", "B"] : input.mode === "friend" ? [input.humanSide ?? "A"] : ["A"],
     eventLog: outcome.eventLog ?? [],
     mode: input.mode,
     trialId: input.trialId,

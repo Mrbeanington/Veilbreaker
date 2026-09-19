@@ -23,6 +23,8 @@ export function describeValidationError(error: ActionValidationError): string {
       return `${name(error.characterId)} cannot act right now (stunned or silenced).`;
     case "characterNotOnPlayersTeam":
       return `${name(error.characterId)} is not on your team.`;
+    case "abilityNotKnown":
+      return "That fighter does not have that ability.";
     case "unknownAbility":
       return `Unknown ability "${error.abilityId}".`;
     case "abilityLocked":

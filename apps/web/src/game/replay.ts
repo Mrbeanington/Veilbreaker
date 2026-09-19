@@ -10,6 +10,8 @@ import { BALANCE_VERSION_ID, buildTeamInput, matchDeps } from "./setup";
 export interface RecordedTurn {
   a: PlayerAction[];
   b: PlayerAction[];
+  /** Friend matches: the RNG state after the players' salts were mixed in (see packages/protocol). */
+  rng?: string;
 }
 
 export function buildReplayRecord(input: {
@@ -33,7 +35,7 @@ export function buildReplayRecord(input: {
     energyRules: input.energyRules,
     teamAIds: [...input.teamAIds],
     teamBIds: [...input.teamBIds],
-    turns: input.turns.map((t) => ({ a: [...t.a], b: [...t.b] })),
+    turns: input.turns.map((t) => ({ a: [...t.a], b: [...t.b], ...(t.rng ? { rng: t.rng } : {}) })),
     winnerPlayerId: input.winnerPlayerId,
   };
 }
@@ -62,7 +64,7 @@ export function runReplay(record: ReplayRecord): ReplayRun {
     const frames: ReplayFrame[] = [{ state, events: [] }];
     let winner: string | null = null;
     for (const [i, turn] of record.turns.entries()) {
-      const result = resolveTurn(state, turn.a, turn.b, deps);
+      const result = resolveTurn(turn.rng ? { ...state, rngState: turn.rng } : state, turn.a, turn.b, deps);
       if (!result.ok) return { ok: false, error: `Turn ${i + 1} cannot be replayed: it no longer matches the game's rules.`, frames };
       state = result.state;
       frames.push({ state, events: result.events });

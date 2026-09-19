@@ -23,6 +23,7 @@ export type ActionValidationError =
   | { code: "characterCannotAct"; characterId: string }
   | { code: "characterNotOnPlayersTeam"; characterId: string; playerId: string }
   | { code: "unknownAbility"; abilityId: string }
+  | { code: "abilityNotKnown"; characterId: string; abilityId: string }
   | { code: "abilityLocked"; characterId: string; abilityId: string }
   | { code: "abilityOnCooldown"; characterId: string; abilityId: string; turnsRemaining: number }
   | { code: "energyFamilyLocked"; characterId: string; abilityId: string; family: EnergyFamily }
@@ -84,6 +85,12 @@ export function validateAction(
   if (!ability) {
     errors.push({ code: "unknownAbility", abilityId: action.abilityId });
     return errors;
+  }
+
+  // A character can only use abilities in its own kit (which a transformation
+  // may change). Without this a peer in a friend match could use anyone's ability.
+  if (!actor.abilityIds.includes(action.abilityId)) {
+    errors.push({ code: "abilityNotKnown", characterId: action.characterId, abilityId: action.abilityId });
   }
 
   // spec/01 Cheaters "lock an ability": Ability Lock's `param` names the
