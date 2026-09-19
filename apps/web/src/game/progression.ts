@@ -9,7 +9,7 @@ import { originOf, rolesOf } from "./knowledge";
 // UI code never sets an unlock directly (spec/06 "Secret achievements").
 
 export interface ProgressMatch extends MatchSummary {
-  mode: "bot" | "hotseat" | "trial" | "friend";
+  mode: "bot" | "hotseat" | "trial" | "friend" | "ranked";
   trialId?: string;
   turns: number;
   /** Where each fighter ended the match. */

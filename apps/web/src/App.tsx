@@ -15,7 +15,7 @@ import { LegendsScreen } from "./screens/LegendsScreen";
 import { SettingsScreen } from "./screens/SettingsScreen";
 import { ProfileScreen } from "./screens/ProfileScreen";
 import { MissionsScreen } from "./screens/MissionsScreen";
-import { PlaceholderScreen } from "./screens/PlaceholderScreen";
+import { RankedScreen } from "./screens/RankedScreen";
 import { TrialsScreen } from "./screens/TrialsScreen";
 import { FriendScreen } from "./friend/FriendScreen";
 import { finishMatch } from "./game/finishMatch";
@@ -49,7 +49,7 @@ type PlayFlow =
   | { name: "match"; mode: Mode | "trial"; teamAIds: string[]; teamBIds: string[]; seed: number; trial?: LegendTrial }
   | { name: "result"; outcome: MatchOutcome; mode: Mode | "trial"; teamAIds: string[]; teamBIds: string[]; trial?: LegendTrial; revealed: string[]; report: ProgressReport };
 
-function PlaySection({ onOpenReplays, initialMatchCode }: { onOpenReplays: () => void; initialMatchCode?: string }) {
+function PlaySection({ onOpenReplays, onOpenRanked, initialMatchCode }: { onOpenReplays: () => void; onOpenRanked: () => void; initialMatchCode?: string }) {
   const { profile, update, store } = useProfile();
   const [flow, setFlow] = useState<PlayFlow>(initialMatchCode ? { name: "friend", code: initialMatchCode } : { name: "home" });
 
@@ -71,7 +71,7 @@ function PlaySection({ onOpenReplays, initialMatchCode }: { onOpenReplays: () =>
     case "home":
       return (
         <PlayScreen
-          onStart={(mode) => (mode === "trials" ? setFlow({ name: "trials" }) : mode === "friend" ? setFlow({ name: "friend" }) : mode === "replays" ? onOpenReplays() : setFlow({ name: "setup", mode }))}
+          onStart={(mode) => (mode === "trials" ? setFlow({ name: "trials" }) : mode === "friend" ? setFlow({ name: "friend" }) : mode === "replays" ? onOpenReplays() : mode === "ranked" ? onOpenRanked() : setFlow({ name: "setup", mode }))}
         />
       );
     case "setup":
@@ -210,7 +210,7 @@ export function AppShell() {
         ) : (
           <>
             {plan === "banner" && <InstallBanner canPrompt={canPrompt} onInstall={() => void install()} onNotNow={() => asked()} />}
-            {section === "play" && <PlaySection onOpenReplays={() => go("profile")} initialMatchCode={initial.match} />}
+            {section === "play" && <PlaySection onOpenReplays={() => go("profile")} onOpenRanked={() => go("ranked")} initialMatchCode={initial.match} />}
             {section === "characters" && (
               <div>
                 <h2 className="title small">Characters</h2>
@@ -218,7 +218,7 @@ export function AppShell() {
               </div>
             )}
             {section === "teams" && <TeamsScreen />}
-            {section === "ranked" && <PlaceholderScreen title="Ranked" text="A local ladder against bots of rising skill, with divisions and seasons." />}
+            {section === "ranked" && <RankedScreen />}
             {section === "codex" && (
               <div>
                 <h2 className="title small">Codex</h2>

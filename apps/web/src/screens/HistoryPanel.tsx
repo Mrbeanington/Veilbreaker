@@ -8,6 +8,7 @@ import {
   parseReplayFile,
   replayFileText,
   saveReplay,
+  type HistoryEntry,
   type ReplayRecord,
 } from "@veilbreak/persistence";
 import { BattleLog } from "../components/BattleLog";
@@ -17,6 +18,7 @@ import { useProfile } from "../profile/ProfileContext";
 import { downloadText, readFileText } from "../platform/files";
 
 const PLAYER_LABELS: Record<string, string> = { playerA: "Player 1", playerB: "Player 2" };
+const MODE_LABELS: Record<HistoryEntry["mode"], string> = { bot: "Vs. AI", hotseat: "Hotseat", trial: "Trial", friend: "Friend", ranked: "Ranked" };
 const nameOf = (id: string) => CHARACTER_LIBRARY[id]?.displayName ?? id;
 
 export function ReplayViewer({ record, onClose }: { record: ReplayRecord; onClose: () => void }) {
@@ -142,7 +144,7 @@ export function HistoryPanel({ initialReplayCode }: { initialReplayCode?: string
           {profile.history.map((entry) => (
             <li key={entry.id}>
               <span>
-                {new Date(entry.playedAt).toLocaleDateString(undefined, { month: "short", day: "numeric" })} · {entry.mode === "trial" ? "Trial" : entry.mode === "bot" ? "Vs. AI" : "Hotseat"} ·{" "}
+                {new Date(entry.playedAt).toLocaleDateString(undefined, { month: "short", day: "numeric" })} · {MODE_LABELS[entry.mode]} ·{" "}
                 {entry.winnerPlayerId ? `${PLAYER_LABELS[entry.winnerPlayerId] ?? entry.winnerPlayerId} won` : "draw"} · {entry.turns} turns ({entry.teamAIds.map(nameOf).join(", ")} vs. {entry.teamBIds.map(nameOf).join(", ")})
               </span>
               {entry.replayId && (

@@ -167,6 +167,21 @@ export function encodeTransfer(profile: Profile, idTable: readonly string[]): st
     ms: [Object.entries(profile.missions.progress).map(([id, n]) => [toRef(id), n]), list(profile.missions.completed)],
     ac: list(profile.achievements),
     i: [profile.install.installed ? 1 : 0, profile.install.asks, profile.install.firstLaunchHandled ? 1 : 0],
+    // Ranked: the standing and personal bests travel; the recent list, usage table and past seasons stay in backups (like history).
+    rk: [
+      profile.ranked.season,
+      profile.ranked.rating,
+      profile.ranked.placements,
+      profile.ranked.division,
+      profile.ranked.wins,
+      profile.ranked.losses,
+      profile.ranked.draws,
+      profile.ranked.streak,
+      profile.ranked.bestStreak,
+      profile.ranked.peakRating,
+      profile.ranked.peakDivision,
+      [profile.ranked.bests.rating, profile.ranked.bests.division, profile.ranked.bests.winStreak, profile.ranked.bests.fastestWinTurns ?? 0, profile.ranked.bests.seasonWins, profile.ranked.bests.matches],
+    ],
   };
   return packCode(TRANSFER_PREFIX, payload);
 }
@@ -182,8 +197,8 @@ export function decodeTransfer(code: string, idTable: readonly string[]): Transf
   if (!unpacked.ok) return unpacked;
   const p = unpacked.json as Record<string, unknown>;
   if (!p || typeof p !== "object") return { ok: false, error: "That code is damaged." };
-  if (p.v !== PROFILE_VERSION) {
-    // Older codes would be migrated here; only the current version exists in the wild so far.
+  // v2 codes (before the ranked ladder) carry no `rk` block, which simply defaults.
+  if (p.v !== PROFILE_VERSION && p.v !== 2) {
     return { ok: false, error: typeof p.v === "number" && p.v > PROFILE_VERSION ? "That code is from a newer version of the game." : "That code is from an unsupported version." };
   }
   // Positions only mean the same thing if both devices built the same id table.
@@ -214,6 +229,24 @@ export function decodeTransfer(code: string, idTable: readonly string[]): Transf
     const u = isArr(p.u) ? p.u : [];
     const ms = isArr(p.ms) ? p.ms : [];
     const inst = isArr(p.i) ? p.i : [];
+    const rk = isArr(p.rk) ? p.rk : [];
+    const rb = isArr(rk[11]) ? rk[11] : [];
+    const ranked = isArr(p.rk)
+      ? {
+          season: rk[0],
+          rating: rk[1],
+          placements: rk[2],
+          division: rk[3],
+          wins: rk[4],
+          losses: rk[5],
+          draws: rk[6],
+          streak: rk[7],
+          bestStreak: rk[8],
+          peakRating: rk[9],
+          peakDivision: rk[10],
+          bests: { rating: rb[0], division: rb[1], winStreak: rb[2], fastestWinTurns: Number(rb[3]) > 0 ? rb[3] : null, seasonWins: rb[4], matches: rb[5] },
+        }
+      : undefined;
     const candidate = {
       version: PROFILE_VERSION,
       settings,
@@ -232,6 +265,7 @@ export function decodeTransfer(code: string, idTable: readonly string[]): Transf
       missions: { progress: counts(ms[0]), completed: ids(ms[1]) },
       achievements: ids(p.ac),
       install: { installed: inst[0] === 1, asks: Number(inst[1] ?? 0), firstLaunchHandled: inst[2] === 1 },
+      ranked,
     };
     const parsed = profileSchema.safeParse(candidate);
     if (!parsed.success) return { ok: false, error: "That code does not contain a usable save." };

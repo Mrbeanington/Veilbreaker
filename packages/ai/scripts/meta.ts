@@ -1,0 +1,41 @@
+import { writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { defaultSimDeps, runBatch } from "../src/simulate";
+import { buildMetaPool } from "../src/ladder";
+
+// Dev CLI: pnpm meta --matches 20000 --seed 11
+// Simulates random teams (INTERMEDIATE bots on both sides), then writes the
+// ladder's meta pool: character win rates and the strongest trios. Re-run it
+// whenever the balance changes; the ladder reads packages/ai/src/meta-pool.json.
+
+function arg(name: string, fallback: string): string {
+  const i = process.argv.indexOf(`--${name}`);
+  return (i >= 0 ? process.argv[i + 1] : undefined) ?? fallback;
+}
+
+const matches = Number(arg("matches", "20000"));
+const seed = Number(arg("seed", "11"));
+const out = join(process.cwd(), "src", "meta-pool.json");
+
+const started = Date.now();
+let lastPrint = 0;
+const { report, records } = runBatch({
+  matches,
+  seed,
+  botA: "INTERMEDIATE",
+  botB: "INTERMEDIATE",
+  deps: defaultSimDeps(),
+  onProgress: (done, total) => {
+    if (Date.now() - lastPrint > 2000 || done === total) {
+      lastPrint = Date.now();
+      process.stdout.write(`\r${done}/${total} matches`);
+    }
+  },
+});
+process.stdout.write("\n");
+
+const winRates = Object.fromEntries(report.characters.map((c) => [c.id, c.winRate]));
+const pool = buildMetaPool(records, winRates, { matches, seed, bots: "INTERMEDIATE", date: new Date().toISOString().slice(0, 10) });
+writeFileSync(out, `${JSON.stringify(pool, null, 2)}\n`);
+console.log(`Wrote ${out}: ${Object.keys(winRates).length} characters, ${pool.topTeams.length} top teams, ${((Date.now() - started) / 1000).toFixed(1)}s, ${report.errors.length} engine errors`);
+if (report.errors.length > 0) process.exitCode = 1;

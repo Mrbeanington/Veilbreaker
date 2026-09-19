@@ -1,6 +1,6 @@
 # Progress
 
-**Current phase:** 10 complete. Next: Phase 11.
+**Current phase:** 11 complete. Next: Phase 12.
 
 | Phase | Title | Status |
 |---|---|---|
@@ -15,7 +15,7 @@
 | 08 | Full client UI | ✅ done |
 | 09 | Local profile, persistence, progression, unlocks | ✅ done |
 | 10 | Friend matches (serverless) | ✅ done |
-| 11 | Local ranked | ☐ |
+| 11 | Local ranked | ✅ done |
 | 12 | Dev-mode balance tools and local analytics | ☐ |
 | 13 | Roster scale to 120 | ☐ |
 | 14 | Art spec completion | ☐ |
@@ -420,3 +420,6 @@ Main navigation (Play, Characters, Teams, Ranked, Codex, Missions, Legends, Prof
 
 ### 2026-09-19 — Phase 10 (friend matches, serverless)
 New package `packages/protocol`: message schemas, compressed bundle codes, SHA-256 (Web Crypto), seed commit-reveal, per-turn commit-reveal with salt mixed into the RNG, balance and content-hash handshake, state-hash desync detection, resign, resumable JSON sessions. Web: Friend Match (start, join, continue; copy, share and link; verification badge; resign; own-unlocks/everything-unlocked rule; asynchronous, saved in IndexedDB; finished matches recorded with a replay). `#match=` links open the right screen. **Bugs fixed:** the engine let an action use an ability outside the character's kit (`abilityNotKnown`); the planner now checks energy in the protocol's payment order. Stretch WebRTC: not attempted (logged in ADR-019). **Tests:** 484 (up from 445). ADR-019; OQ-56 to OQ-59. **Custom scripts:** none. **Recommended next step:** Phase 11.
+
+### 2026-09-19 — Phase 11 (local ranked)
+The Ranked section is now a working ladder against bots. Hidden Elo rating, 16 visible divisions (Bronze III to Diamond I, then Veilbreaker), five placement matches per season, calendar-month seasons with archive and half-reset, streaks, personal bests, most-played stats, best seasons (a local personal-best leaderboard) and recent matches. Bots scale in skill and team quality by division and draw teams from a measured meta pool (`pnpm meta`, `packages/ai/src/meta-pool.json`); Legend policy per OQ-05; pick/ban (four picks, one ban each) at Diamond and above. A match left unfinished is saved as pending and counts as a loss. All state is the profile's `ranked` block (**profile v3**, migration 2 to 3) and is in backups and transfer codes. Play screen has a Ranked Ladder card. **New:** `packages/persistence/src/ranked.ts`, `packages/ai/src/{ladder,meta}.ts`, `packages/ai/src/meta-pool.json`, `packages/ai/scripts/meta.ts`, `apps/web/src/game/ranked.ts`, `apps/web/src/screens/RankedScreen.tsx`, tests for each. **Changed:** `packages/persistence/src/{profile,codec,replay,index}.ts`, `packages/ai/src/index.ts`, `apps/web/src/{App.tsx,components/TeamPicker.tsx,game/finishMatch.ts,game/progression.ts,screens/{PlayScreen,ResultScreen,HistoryPanel}.tsx}`, root and ai `package.json` (`pnpm meta`), `apps/web/src/App.test.tsx`, `platform.test.ts`. **Removed:** `PlaceholderScreen.tsx`. **Bugs fixed:** the team picker could not hold more than three; Friend matches were labelled "Hotseat" in history. **Tests:** 567 (up from 485). ADR-020; OQ-05 resolved; OQ-60 to OQ-64. **Custom scripts:** none. **Recommended next step:** Phase 12.

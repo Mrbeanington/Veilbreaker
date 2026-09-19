@@ -157,7 +157,7 @@ describe("a maxed-out profile with the real game content fits one QR code", () =
   const pairs = () => Object.fromEntries(characters.map((a) => [a, Object.fromEntries(characters.filter((b) => b !== a).map((b) => [b, 99]))]));
   const maxed = (): Profile =>
     profileSchema.parse({
-      version: 2,
+      version: 3,
       settings: { animationSpeed: "slow", reducedMotion: "on", turnTimer: false, uiScale: "xlarge", highContrast: true, soundEnabled: true, soundVolume: 100, showAllCharacters: true, botLevel: "EXPERT" },
       favorites: characters,
       recent: characters.slice(0, 12),

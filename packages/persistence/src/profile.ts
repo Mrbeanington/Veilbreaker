@@ -1,11 +1,13 @@
 import { z } from "zod";
+import { rankedSchema } from "./ranked";
 
 // The local profile (spec/06): created automatically on first launch, no
 // account. Versioned with forward migrations (`MIGRATIONS`), each tested.
 //   v1 (Phase 08): settings, favorites, recents, presets, Codex discoveries.
 //   v2 (Phase 09): adds xp, Legend unlocks, missions, achievements, match
 //                  history, install state.
-export const PROFILE_VERSION = 2;
+//   v3 (Phase 11): adds the local ranked ladder (`ranked`).
+export const PROFILE_VERSION = 3;
 
 const pairTable = z.record(z.string(), z.record(z.string(), z.number().int().min(0)));
 
@@ -40,7 +42,7 @@ export type Discovery = z.infer<typeof discoverySchema>;
 export const historyEntrySchema = z.object({
   id: z.string().min(1).max(60),
   playedAt: z.number().int().min(0),
-  mode: z.enum(["bot", "hotseat", "trial", "friend"]),
+  mode: z.enum(["bot", "hotseat", "trial", "friend", "ranked"]),
   teamAIds: z.array(z.string()).max(6),
   teamBIds: z.array(z.string()).max(6),
   winnerPlayerId: z.string().nullable(),
@@ -91,6 +93,8 @@ export const profileSchema = z.object({
     })
     .default({}),
   lastPlayedAt: z.number().int().min(0).optional(),
+  // ---- v3
+  ranked: rankedSchema.default({}),
 });
 export type Profile = z.infer<typeof profileSchema>;
 
@@ -136,6 +140,8 @@ type Raw = Record<string, unknown>;
 export const MIGRATIONS: Record<number, (data: Raw) => Raw> = {
   // v1 -> v2: the new blocks all have defaults; only the version changes.
   1: (data) => ({ ...data, version: 2 }),
+  // v2 -> v3: `ranked` has defaults (an unranked, unplaced ladder); only the version changes.
+  2: (data) => ({ ...data, version: 3 }),
 };
 
 export type ParseResult = { ok: true; profile: Profile; migratedFrom?: number } | { ok: false; reason: string };

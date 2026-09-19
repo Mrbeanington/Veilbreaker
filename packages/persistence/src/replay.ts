@@ -17,7 +17,7 @@ export const replayRecordSchema = z.object({
   version: z.literal(1),
   id: z.string().min(1).max(60),
   playedAt: z.number().int().min(0),
-  mode: z.enum(["bot", "hotseat", "trial", "friend"]),
+  mode: z.enum(["bot", "hotseat", "trial", "friend", "ranked"]),
   seed: z.number().int().min(0),
   balanceVersionId: z.string().min(1).max(60),
   energyRules: energyRulesSchema,

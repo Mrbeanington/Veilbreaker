@@ -79,4 +79,4 @@ The build output is static files that work when served from any static host AND 
 - Client-only platform guard (run after `pnpm build`): `pnpm verify-client-only`
 - Full local CI gate, same checks CI runs: `pnpm ci`
 - Run a single package's scripts: `pnpm --filter @veilbreak/<name> <script>` (e.g. `pnpm --filter @veilbreak/content test`)
-- Node simulation CLI (`packages/ai`): not built yet — added in Phase 07.
+- Node simulation CLI (`packages/ai`): `pnpm sim --matches N --bots level --seed S` writes a balance report to `docs/balance/`; `pnpm meta` refreshes the ranked ladder's meta pool (`packages/ai/src/meta-pool.json`).

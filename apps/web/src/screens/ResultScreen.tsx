@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type { MatchOutcome } from "./MatchScreen";
 import { CHARACTER_LIBRARY } from "@veilbreak/content";
 import { achievementById, missionById, type ProgressReport } from "../game/progression";
@@ -7,13 +8,16 @@ interface ResultScreenProps {
   /** Names of fighters the player met for the first time in this match. */
   revealed?: string[];
   report?: ProgressReport;
+  /** Extra result panels (the ranked ladder's rating change). */
+  extra?: ReactNode;
+  playAgainLabel?: string;
   onPlayAgain: () => void;
   onHome: () => void;
 }
 
 const PLAYER_LABELS: Record<string, string> = { playerA: "Player 1", playerB: "Player 2" };
 
-export function ResultScreen({ outcome, revealed = [], report, onPlayAgain, onHome }: ResultScreenProps) {
+export function ResultScreen({ outcome, revealed = [], report, extra, playAgainLabel = "Play again", onPlayAgain, onHome }: ResultScreenProps) {
   const headline =
     outcome.result === "draw"
       ? "Draw!"
@@ -33,12 +37,13 @@ export function ResultScreen({ outcome, revealed = [], report, onPlayAgain, onHo
           {report.achievements.length > 0 && <p>Secret achievement{report.achievements.length === 1 ? "" : "s"}: {report.achievements.map((id) => achievementById(id)?.title ?? id).join(", ")}.</p>}
         </div>
       )}
+      {extra}
       {revealed.length > 0 && (
         <p role="status">New in your Codex: {revealed.join(", ")}.</p>
       )}
       <div className="button-row" style={{ justifyContent: "center", marginTop: 20 }}>
         <button type="button" className="btn primary" onClick={onPlayAgain}>
-          Play again
+          {playAgainLabel}
         </button>
         <button type="button" className="btn" onClick={onHome}>
           Home

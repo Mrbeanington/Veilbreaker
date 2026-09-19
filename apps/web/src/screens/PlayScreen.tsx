@@ -2,12 +2,11 @@ import { GAME_TITLE } from "@veilbreak/content";
 import { Icon } from "../components/Icon";
 
 interface PlayScreenProps {
-  onStart: (mode: "hotseat" | "bot" | "trials" | "replays" | "friend") => void;
+  onStart: (mode: "hotseat" | "bot" | "trials" | "replays" | "friend" | "ranked") => void;
 }
 
 // spec/05: PLAY offers Vs. AI, PvE/Trials, Local Hotseat, Friend Match and
-// Replays. Hotseat and Vs. AI work today; the others are visible so players
-// know they are coming, but are honestly marked as not available yet.
+// Replays, and the Ranked ladder is one tap away too.
 export function PlayScreen({ onStart }: PlayScreenProps) {
   return (
     <div>
@@ -40,15 +39,11 @@ export function PlayScreen({ onStart }: PlayScreenProps) {
           <strong>Friend Match</strong>
           <span>Play a friend with codes, no server.</span>
         </button>
-        {[
-          ["Ranked ladder", "Climb divisions against bots."],
-        ].map(([title, text]) => (
-          <div key={title} className="mode-card unavailable" aria-disabled="true">
-            <Icon name="lock" size={22} />
-            <strong>{title}</strong>
-            <span>{text} Coming later.</span>
-          </div>
-        ))}
+        <button type="button" className="mode-card" onClick={() => onStart("ranked")}>
+          <Icon name="ranked" size={22} />
+          <strong>Ranked Ladder</strong>
+          <span>Climb divisions against bots.</span>
+        </button>
       </div>
     </div>
   );

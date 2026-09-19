@@ -52,11 +52,17 @@ describe("main navigation (spec/05)", () => {
     expect(screen.getByRole("button", { name: "Legends" })).toHaveAttribute("aria-current", "page");
   });
 
-  it("Ranked is an honest placeholder", async () => {
+  it("Ranked opens the local ladder, and the Play screen has a card that goes there", async () => {
     const user = userEvent.setup();
     await renderApp();
     await user.click(screen.getByRole("button", { name: "Ranked" }));
-    expect(screen.getByText(/not built yet/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Placement matches: 0 of 5/)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Play a ranked match" })).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Play" }));
+    await user.click(screen.getByRole("button", { name: /Ranked Ladder/ }));
+    expect(screen.getByRole("button", { name: "Ranked" })).toHaveAttribute("aria-current", "page");
+    expect(await screen.findByText(/Placement matches: 0 of 5/)).toBeInTheDocument();
   });
 });
 
