@@ -191,3 +191,9 @@ export const CHARACTER_VISUAL_BIBLE_LIBRARY: Record<string, CharacterVisualBible
     THE_NAMELESS_ONE_VISUAL_BIBLE,
   ].map((b) => [b.characterId, b]),
 );
+
+/** Phase 04 stub with one placeholder ability — not a real playable kit (docs/design/characters/mister-whiskers.md). */
+export const STUB_CHARACTER_IDS: ReadonlySet<string> = new Set(["whiskers-devourer-of-worlds"]);
+
+/** Every character with a real kit: the pool for team pickers and balance simulation. */
+export const PLAYABLE_CHARACTERS: CharacterDefinition[] = Object.values(CHARACTER_LIBRARY).filter((c) => !STUB_CHARACTER_IDS.has(c.id));

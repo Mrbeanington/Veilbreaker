@@ -1,0 +1,2008 @@
+{
+  "meta": {
+    "matches": 10000,
+    "seed": 1,
+    "botA": "INTERMEDIATE",
+    "botB": "INTERMEDIATE",
+    "poolSize": 20,
+    "teamSize": 3,
+    "maxTurns": 40
+  },
+  "sides": {
+    "playerAWins": 4962,
+    "playerBWins": 5027,
+    "draws": 11
+  },
+  "initiative": {
+    "firstPlayerWins": 3673,
+    "secondPlayerWins": 6316,
+    "draws": 11,
+    "firstPlayerWinRate": 36.8
+  },
+  "length": {
+    "average": 25.2,
+    "min": 5,
+    "max": 40,
+    "turnLimitHits": 1463
+  },
+  "characters": [
+    {
+      "id": "patient-zero",
+      "legend": false,
+      "games": 2935,
+      "wins": 2166,
+      "draws": 3,
+      "winRate": 73.8
+    },
+    {
+      "id": "hydra",
+      "legend": false,
+      "games": 2991,
+      "wins": 2106,
+      "draws": 6,
+      "winRate": 70.4
+    },
+    {
+      "id": "plague-doctor",
+      "legend": false,
+      "games": 3037,
+      "wins": 1899,
+      "draws": 7,
+      "winRate": 62.5
+    },
+    {
+      "id": "black-knight",
+      "legend": true,
+      "games": 3003,
+      "wins": 1745,
+      "draws": 2,
+      "winRate": 58.1
+    },
+    {
+      "id": "the-nameless-one",
+      "legend": true,
+      "games": 2993,
+      "wins": 1613,
+      "draws": 2,
+      "winRate": 53.9
+    },
+    {
+      "id": "baba-yaga",
+      "legend": false,
+      "games": 2988,
+      "wins": 1584,
+      "draws": 4,
+      "winRate": 53
+    },
+    {
+      "id": "mister-whiskers",
+      "legend": false,
+      "games": 3023,
+      "wins": 1586,
+      "draws": 2,
+      "winRate": 52.5
+    },
+    {
+      "id": "nine-tailed-trickster",
+      "legend": false,
+      "games": 2999,
+      "wins": 1571,
+      "draws": 3,
+      "winRate": 52.4
+    },
+    {
+      "id": "shiro",
+      "legend": true,
+      "games": 3097,
+      "wins": 1547,
+      "draws": 6,
+      "winRate": 50
+    },
+    {
+      "id": "behemoth",
+      "legend": true,
+      "games": 2992,
+      "wins": 1438,
+      "draws": 1,
+      "winRate": 48.1
+    },
+    {
+      "id": "tortuga-rex",
+      "legend": false,
+      "games": 2973,
+      "wins": 1412,
+      "draws": 3,
+      "winRate": 47.5
+    },
+    {
+      "id": "zeiron",
+      "legend": true,
+      "games": 2982,
+      "wins": 1377,
+      "draws": 2,
+      "winRate": 46.2
+    },
+    {
+      "id": "emperor-zero",
+      "legend": true,
+      "games": 2991,
+      "wins": 1350,
+      "draws": 3,
+      "winRate": 45.1
+    },
+    {
+      "id": "koschei",
+      "legend": false,
+      "games": 3040,
+      "wins": 1339,
+      "draws": 2,
+      "winRate": 44
+    },
+    {
+      "id": "malachar",
+      "legend": false,
+      "games": 3000,
+      "wins": 1282,
+      "draws": 3,
+      "winRate": 42.7
+    },
+    {
+      "id": "father-bell",
+      "legend": false,
+      "games": 3035,
+      "wins": 1280,
+      "draws": 3,
+      "winRate": 42.2
+    },
+    {
+      "id": "moonshot-maddox",
+      "legend": false,
+      "games": 2902,
+      "wins": 1200,
+      "draws": 4,
+      "winRate": 41.4
+    },
+    {
+      "id": "the-gambler",
+      "legend": false,
+      "games": 3013,
+      "wins": 1230,
+      "draws": 1,
+      "winRate": 40.8
+    },
+    {
+      "id": "the-referee",
+      "legend": false,
+      "games": 3007,
+      "wins": 1226,
+      "draws": 4,
+      "winRate": 40.8
+    },
+    {
+      "id": "maestro-nocturne",
+      "legend": false,
+      "games": 2999,
+      "wins": 1016,
+      "draws": 5,
+      "winRate": 33.9
+    }
+  ],
+  "legends": {
+    "legendTeamGames": 13577,
+    "legendTeamWinRate": 50.2,
+    "noLegendTeamGames": 6423,
+    "noLegendTeamWinRate": 49.5,
+    "perLegend": [
+      {
+        "id": "black-knight",
+        "legend": true,
+        "games": 3003,
+        "wins": 1745,
+        "draws": 2,
+        "winRate": 58.1
+      },
+      {
+        "id": "the-nameless-one",
+        "legend": true,
+        "games": 2993,
+        "wins": 1613,
+        "draws": 2,
+        "winRate": 53.9
+      },
+      {
+        "id": "shiro",
+        "legend": true,
+        "games": 3097,
+        "wins": 1547,
+        "draws": 6,
+        "winRate": 50
+      },
+      {
+        "id": "behemoth",
+        "legend": true,
+        "games": 2992,
+        "wins": 1438,
+        "draws": 1,
+        "winRate": 48.1
+      },
+      {
+        "id": "zeiron",
+        "legend": true,
+        "games": 2982,
+        "wins": 1377,
+        "draws": 2,
+        "winRate": 46.2
+      },
+      {
+        "id": "emperor-zero",
+        "legend": true,
+        "games": 2991,
+        "wins": 1350,
+        "draws": 3,
+        "winRate": 45.1
+      }
+    ]
+  },
+  "counterMatrix": {
+    "behemoth": {
+      "the-gambler": {
+        "games": 474,
+        "wins": 290
+      },
+      "patient-zero": {
+        "games": 469,
+        "wins": 131
+      },
+      "the-nameless-one": {
+        "games": 485,
+        "wins": 224
+      },
+      "black-knight": {
+        "games": 479,
+        "wins": 194
+      },
+      "mister-whiskers": {
+        "games": 454,
+        "wins": 206
+      },
+      "nine-tailed-trickster": {
+        "games": 473,
+        "wins": 225
+      },
+      "plague-doctor": {
+        "games": 511,
+        "wins": 179
+      },
+      "hydra": {
+        "games": 490,
+        "wins": 128
+      },
+      "baba-yaga": {
+        "games": 480,
+        "wins": 212
+      },
+      "tortuga-rex": {
+        "games": 466,
+        "wins": 226
+      },
+      "maestro-nocturne": {
+        "games": 437,
+        "wins": 266
+      },
+      "zeiron": {
+        "games": 458,
+        "wins": 220
+      },
+      "the-referee": {
+        "games": 473,
+        "wins": 270
+      },
+      "moonshot-maddox": {
+        "games": 452,
+        "wins": 262
+      },
+      "koschei": {
+        "games": 497,
+        "wins": 252
+      },
+      "emperor-zero": {
+        "games": 432,
+        "wins": 243
+      },
+      "father-bell": {
+        "games": 469,
+        "wins": 264
+      },
+      "shiro": {
+        "games": 504,
+        "wins": 242
+      },
+      "malachar": {
+        "games": 473,
+        "wins": 280
+      }
+    },
+    "zeiron": {
+      "the-gambler": {
+        "games": 498,
+        "wins": 280
+      },
+      "patient-zero": {
+        "games": 464,
+        "wins": 116
+      },
+      "the-nameless-one": {
+        "games": 456,
+        "wins": 199
+      },
+      "black-knight": {
+        "games": 459,
+        "wins": 170
+      },
+      "hydra": {
+        "games": 473,
+        "wins": 112
+      },
+      "maestro-nocturne": {
+        "games": 476,
+        "wins": 307
+      },
+      "shiro": {
+        "games": 471,
+        "wins": 214
+      },
+      "father-bell": {
+        "games": 468,
+        "wins": 260
+      },
+      "malachar": {
+        "games": 444,
+        "wins": 246
+      },
+      "emperor-zero": {
+        "games": 471,
+        "wins": 242
+      },
+      "behemoth": {
+        "games": 458,
+        "wins": 238
+      },
+      "moonshot-maddox": {
+        "games": 443,
+        "wins": 250
+      },
+      "plague-doctor": {
+        "games": 486,
+        "wins": 157
+      },
+      "the-referee": {
+        "games": 457,
+        "wins": 249
+      },
+      "mister-whiskers": {
+        "games": 484,
+        "wins": 199
+      },
+      "koschei": {
+        "games": 520,
+        "wins": 271
+      },
+      "baba-yaga": {
+        "games": 482,
+        "wins": 188
+      },
+      "nine-tailed-trickster": {
+        "games": 475,
+        "wins": 204
+      },
+      "tortuga-rex": {
+        "games": 461,
+        "wins": 229
+      }
+    },
+    "plague-doctor": {
+      "the-gambler": {
+        "games": 501,
+        "wins": 348
+      },
+      "patient-zero": {
+        "games": 474,
+        "wins": 162
+      },
+      "the-nameless-one": {
+        "games": 474,
+        "wins": 279
+      },
+      "behemoth": {
+        "games": 511,
+        "wins": 332
+      },
+      "shiro": {
+        "games": 470,
+        "wins": 285
+      },
+      "tortuga-rex": {
+        "games": 504,
+        "wins": 335
+      },
+      "father-bell": {
+        "games": 466,
+        "wins": 329
+      },
+      "malachar": {
+        "games": 482,
+        "wins": 343
+      },
+      "koschei": {
+        "games": 500,
+        "wins": 341
+      },
+      "hydra": {
+        "games": 469,
+        "wins": 217
+      },
+      "nine-tailed-trickster": {
+        "games": 460,
+        "wins": 273
+      },
+      "mister-whiskers": {
+        "games": 488,
+        "wins": 306
+      },
+      "zeiron": {
+        "games": 486,
+        "wins": 328
+      },
+      "baba-yaga": {
+        "games": 420,
+        "wins": 242
+      },
+      "the-referee": {
+        "games": 506,
+        "wins": 361
+      },
+      "moonshot-maddox": {
+        "games": 457,
+        "wins": 312
+      },
+      "maestro-nocturne": {
+        "games": 491,
+        "wins": 365
+      },
+      "black-knight": {
+        "games": 456,
+        "wins": 230
+      },
+      "emperor-zero": {
+        "games": 496,
+        "wins": 309
+      }
+    },
+    "the-gambler": {
+      "behemoth": {
+        "games": 474,
+        "wins": 184
+      },
+      "zeiron": {
+        "games": 498,
+        "wins": 217
+      },
+      "plague-doctor": {
+        "games": 501,
+        "wins": 152
+      },
+      "black-knight": {
+        "games": 484,
+        "wins": 171
+      },
+      "hydra": {
+        "games": 460,
+        "wins": 109
+      },
+      "maestro-nocturne": {
+        "games": 507,
+        "wins": 281
+      },
+      "tortuga-rex": {
+        "games": 457,
+        "wins": 203
+      },
+      "the-nameless-one": {
+        "games": 502,
+        "wins": 169
+      },
+      "patient-zero": {
+        "games": 455,
+        "wins": 97
+      },
+      "mister-whiskers": {
+        "games": 472,
+        "wins": 174
+      },
+      "koschei": {
+        "games": 444,
+        "wins": 201
+      },
+      "the-referee": {
+        "games": 469,
+        "wins": 248
+      },
+      "moonshot-maddox": {
+        "games": 439,
+        "wins": 228
+      },
+      "malachar": {
+        "games": 462,
+        "wins": 227
+      },
+      "nine-tailed-trickster": {
+        "games": 457,
+        "wins": 183
+      },
+      "shiro": {
+        "games": 513,
+        "wins": 214
+      },
+      "emperor-zero": {
+        "games": 476,
+        "wins": 230
+      },
+      "baba-yaga": {
+        "games": 487,
+        "wins": 185
+      },
+      "father-bell": {
+        "games": 482,
+        "wins": 217
+      }
+    },
+    "patient-zero": {
+      "behemoth": {
+        "games": 469,
+        "wins": 338
+      },
+      "zeiron": {
+        "games": 464,
+        "wins": 348
+      },
+      "plague-doctor": {
+        "games": 474,
+        "wins": 312
+      },
+      "maestro-nocturne": {
+        "games": 487,
+        "wins": 415
+      },
+      "emperor-zero": {
+        "games": 452,
+        "wins": 341
+      },
+      "the-gambler": {
+        "games": 455,
+        "wins": 358
+      },
+      "the-referee": {
+        "games": 440,
+        "wins": 348
+      },
+      "hydra": {
+        "games": 436,
+        "wins": 262
+      },
+      "shiro": {
+        "games": 467,
+        "wins": 323
+      },
+      "mister-whiskers": {
+        "games": 452,
+        "wins": 337
+      },
+      "nine-tailed-trickster": {
+        "games": 460,
+        "wins": 327
+      },
+      "black-knight": {
+        "games": 481,
+        "wins": 328
+      },
+      "moonshot-maddox": {
+        "games": 463,
+        "wins": 355
+      },
+      "baba-yaga": {
+        "games": 471,
+        "wins": 345
+      },
+      "koschei": {
+        "games": 465,
+        "wins": 366
+      },
+      "malachar": {
+        "games": 442,
+        "wins": 341
+      },
+      "the-nameless-one": {
+        "games": 470,
+        "wins": 332
+      },
+      "father-bell": {
+        "games": 501,
+        "wins": 391
+      },
+      "tortuga-rex": {
+        "games": 456,
+        "wins": 331
+      }
+    },
+    "the-nameless-one": {
+      "behemoth": {
+        "games": 485,
+        "wins": 260
+      },
+      "zeiron": {
+        "games": 456,
+        "wins": 257
+      },
+      "plague-doctor": {
+        "games": 474,
+        "wins": 194
+      },
+      "black-knight": {
+        "games": 488,
+        "wins": 212
+      },
+      "mister-whiskers": {
+        "games": 476,
+        "wins": 261
+      },
+      "nine-tailed-trickster": {
+        "games": 479,
+        "wins": 251
+      },
+      "father-bell": {
+        "games": 456,
+        "wins": 278
+      },
+      "maestro-nocturne": {
+        "games": 468,
+        "wins": 328
+      },
+      "the-gambler": {
+        "games": 502,
+        "wins": 333
+      },
+      "hydra": {
+        "games": 465,
+        "wins": 150
+      },
+      "the-referee": {
+        "games": 446,
+        "wins": 281
+      },
+      "koschei": {
+        "games": 492,
+        "wins": 274
+      },
+      "tortuga-rex": {
+        "games": 468,
+        "wins": 258
+      },
+      "malachar": {
+        "games": 468,
+        "wins": 293
+      },
+      "shiro": {
+        "games": 468,
+        "wins": 245
+      },
+      "baba-yaga": {
+        "games": 504,
+        "wins": 273
+      },
+      "patient-zero": {
+        "games": 470,
+        "wins": 137
+      },
+      "emperor-zero": {
+        "games": 452,
+        "wins": 278
+      },
+      "moonshot-maddox": {
+        "games": 462,
+        "wins": 276
+      }
+    },
+    "emperor-zero": {
+      "black-knight": {
+        "games": 481,
+        "wins": 180
+      },
+      "hydra": {
+        "games": 474,
+        "wins": 131
+      },
+      "maestro-nocturne": {
+        "games": 488,
+        "wins": 296
+      },
+      "zeiron": {
+        "games": 471,
+        "wins": 229
+      },
+      "the-referee": {
+        "games": 474,
+        "wins": 249
+      },
+      "patient-zero": {
+        "games": 452,
+        "wins": 110
+      },
+      "nine-tailed-trickster": {
+        "games": 491,
+        "wins": 221
+      },
+      "malachar": {
+        "games": 444,
+        "wins": 223
+      },
+      "father-bell": {
+        "games": 478,
+        "wins": 260
+      },
+      "koschei": {
+        "games": 477,
+        "wins": 250
+      },
+      "behemoth": {
+        "games": 432,
+        "wins": 189
+      },
+      "the-gambler": {
+        "games": 476,
+        "wins": 246
+      },
+      "moonshot-maddox": {
+        "games": 462,
+        "wins": 258
+      },
+      "baba-yaga": {
+        "games": 472,
+        "wins": 198
+      },
+      "the-nameless-one": {
+        "games": 452,
+        "wins": 174
+      },
+      "shiro": {
+        "games": 486,
+        "wins": 216
+      },
+      "plague-doctor": {
+        "games": 496,
+        "wins": 185
+      },
+      "tortuga-rex": {
+        "games": 456,
+        "wins": 219
+      },
+      "mister-whiskers": {
+        "games": 511,
+        "wins": 216
+      }
+    },
+    "black-knight": {
+      "zeiron": {
+        "games": 459,
+        "wins": 288
+      },
+      "the-gambler": {
+        "games": 484,
+        "wins": 313
+      },
+      "emperor-zero": {
+        "games": 481,
+        "wins": 301
+      },
+      "behemoth": {
+        "games": 479,
+        "wins": 285
+      },
+      "father-bell": {
+        "games": 460,
+        "wins": 306
+      },
+      "the-nameless-one": {
+        "games": 488,
+        "wins": 276
+      },
+      "moonshot-maddox": {
+        "games": 451,
+        "wins": 296
+      },
+      "the-referee": {
+        "games": 487,
+        "wins": 303
+      },
+      "shiro": {
+        "games": 491,
+        "wins": 323
+      },
+      "malachar": {
+        "games": 488,
+        "wins": 314
+      },
+      "hydra": {
+        "games": 450,
+        "wins": 166
+      },
+      "koschei": {
+        "games": 477,
+        "wins": 306
+      },
+      "nine-tailed-trickster": {
+        "games": 491,
+        "wins": 261
+      },
+      "mister-whiskers": {
+        "games": 469,
+        "wins": 242
+      },
+      "patient-zero": {
+        "games": 481,
+        "wins": 153
+      },
+      "baba-yaga": {
+        "games": 476,
+        "wins": 271
+      },
+      "plague-doctor": {
+        "games": 456,
+        "wins": 225
+      },
+      "tortuga-rex": {
+        "games": 477,
+        "wins": 267
+      },
+      "maestro-nocturne": {
+        "games": 464,
+        "wins": 339
+      }
+    },
+    "hydra": {
+      "zeiron": {
+        "games": 473,
+        "wins": 361
+      },
+      "the-gambler": {
+        "games": 460,
+        "wins": 351
+      },
+      "emperor-zero": {
+        "games": 474,
+        "wins": 342
+      },
+      "behemoth": {
+        "games": 490,
+        "wins": 362
+      },
+      "shiro": {
+        "games": 533,
+        "wins": 354
+      },
+      "tortuga-rex": {
+        "games": 486,
+        "wins": 353
+      },
+      "patient-zero": {
+        "games": 436,
+        "wins": 172
+      },
+      "mister-whiskers": {
+        "games": 469,
+        "wins": 332
+      },
+      "black-knight": {
+        "games": 450,
+        "wins": 283
+      },
+      "plague-doctor": {
+        "games": 469,
+        "wins": 251
+      },
+      "the-referee": {
+        "games": 473,
+        "wins": 366
+      },
+      "the-nameless-one": {
+        "games": 465,
+        "wins": 315
+      },
+      "maestro-nocturne": {
+        "games": 438,
+        "wins": 359
+      },
+      "koschei": {
+        "games": 451,
+        "wins": 359
+      },
+      "nine-tailed-trickster": {
+        "games": 485,
+        "wins": 323
+      },
+      "baba-yaga": {
+        "games": 457,
+        "wins": 307
+      },
+      "malachar": {
+        "games": 497,
+        "wins": 380
+      },
+      "father-bell": {
+        "games": 490,
+        "wins": 369
+      },
+      "moonshot-maddox": {
+        "games": 477,
+        "wins": 379
+      }
+    },
+    "maestro-nocturne": {
+      "zeiron": {
+        "games": 476,
+        "wins": 169
+      },
+      "the-gambler": {
+        "games": 507,
+        "wins": 226
+      },
+      "emperor-zero": {
+        "games": 488,
+        "wins": 190
+      },
+      "the-nameless-one": {
+        "games": 468,
+        "wins": 140
+      },
+      "moonshot-maddox": {
+        "games": 444,
+        "wins": 197
+      },
+      "the-referee": {
+        "games": 479,
+        "wins": 210
+      },
+      "behemoth": {
+        "games": 437,
+        "wins": 171
+      },
+      "nine-tailed-trickster": {
+        "games": 465,
+        "wins": 151
+      },
+      "patient-zero": {
+        "games": 487,
+        "wins": 72
+      },
+      "hydra": {
+        "games": 438,
+        "wins": 77
+      },
+      "mister-whiskers": {
+        "games": 471,
+        "wins": 151
+      },
+      "shiro": {
+        "games": 512,
+        "wins": 178
+      },
+      "tortuga-rex": {
+        "games": 469,
+        "wins": 170
+      },
+      "malachar": {
+        "games": 472,
+        "wins": 189
+      },
+      "koschei": {
+        "games": 481,
+        "wins": 178
+      },
+      "plague-doctor": {
+        "games": 491,
+        "wins": 126
+      },
+      "baba-yaga": {
+        "games": 476,
+        "wins": 144
+      },
+      "father-bell": {
+        "games": 472,
+        "wins": 184
+      },
+      "black-knight": {
+        "games": 464,
+        "wins": 125
+      }
+    },
+    "mister-whiskers": {
+      "behemoth": {
+        "games": 454,
+        "wins": 248
+      },
+      "father-bell": {
+        "games": 498,
+        "wins": 322
+      },
+      "the-nameless-one": {
+        "games": 476,
+        "wins": 215
+      },
+      "the-gambler": {
+        "games": 472,
+        "wins": 298
+      },
+      "the-referee": {
+        "games": 488,
+        "wins": 296
+      },
+      "hydra": {
+        "games": 469,
+        "wins": 136
+      },
+      "patient-zero": {
+        "games": 452,
+        "wins": 114
+      },
+      "malachar": {
+        "games": 480,
+        "wins": 280
+      },
+      "maestro-nocturne": {
+        "games": 471,
+        "wins": 320
+      },
+      "black-knight": {
+        "games": 469,
+        "wins": 227
+      },
+      "plague-doctor": {
+        "games": 488,
+        "wins": 181
+      },
+      "moonshot-maddox": {
+        "games": 479,
+        "wins": 285
+      },
+      "zeiron": {
+        "games": 484,
+        "wins": 285
+      },
+      "koschei": {
+        "games": 456,
+        "wins": 269
+      },
+      "nine-tailed-trickster": {
+        "games": 463,
+        "wins": 198
+      },
+      "shiro": {
+        "games": 512,
+        "wins": 289
+      },
+      "baba-yaga": {
+        "games": 464,
+        "wins": 218
+      },
+      "tortuga-rex": {
+        "games": 483,
+        "wins": 283
+      },
+      "emperor-zero": {
+        "games": 511,
+        "wins": 294
+      }
+    },
+    "nine-tailed-trickster": {
+      "behemoth": {
+        "games": 473,
+        "wins": 248
+      },
+      "father-bell": {
+        "games": 472,
+        "wins": 271
+      },
+      "the-nameless-one": {
+        "games": 479,
+        "wins": 228
+      },
+      "tortuga-rex": {
+        "games": 457,
+        "wins": 249
+      },
+      "maestro-nocturne": {
+        "games": 465,
+        "wins": 313
+      },
+      "plague-doctor": {
+        "games": 460,
+        "wins": 186
+      },
+      "the-referee": {
+        "games": 483,
+        "wins": 286
+      },
+      "black-knight": {
+        "games": 491,
+        "wins": 229
+      },
+      "emperor-zero": {
+        "games": 491,
+        "wins": 270
+      },
+      "moonshot-maddox": {
+        "games": 445,
+        "wins": 273
+      },
+      "hydra": {
+        "games": 485,
+        "wins": 161
+      },
+      "baba-yaga": {
+        "games": 502,
+        "wins": 251
+      },
+      "patient-zero": {
+        "games": 460,
+        "wins": 133
+      },
+      "koschei": {
+        "games": 473,
+        "wins": 277
+      },
+      "mister-whiskers": {
+        "games": 463,
+        "wins": 265
+      },
+      "zeiron": {
+        "games": 475,
+        "wins": 270
+      },
+      "malachar": {
+        "games": 475,
+        "wins": 284
+      },
+      "the-gambler": {
+        "games": 457,
+        "wins": 274
+      },
+      "shiro": {
+        "games": 491,
+        "wins": 245
+      }
+    },
+    "father-bell": {
+      "black-knight": {
+        "games": 460,
+        "wins": 154
+      },
+      "mister-whiskers": {
+        "games": 498,
+        "wins": 176
+      },
+      "nine-tailed-trickster": {
+        "games": 472,
+        "wins": 201
+      },
+      "the-nameless-one": {
+        "games": 456,
+        "wins": 177
+      },
+      "moonshot-maddox": {
+        "games": 485,
+        "wins": 222
+      },
+      "the-referee": {
+        "games": 457,
+        "wins": 239
+      },
+      "plague-doctor": {
+        "games": 466,
+        "wins": 136
+      },
+      "zeiron": {
+        "games": 468,
+        "wins": 207
+      },
+      "shiro": {
+        "games": 507,
+        "wins": 208
+      },
+      "emperor-zero": {
+        "games": 478,
+        "wins": 218
+      },
+      "malachar": {
+        "games": 497,
+        "wins": 255
+      },
+      "behemoth": {
+        "games": 469,
+        "wins": 205
+      },
+      "maestro-nocturne": {
+        "games": 472,
+        "wins": 287
+      },
+      "hydra": {
+        "games": 490,
+        "wins": 120
+      },
+      "baba-yaga": {
+        "games": 465,
+        "wins": 193
+      },
+      "koschei": {
+        "games": 504,
+        "wins": 241
+      },
+      "tortuga-rex": {
+        "games": 478,
+        "wins": 226
+      },
+      "patient-zero": {
+        "games": 501,
+        "wins": 110
+      },
+      "the-gambler": {
+        "games": 482,
+        "wins": 265
+      }
+    },
+    "moonshot-maddox": {
+      "father-bell": {
+        "games": 485,
+        "wins": 263
+      },
+      "maestro-nocturne": {
+        "games": 444,
+        "wins": 246
+      },
+      "black-knight": {
+        "games": 451,
+        "wins": 154
+      },
+      "zeiron": {
+        "games": 443,
+        "wins": 193
+      },
+      "koschei": {
+        "games": 476,
+        "wins": 237
+      },
+      "the-referee": {
+        "games": 501,
+        "wins": 254
+      },
+      "mister-whiskers": {
+        "games": 479,
+        "wins": 194
+      },
+      "the-gambler": {
+        "games": 439,
+        "wins": 211
+      },
+      "nine-tailed-trickster": {
+        "games": 445,
+        "wins": 171
+      },
+      "behemoth": {
+        "games": 452,
+        "wins": 190
+      },
+      "baba-yaga": {
+        "games": 451,
+        "wins": 179
+      },
+      "plague-doctor": {
+        "games": 457,
+        "wins": 145
+      },
+      "shiro": {
+        "games": 457,
+        "wins": 183
+      },
+      "patient-zero": {
+        "games": 463,
+        "wins": 106
+      },
+      "malachar": {
+        "games": 435,
+        "wins": 205
+      },
+      "emperor-zero": {
+        "games": 462,
+        "wins": 203
+      },
+      "the-nameless-one": {
+        "games": 462,
+        "wins": 186
+      },
+      "hydra": {
+        "games": 477,
+        "wins": 98
+      },
+      "tortuga-rex": {
+        "games": 427,
+        "wins": 182
+      }
+    },
+    "the-referee": {
+      "father-bell": {
+        "games": 457,
+        "wins": 217
+      },
+      "maestro-nocturne": {
+        "games": 479,
+        "wins": 268
+      },
+      "black-knight": {
+        "games": 487,
+        "wins": 184
+      },
+      "emperor-zero": {
+        "games": 474,
+        "wins": 225
+      },
+      "behemoth": {
+        "games": 473,
+        "wins": 203
+      },
+      "patient-zero": {
+        "games": 440,
+        "wins": 91
+      },
+      "mister-whiskers": {
+        "games": 488,
+        "wins": 192
+      },
+      "koschei": {
+        "games": 483,
+        "wins": 217
+      },
+      "hydra": {
+        "games": 473,
+        "wins": 106
+      },
+      "nine-tailed-trickster": {
+        "games": 483,
+        "wins": 196
+      },
+      "moonshot-maddox": {
+        "games": 501,
+        "wins": 246
+      },
+      "the-gambler": {
+        "games": 469,
+        "wins": 221
+      },
+      "shiro": {
+        "games": 477,
+        "wins": 195
+      },
+      "plague-doctor": {
+        "games": 506,
+        "wins": 143
+      },
+      "the-nameless-one": {
+        "games": 446,
+        "wins": 164
+      },
+      "zeiron": {
+        "games": 457,
+        "wins": 208
+      },
+      "malachar": {
+        "games": 489,
+        "wins": 226
+      },
+      "baba-yaga": {
+        "games": 486,
+        "wins": 183
+      },
+      "tortuga-rex": {
+        "games": 453,
+        "wins": 193
+      }
+    },
+    "baba-yaga": {
+      "behemoth": {
+        "games": 480,
+        "wins": 268
+      },
+      "shiro": {
+        "games": 463,
+        "wins": 247
+      },
+      "tortuga-rex": {
+        "games": 476,
+        "wins": 251
+      },
+      "plague-doctor": {
+        "games": 420,
+        "wins": 176
+      },
+      "hydra": {
+        "games": 457,
+        "wins": 148
+      },
+      "nine-tailed-trickster": {
+        "games": 502,
+        "wins": 251
+      },
+      "malachar": {
+        "games": 484,
+        "wins": 297
+      },
+      "zeiron": {
+        "games": 482,
+        "wins": 294
+      },
+      "moonshot-maddox": {
+        "games": 451,
+        "wins": 272
+      },
+      "the-nameless-one": {
+        "games": 504,
+        "wins": 231
+      },
+      "koschei": {
+        "games": 448,
+        "wins": 262
+      },
+      "the-referee": {
+        "games": 486,
+        "wins": 302
+      },
+      "patient-zero": {
+        "games": 471,
+        "wins": 126
+      },
+      "black-knight": {
+        "games": 476,
+        "wins": 205
+      },
+      "maestro-nocturne": {
+        "games": 476,
+        "wins": 330
+      },
+      "emperor-zero": {
+        "games": 472,
+        "wins": 273
+      },
+      "mister-whiskers": {
+        "games": 464,
+        "wins": 245
+      },
+      "the-gambler": {
+        "games": 487,
+        "wins": 302
+      },
+      "father-bell": {
+        "games": 465,
+        "wins": 272
+      }
+    },
+    "shiro": {
+      "plague-doctor": {
+        "games": 470,
+        "wins": 181
+      },
+      "hydra": {
+        "games": 533,
+        "wins": 176
+      },
+      "baba-yaga": {
+        "games": 463,
+        "wins": 214
+      },
+      "black-knight": {
+        "games": 491,
+        "wins": 168
+      },
+      "zeiron": {
+        "games": 471,
+        "wins": 257
+      },
+      "patient-zero": {
+        "games": 467,
+        "wins": 143
+      },
+      "malachar": {
+        "games": 483,
+        "wins": 264
+      },
+      "father-bell": {
+        "games": 507,
+        "wins": 298
+      },
+      "koschei": {
+        "games": 507,
+        "wins": 295
+      },
+      "the-referee": {
+        "games": 477,
+        "wins": 282
+      },
+      "maestro-nocturne": {
+        "games": 512,
+        "wins": 331
+      },
+      "the-nameless-one": {
+        "games": 468,
+        "wins": 222
+      },
+      "moonshot-maddox": {
+        "games": 457,
+        "wins": 272
+      },
+      "tortuga-rex": {
+        "games": 479,
+        "wins": 238
+      },
+      "the-gambler": {
+        "games": 513,
+        "wins": 299
+      },
+      "mister-whiskers": {
+        "games": 512,
+        "wins": 223
+      },
+      "nine-tailed-trickster": {
+        "games": 491,
+        "wins": 246
+      },
+      "emperor-zero": {
+        "games": 486,
+        "wins": 270
+      },
+      "behemoth": {
+        "games": 504,
+        "wins": 262
+      }
+    },
+    "tortuga-rex": {
+      "plague-doctor": {
+        "games": 504,
+        "wins": 168
+      },
+      "hydra": {
+        "games": 486,
+        "wins": 133
+      },
+      "baba-yaga": {
+        "games": 476,
+        "wins": 224
+      },
+      "behemoth": {
+        "games": 466,
+        "wins": 239
+      },
+      "the-gambler": {
+        "games": 457,
+        "wins": 253
+      },
+      "nine-tailed-trickster": {
+        "games": 457,
+        "wins": 207
+      },
+      "maestro-nocturne": {
+        "games": 469,
+        "wins": 298
+      },
+      "the-nameless-one": {
+        "games": 468,
+        "wins": 210
+      },
+      "shiro": {
+        "games": 479,
+        "wins": 241
+      },
+      "koschei": {
+        "games": 475,
+        "wins": 257
+      },
+      "the-referee": {
+        "games": 453,
+        "wins": 260
+      },
+      "mister-whiskers": {
+        "games": 483,
+        "wins": 200
+      },
+      "malachar": {
+        "games": 491,
+        "wins": 248
+      },
+      "black-knight": {
+        "games": 477,
+        "wins": 209
+      },
+      "zeiron": {
+        "games": 461,
+        "wins": 232
+      },
+      "emperor-zero": {
+        "games": 456,
+        "wins": 237
+      },
+      "father-bell": {
+        "games": 478,
+        "wins": 251
+      },
+      "patient-zero": {
+        "games": 456,
+        "wins": 125
+      },
+      "moonshot-maddox": {
+        "games": 427,
+        "wins": 244
+      }
+    },
+    "malachar": {
+      "plague-doctor": {
+        "games": 482,
+        "wins": 139
+      },
+      "black-knight": {
+        "games": 488,
+        "wins": 174
+      },
+      "zeiron": {
+        "games": 444,
+        "wins": 197
+      },
+      "shiro": {
+        "games": 483,
+        "wins": 218
+      },
+      "mister-whiskers": {
+        "games": 480,
+        "wins": 200
+      },
+      "emperor-zero": {
+        "games": 444,
+        "wins": 221
+      },
+      "the-referee": {
+        "games": 489,
+        "wins": 261
+      },
+      "hydra": {
+        "games": 497,
+        "wins": 115
+      },
+      "koschei": {
+        "games": 494,
+        "wins": 244
+      },
+      "maestro-nocturne": {
+        "games": 472,
+        "wins": 283
+      },
+      "baba-yaga": {
+        "games": 484,
+        "wins": 187
+      },
+      "the-nameless-one": {
+        "games": 468,
+        "wins": 175
+      },
+      "the-gambler": {
+        "games": 462,
+        "wins": 235
+      },
+      "nine-tailed-trickster": {
+        "games": 475,
+        "wins": 190
+      },
+      "father-bell": {
+        "games": 497,
+        "wins": 242
+      },
+      "moonshot-maddox": {
+        "games": 435,
+        "wins": 228
+      },
+      "patient-zero": {
+        "games": 442,
+        "wins": 101
+      },
+      "tortuga-rex": {
+        "games": 491,
+        "wins": 243
+      },
+      "behemoth": {
+        "games": 473,
+        "wins": 193
+      }
+    },
+    "koschei": {
+      "plague-doctor": {
+        "games": 500,
+        "wins": 157
+      },
+      "the-referee": {
+        "games": 483,
+        "wins": 266
+      },
+      "black-knight": {
+        "games": 477,
+        "wins": 171
+      },
+      "moonshot-maddox": {
+        "games": 476,
+        "wins": 239
+      },
+      "the-gambler": {
+        "games": 444,
+        "wins": 243
+      },
+      "shiro": {
+        "games": 507,
+        "wins": 212
+      },
+      "emperor-zero": {
+        "games": 477,
+        "wins": 227
+      },
+      "hydra": {
+        "games": 451,
+        "wins": 92
+      },
+      "malachar": {
+        "games": 494,
+        "wins": 250
+      },
+      "the-nameless-one": {
+        "games": 492,
+        "wins": 218
+      },
+      "zeiron": {
+        "games": 520,
+        "wins": 249
+      },
+      "nine-tailed-trickster": {
+        "games": 473,
+        "wins": 196
+      },
+      "behemoth": {
+        "games": 497,
+        "wins": 244
+      },
+      "mister-whiskers": {
+        "games": 456,
+        "wins": 186
+      },
+      "maestro-nocturne": {
+        "games": 481,
+        "wins": 302
+      },
+      "baba-yaga": {
+        "games": 448,
+        "wins": 186
+      },
+      "tortuga-rex": {
+        "games": 475,
+        "wins": 218
+      },
+      "patient-zero": {
+        "games": 465,
+        "wins": 99
+      },
+      "father-bell": {
+        "games": 504,
+        "wins": 262
+      }
+    }
+  },
+  "detectors": {
+    "turn-limit": {
+      "count": 1463,
+      "examples": [
+        {
+          "seed": 887333747,
+          "teamA": [
+            "black-knight",
+            "mister-whiskers",
+            "nine-tailed-trickster"
+          ],
+          "teamB": [
+            "behemoth",
+            "father-bell",
+            "the-nameless-one"
+          ],
+          "detail": "reached turn 41"
+        },
+        {
+          "seed": 1707708654,
+          "teamA": [
+            "behemoth",
+            "the-gambler",
+            "nine-tailed-trickster"
+          ],
+          "teamB": [
+            "tortuga-rex",
+            "the-nameless-one",
+            "maestro-nocturne"
+          ],
+          "detail": "reached turn 41"
+        },
+        {
+          "seed": 144638527,
+          "teamA": [
+            "patient-zero",
+            "malachar",
+            "father-bell"
+          ],
+          "teamB": [
+            "shiro",
+            "mister-whiskers",
+            "emperor-zero"
+          ],
+          "detail": "reached turn 41"
+        },
+        {
+          "seed": 806816154,
+          "teamA": [
+            "maestro-nocturne",
+            "father-bell",
+            "black-knight"
+          ],
+          "teamB": [
+            "the-referee",
+            "moonshot-maddox",
+            "mister-whiskers"
+          ],
+          "detail": "reached turn 41"
+        },
+        {
+          "seed": 1621676549,
+          "teamA": [
+            "behemoth",
+            "koschei",
+            "malachar"
+          ],
+          "teamB": [
+            "mister-whiskers",
+            "the-referee",
+            "emperor-zero"
+          ],
+          "detail": "reached turn 41"
+        }
+      ]
+    },
+    "state-loop": {
+      "count": 0,
+      "examples": []
+    },
+    "perpetual-stun": {
+      "count": 0,
+      "examples": []
+    },
+    "energy-lockout": {
+      "count": 12394,
+      "examples": [
+        {
+          "seed": 1346631033,
+          "teamA": [
+            "behemoth",
+            "zeiron",
+            "plague-doctor"
+          ],
+          "teamB": [
+            "the-gambler",
+            "patient-zero",
+            "the-nameless-one"
+          ],
+          "detail": "playerA had no legal action for 3 turns (turn 3)"
+        },
+        {
+          "seed": 1346631033,
+          "teamA": [
+            "behemoth",
+            "zeiron",
+            "plague-doctor"
+          ],
+          "teamB": [
+            "the-gambler",
+            "patient-zero",
+            "the-nameless-one"
+          ],
+          "detail": "playerA had no legal action for 3 turns (turn 10)"
+        },
+        {
+          "seed": 1346631033,
+          "teamA": [
+            "behemoth",
+            "zeiron",
+            "plague-doctor"
+          ],
+          "teamB": [
+            "the-gambler",
+            "patient-zero",
+            "the-nameless-one"
+          ],
+          "detail": "playerA had no legal action for 3 turns (turn 14)"
+        },
+        {
+          "seed": 887333747,
+          "teamA": [
+            "black-knight",
+            "mister-whiskers",
+            "nine-tailed-trickster"
+          ],
+          "teamB": [
+            "behemoth",
+            "father-bell",
+            "the-nameless-one"
+          ],
+          "detail": "playerB had no legal action for 3 turns (turn 15)"
+        },
+        {
+          "seed": 1791907309,
+          "teamA": [
+            "the-nameless-one",
+            "moonshot-maddox",
+            "the-referee"
+          ],
+          "teamB": [
+            "father-bell",
+            "maestro-nocturne",
+            "black-knight"
+          ],
+          "detail": "playerB had no legal action for 3 turns (turn 26)"
+        }
+      ]
+    },
+    "one-turn-kill": {
+      "count": 1,
+      "examples": [
+        {
+          "seed": 601428711,
+          "teamA": [
+            "moonshot-maddox",
+            "father-bell",
+            "koschei"
+          ],
+          "teamB": [
+            "mister-whiskers",
+            "the-nameless-one",
+            "hydra"
+          ],
+          "detail": "moonshot-maddox killed from full health on turn 13"
+        }
+      ]
+    },
+    "resurrection-loop": {
+      "count": 0,
+      "examples": []
+    },
+    "rewind-loop": {
+      "count": 0,
+      "examples": []
+    },
+    "illegal-bot-action": {
+      "count": 0,
+      "examples": []
+    },
+    "engine-error": {
+      "count": 0,
+      "examples": []
+    },
+    "stalled": {
+      "count": 0,
+      "examples": []
+    }
+  },
+  "errors": []
+}

@@ -1,6 +1,6 @@
 # Progress
 
-**Current phase:** 06 (all 3 batches complete: 15 of 15 characters). Next: Phase 07.
+**Current phase:** 07 complete. Next: Phase 08 (full client UI).
 
 | Phase | Title | Status |
 |---|---|---|
@@ -11,7 +11,7 @@
 | 04 | First five prototypes | ☑ |
 | 05 | Playable local 3v3 | ☑ |
 | 06 | Remaining 15 prototypes | ✅ done |
-| 07 | Bots and headless simulation | ☐ |
+| 07 | Bots and headless simulation | ✅ done |
 | 08 | Full client UI | ☐ |
 | 09 | Local profile, persistence, progression, unlocks | ☐ |
 | 10 | Friend matches (serverless) | ☐ |
@@ -408,3 +408,6 @@ Koschei (Death Seals), Baba Yaga, The Nine-Tailed Trickster (tails -> Ascension)
 
 ### 2026-09-19 — Phase 06, batch 3 (Phase 06 complete)
 The Referee (Fouls/ejection), Maestro Nocturne (tempo), The Black Knight (Legend), Emperor Zero (Legend), The Nameless One (Final Legend, rewind): data, art specs (Legend reveal prompts; Nameless One locked silhouette and unlocked reveal), design notes, coverage regenerated. **Generic engine additions (ADR-015):** `repeatedAbility` condition, runtime `tags` (real `hasTag`), the `@lastUsed` ability token, the `onWouldDie` trigger and the `rewindTurn` effect (resolver restores the turn-start state, keeping the RNG stream, append-only log and spent charge). 33 new tests in `batch3.scenario.test.ts`, covering all of spec/07's rewind list (every state field, RNG, once-per-battle, death-prevention precedence, simultaneous death, erasure bypass, log, replay determinism). Web: `tags` passed into `createBattle`, `turnRewound` log line. **Files:** `packages/content/src/schemas/{condition,effect,battle}.ts`, `packages/content/src/{tooltip,coverage}.ts`, five new `packages/content/src/data/characters/*.ts` plus `index.ts`, `packages/engine/src/{conditions,effects,resolver,test-support}.ts`, `packages/engine/src/scenarios/batch3.scenario.test.ts`, `apps/web/src/game/{setup,describeEvent}.ts`, five design notes, `packages/content/coverage.md`, DECISIONS/OPEN-QUESTIONS. OQ-40 resolved; OQ-42 (rewind vs friend-match commit-reveal), OQ-43 (Ability Lock is single-slot) opened. **Custom scripts:** none. **Recommended next step:** Phase 07.
+
+### 2026-09-19 — Phase 07 (bots and headless simulation)
+`packages/ai`: BEGINNER, INTERMEDIATE, ADVANCED, EXPERT and a LEGEND_BOSS framework (`bots.ts`, `heuristics.ts`, `evaluate.ts`, `candidates.ts`, `prng.ts`); headless simulator with ten degenerate-pattern detectors, stats and markdown/JSON report (`simulate.ts`, `report.ts`); Node CLI `pnpm sim` (`packages/ai/scripts/sim.ts`). Web bot worker now runs the ladder with a time budget. `PLAYABLE_CHARACTERS` exported from content. **Acceptance:** 3 x 10,000 matches (BEGINNER, INTERMEDIATE, EXPERT) over the 20 prototypes with 0 engine errors; reports in `docs/balance/`, summary and recommendations in `report-2026-09-19.md` (recommendations only, nothing changed). **Headline findings:** second player wins ~64% (caused by the OQ-03 turn-1 energy skip); widespread energy starvation; Patient Zero and Hydra strong, Maestro weak. **Tests:** 320 (up from 301). ADR-016; OQ-44 to OQ-47. **Files:** `packages/ai/src/*`, `packages/ai/scripts/sim.ts`, `packages/ai/package.json`, root `package.json`, `packages/content/src/data/characters/index.ts`, `apps/web/src/game/{bot.worker,roster}.ts`, `docs/balance/*`, docs. **Custom scripts:** none. **Recommended next step:** Phase 08.

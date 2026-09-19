@@ -7,7 +7,8 @@
   "types": "./src/index.ts",
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "sim": "tsx scripts/sim.ts"
   },
   "dependencies": {
     "@veilbreak/content": "workspace:*",

@@ -14,7 +14,8 @@
     "build": "pnpm -r --if-present run build",
     "verify-client-only": "node scripts/verify-client-only.mjs",
     "generate-coverage": "pnpm --filter @veilbreak/content run generate-coverage",
-    "ci": "pnpm typecheck && pnpm lint && pnpm test && pnpm build && pnpm verify-client-only"
+    "ci": "pnpm typecheck && pnpm lint && pnpm test && pnpm build && pnpm verify-client-only",
+    "sim": "pnpm --filter @veilbreak/ai run sim"
   },
   "devDependencies": {
     "@eslint/js": "^9.12.0",
