@@ -209,7 +209,7 @@ describe("install stays reachable after choosing Not now", () => {
     expect(screen.getByText(/Progress protection:/)).toBeInTheDocument();
     expect(screen.getByText(/delete the app/i)).toBeInTheDocument();
     // jsdom has no install prompt, so the panel explains where to find it instead of showing a dead button.
-    expect(screen.getByText(/install icon|Add to Home Screen|Install the game/i)).toBeInTheDocument();
+    expect(screen.getByText(/has not offered an install button/i)).toBeInTheDocument();
   });
 });
 
