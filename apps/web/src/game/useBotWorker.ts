@@ -8,6 +8,20 @@ export function useBotWorker() {
   const workerRef = useRef<Worker | null>(null);
 
   useEffect(() => {
+    // The single-file build cannot load a worker file from disk, so it carries the worker inside the page (ADR-040).
+    if (__SINGLE_FILE__) {
+      let cancelled = false;
+      let created: Worker | null = null;
+      void import("./bot.worker?worker&inline").then(({ default: InlineBotWorker }) => {
+        if (cancelled) return;
+        created = new InlineBotWorker();
+        workerRef.current = created;
+      });
+      return () => {
+        cancelled = true;
+        created?.terminate();
+      };
+    }
     const worker = new Worker(new URL("./bot.worker.ts", import.meta.url), { type: "module" });
     workerRef.current = worker;
     return () => worker.terminate();

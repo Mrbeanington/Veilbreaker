@@ -84,7 +84,7 @@ export function getUpdateWatcher(): UpdateWatcher | null {
 
 export function registerServiceWorker(): void {
   if (!("serviceWorker" in navigator)) return;
-  if (import.meta.env.DEV) return;
+  if (import.meta.env.DEV || __SINGLE_FILE__) return;
   const w = createUpdateWatcher(navigator.serviceWorker, () => window.location.reload());
   watcher = w;
   window.addEventListener("load", () => {

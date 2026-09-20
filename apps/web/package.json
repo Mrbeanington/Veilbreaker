@@ -8,6 +8,7 @@
     "dev": "pnpm run generate-manifest && vite",
     "typecheck": "tsc --noEmit",
     "build": "pnpm run generate-manifest && vite build",
+    "build:single": "pnpm run generate-manifest && vite build --mode single && node scripts/inline-single-file.mjs",
     "preview": "vite preview",
     "test": "vitest run"
   },

@@ -39,3 +39,10 @@ jobs:
       # Phase 12: the production build must contain no dev-mode code (also self-tests
       # with a VITE_DEV_MODE=1 build so the check cannot pass vacuously).
       - run: pnpm verify-no-dev-mode
+
+      # Phase 15: the app must stay within its download-size budget.
+      - run: pnpm verify-bundle-budget
+
+      # ADR-040: the single-file build must be one self-contained page.
+      - run: pnpm build:single
+      - run: pnpm verify-single-file

@@ -59,17 +59,25 @@ function veilbreakServiceWorkerPlugin(): Plugin {
 // VITE_DEV_MODE=1. In a normal production build both flags are the literal
 // `false`, so the dev entry point (and everything only it imports) is dropped
 // by tree-shaking; scripts/verify-no-dev-mode.mjs checks that in CI.
+// ADR-040: `vite build --mode single` makes one self-contained page that works when opened
+// straight from disk (no server): one JavaScript chunk, fonts inlined as data, the bot's
+// worker inlined as a blob, no service worker. scripts/inline-single-file.mjs then folds the
+// result into a single .html file.
 export default defineConfig(({ mode }) => {
+  const single = mode === "single";
   const forced = loadEnv(mode, process.cwd(), "VITE_").VITE_DEV_MODE === "1";
   return {
   define: {
-    __DEV_TOOLS__: JSON.stringify(mode !== "production" || forced),
+    __DEV_TOOLS__: JSON.stringify((mode !== "production" && !single) || forced),
     __DEV_TOOLS_FORCED__: JSON.stringify(forced),
+    __SINGLE_FILE__: JSON.stringify(single),
   },
   base: "./",
-  plugins: [react(), veilbreakServiceWorkerPlugin()],
+  plugins: single ? [react()] : [react(), veilbreakServiceWorkerPlugin()],
+  worker: single ? { format: "es" } : undefined,
   build: {
-    outDir: "dist",
+    outDir: single ? "dist-single" : "dist",
+    ...(single ? { assetsInlineLimit: 100_000_000, cssCodeSplit: false } : {}),
     // Vite's default modulepreload polyfill calls fetch() (same-origin, to
     // prefetch a CSS/JS chunk) as a fallback for browsers without native
     // `<link rel="modulepreload">` support. That fetch is harmless (it never
@@ -92,9 +100,9 @@ export default defineConfig(({ mode }) => {
         // scripts/verify-client-only.mjs audits by hand instead of scanning.
         // Audited: qrcode's SVG writer embeds the W3C xmlns identifier (never
         // fetched); jsqr and fflate contain no URLs.
-        manualChunks(id: string) {
+        ...(single ? { inlineDynamicImports: true } : { manualChunks(id: string) {
           return id.includes("node_modules") ? "vendor" : undefined;
-        },
+        } }),
       },
     },
   },
