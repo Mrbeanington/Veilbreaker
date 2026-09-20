@@ -4,6 +4,7 @@ export * from "./data/statuses";
 export * from "./data/characters/index";
 export * from "./coverage";
 export * from "./tooltip";
+export * from "./data/lore";
 export * from "./balance";
 
 import matchFormatJson from "./config/match-format.json";

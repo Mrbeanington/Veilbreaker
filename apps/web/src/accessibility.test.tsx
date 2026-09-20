@@ -49,6 +49,18 @@ describe("automated accessibility audit of every main screen", () => {
   }
 });
 
+describe("codex reference pages", () => {
+  for (const part of ["Rules", "Statuses"]) {
+    it(`Codex ${part} has no axe violations`, async () => {
+      const user = userEvent.setup();
+      await renderApp();
+      await user.click(screen.getByRole("button", { name: "Codex" }));
+      await user.click(screen.getByRole("tab", { name: part }));
+      expect(await violations()).toEqual([]);
+    });
+  }
+});
+
 // ------------------------------------------------------------ colour contrast
 
 function hexToRgb(hex: string): [number, number, number] {

@@ -1,4 +1,4 @@
-import { CHARACTER_ART_LIBRARY, CHARACTER_LIBRARY, TRANSFORMATION_LIBRARY, generateAbilityTooltip, type Ability, type CharacterDefinition, type Effect } from "@veilbreak/content";
+import { CHARACTER_ART_LIBRARY, CHARACTER_LIBRARY, CHARACTER_LORE, TRANSFORMATION_LIBRARY, generateAbilityTooltip, type Ability, type CharacterDefinition, type Effect } from "@veilbreak/content";
 import type { Profile } from "@veilbreak/persistence";
 import {
   MAX_MASTERY,
@@ -152,7 +152,7 @@ export function CharacterSheet({ character, profile, mode, isFavorite, onToggleF
           <p>{knownSynergies(profile, character.id).map(nameOf).join(", ") || "None yet. Win twice alongside the same teammate."}</p>
 
           <h4 className="sheet-section">Lore</h4>
-          <p>{art?.visualTheme ? capitalize(art.visualTheme) + "." : "Nothing is known."}</p>
+          <p>{CHARACTER_LORE[character.id] ?? (art?.visualTheme ? capitalize(art.visualTheme) + "." : "Nothing is known.")}</p>
 
           <h4 className="sheet-section">How to unlock</h4>
           <p>{unlockHint(character)}</p>

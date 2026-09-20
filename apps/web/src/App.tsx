@@ -12,6 +12,7 @@ import { PlayScreen } from "./screens/PlayScreen";
 import { SetupScreen } from "./screens/SetupScreen";
 import { MatchScreen, type MatchOutcome } from "./screens/MatchScreen";
 import { ResultScreen } from "./screens/ResultScreen";
+import { CodexScreen } from "./screens/CodexScreen";
 import { TeamsScreen } from "./screens/TeamsScreen";
 import { LegendsScreen } from "./screens/LegendsScreen";
 import { SettingsScreen } from "./screens/SettingsScreen";
@@ -242,12 +243,7 @@ export function AppShell() {
             )}
             {section === "teams" && <TeamsScreen />}
             {section === "ranked" && <RankedScreen />}
-            {section === "codex" && (
-              <div>
-                <h2 className="title small">Codex</h2>
-                <CharacterBrowser mode="codex" idPrefix="codex" />
-              </div>
-            )}
+            {section === "codex" && <CodexScreen />}
             {section === "missions" && <MissionsScreen />}
             {section === "legends" && <LegendsScreen />}
             {section === "profile" && <ProfileScreen initialTransferCode={initial.transfer} initialReplayCode={initial.replay} />}
