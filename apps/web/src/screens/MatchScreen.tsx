@@ -15,6 +15,8 @@ import { BattleLog } from "../components/BattleLog";
 import { EnergyRow } from "../components/EnergyRow";
 import { PassDeviceScreen } from "../components/PassDeviceScreen";
 import { TurnTimer } from "../components/TurnTimer";
+import { TutorialCoach } from "../components/TutorialCoach";
+import { tutorialTip } from "../game/tutorial";
 import { playBattleSounds, soundBus } from "../sound/soundBus";
 
 export interface MatchOutcome {
@@ -40,6 +42,8 @@ export interface MatchScreenProps {
   onMatchOver: (outcome: MatchOutcome) => void;
   /** Defaults to spec/01's real EnergyRules; component tests override it (e.g. "fixed" mode) for deterministic affordability. */
   energyRules?: EnergyRules;
+  /** The first-run tutorial (ADR-039): shows coach tips and switches the turn timer off. */
+  tutorial?: { onSkip: () => void };
 }
 
 type PendingAbility = { characterId: string; ability: Ability };
@@ -56,7 +60,7 @@ const PLAYER_LABELS: Record<string, string> = { playerA: "Player 1", playerB: "P
  * changes via `createBattle`/`resolveTurn` — this component never computes
  * a combat result itself (the phase's own acceptance criterion).
  */
-export function MatchScreen({ mode, teamAIds, teamBIds, seed, botLevel, onMatchOver, energyRules = defaultEnergyRules }: MatchScreenProps) {
+export function MatchScreen({ mode, teamAIds, teamBIds, seed, botLevel, onMatchOver, energyRules = defaultEnergyRules, tutorial }: MatchScreenProps) {
   const [battleState, setBattleState] = useState<BattleState>(() => startMatch(teamAIds, teamBIds, seed, energyRules));
   const [step, setStep] = useState<TurnStep>(
     mode === "hotseat" ? { kind: "pass-device", forPlayerId: "playerA", label: PLAYER_LABELS.playerA! } : { kind: "selecting", playerId: "playerA" },
@@ -70,7 +74,8 @@ export function MatchScreen({ mode, teamAIds, teamBIds, seed, botLevel, onMatchO
   const [isResolving, setIsResolving] = useState(false);
   const [secondsLeft, setSecondsLeft] = useState(TURN_TIMER_SECONDS);
   const { requestBotActions } = useBotWorker();
-  const { turnTimerEnabled, settings } = useSettings();
+  const { turnTimerEnabled: timerSetting, settings } = useSettings();
+  const turnTimerEnabled = timerSetting && !tutorial;
   const turnLog = useRef<RecordedTurn[]>([]);
 
   const deps = useMemo(() => matchDeps(energyRules), [energyRules]);
@@ -279,8 +284,11 @@ export function MatchScreen({ mode, teamAIds, teamBIds, seed, botLevel, onMatchO
   const fullPool = battleState.energyPools[playerId];
   const pool = remainingPoolFor(playerId);
 
+  const decided = readyIds.filter((id) => actionsFor(playerId)[id] || skips.has(id)).length;
+
   return (
     <div>
+      {tutorial && <TutorialCoach tip={tutorialTip({ turn: battleState.turn, choosingTarget: pendingAbility !== null, ready: readyIds.length, decided })} onSkip={tutorial.onSkip} />}
       <h2 className="title" style={{ fontSize: "1.4rem" }}>
         Turn {battleState.turn} — {PLAYER_LABELS[playerId]}'s move {turnTimerEnabled && <TurnTimer secondsLeft={secondsLeft} />}
       </h2>

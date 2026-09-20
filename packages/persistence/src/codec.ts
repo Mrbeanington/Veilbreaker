@@ -163,6 +163,8 @@ function packPairs(table: Profile["beat"], toRef: (id: string) => Ref, limit: nu
  * order, which is how the game builds these lists; a list with an id outside the
  * table is sent as a plain array so nothing is lost.
  */
+const TUTORIAL_CODES = ["new", "done", "skipped"] as const;
+
 function packIds(ids: readonly string[], idTable: readonly string[], toRef: (id: string) => Ref): Ref[] | string {
   const index = new Map(idTable.map((id, i) => [id, i]));
   if (ids.length < 24 || new Set(ids).size !== ids.length || ids.some((id) => !index.has(id))) return ids.map(toRef);
@@ -205,7 +207,7 @@ function encodeTransferWith(profile: Profile, idTable: readonly string[], pairLi
     // A finished mission's counter is implied by it being finished, so only unfinished counters travel.
     ms: [Object.entries(profile.missions.progress).filter(([id]) => !profile.missions.completed.includes(id)).map(([id, n]) => [toRef(id), n]), packIds(profile.missions.completed, idTable, toRef)],
     ac: list(profile.achievements),
-    i: [profile.install.installed ? 1 : 0, profile.install.asks, profile.install.firstLaunchHandled ? 1 : 0],
+    i: [profile.install.installed ? 1 : 0, profile.install.asks, profile.install.firstLaunchHandled ? 1 : 0, TUTORIAL_CODES.indexOf(profile.tutorial.status)],
     // Ranked: the standing and personal bests travel; the recent list, usage table and past seasons stay in backups (like history).
     rk: [
       profile.ranked.season,
@@ -316,6 +318,7 @@ export function decodeTransfer(code: string, idTable: readonly string[]): Transf
       missions: { progress: counts(ms[0]), completed: ids(ms[1]) },
       achievements: ids(p.ac),
       install: { installed: inst[0] === 1, asks: Number(inst[1] ?? 0), firstLaunchHandled: inst[2] === 1 },
+      tutorial: { status: TUTORIAL_CODES[Number(inst[3])] ?? "done" },
       ranked,
     };
     const parsed = profileSchema.safeParse(candidate);

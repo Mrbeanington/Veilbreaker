@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { useNavHeight } from "./useNavHeight";
 
 interface ScreenBarProps {
   onBack: () => void;
@@ -15,23 +15,10 @@ interface ScreenBarProps {
  * starting meant scrolling all the way down (ADR-037).
  */
 export function ScreenBar({ onBack, backLabel = "Back", action, status }: ScreenBarProps) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [top, setTop] = useState(0);
-
-  // Sit exactly under the sticky main navigation, whatever the text size setting makes its height.
-  useLayoutEffect(() => {
-    const nav = document.querySelector<HTMLElement>(".main-nav");
-    if (!nav) return;
-    const measure = () => setTop(nav.offsetHeight);
-    measure();
-    if (typeof ResizeObserver === "undefined") return;
-    const observer = new ResizeObserver(measure);
-    observer.observe(nav);
-    return () => observer.disconnect();
-  }, []);
+  const top = useNavHeight();
 
   return (
-    <div className="screen-bar" ref={ref} style={{ top }}>
+    <div className="screen-bar" style={{ top }}>
       <button type="button" className="btn" onClick={onBack}>
         {backLabel}
       </button>

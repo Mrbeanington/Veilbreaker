@@ -27,6 +27,7 @@ export function resetProfile(profile: Profile, kind: ResetKind): Profile {
     favorites: profile.favorites,
     presets: profile.presets,
     install: profile.install,
+    tutorial: profile.tutorial,
     discovered: profile.discovered,
     unlocks: profile.unlocks,
     trialsWon: profile.trialsWon,

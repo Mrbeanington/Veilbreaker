@@ -37,6 +37,7 @@ describe("resetting progress but keeping unlocks", () => {
     expect(after.favorites).toEqual(before.favorites);
     expect(after.presets).toEqual(before.presets);
     expect(after.install).toEqual(before.install);
+    expect(after.tutorial).toEqual(before.tutorial);
   });
 });
 

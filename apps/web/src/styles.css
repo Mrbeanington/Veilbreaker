@@ -929,3 +929,23 @@ textarea {
 .screen-bar-status + .btn {
   margin-left: 0;
 }
+
+/* First-run tutorial coach (ADR-039) */
+.coach {
+  position: sticky;
+  z-index: 14;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  background: var(--surface-2);
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+}
+.coach-text {
+  flex: 1 1 260px;
+  display: grid;
+  gap: 2px;
+}

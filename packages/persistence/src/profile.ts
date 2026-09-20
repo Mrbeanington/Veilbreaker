@@ -105,13 +105,18 @@ export const profileSchema = z.object({
     })
     .default({}),
   lastPlayedAt: z.number().int().min(0).optional(),
+  /**
+   * The first-run tutorial (ADR-039). A save with no such field belongs to a player who has already been playing,
+   * so it counts as done; a brand-new profile is "new" and is offered the tutorial.
+   */
+  tutorial: z.object({ status: z.enum(["new", "done", "skipped"]).default("done") }).default({}),
   // ---- v3
   ranked: rankedSchema.default({}),
 });
 export type Profile = z.infer<typeof profileSchema>;
 
 export function createDefaultProfile(): Profile {
-  return profileSchema.parse({ version: PROFILE_VERSION, unlocks: { model: UNLOCK_MODEL } });
+  return profileSchema.parse({ version: PROFILE_VERSION, unlocks: { model: UNLOCK_MODEL }, tutorial: { status: "new" } });
 }
 
 // ---------------------------------------------------------------- levels

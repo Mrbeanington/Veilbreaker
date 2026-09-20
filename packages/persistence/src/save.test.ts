@@ -202,3 +202,11 @@ describe("account level", () => {
     expect(s).toEqual({ level: 3, legends: 2, matches: 9, lastPlayedAt: 5 });
   });
 });
+
+describe("tutorial status", () => {
+  it("is new on a brand-new profile and done on a save that never had the field", () => {
+    expect(createDefaultProfile().tutorial.status).toBe("new");
+    const parsed = parseProfile({ version: PROFILE_VERSION });
+    expect(parsed.ok && parsed.profile.tutorial.status).toBe("done");
+  });
+});

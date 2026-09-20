@@ -23,6 +23,7 @@ import { TrialsScreen } from "./screens/TrialsScreen";
 import { FriendScreen } from "./friend/FriendScreen";
 import { finishMatch } from "./game/finishMatch";
 import type { LegendTrial, ProgressReport } from "./game/progression";
+import { TUTORIAL_BOT_LEVEL, TUTORIAL_FOE, TUTORIAL_TEAM } from "./game/tutorial";
 import { installPlan } from "./platform/install";
 import { requestPersistence } from "./platform/protection";
 import { useInstallPrompt } from "./platform/useInstallPrompt";
@@ -55,8 +56,8 @@ type PlayFlow =
   | { name: "trials" }
   | { name: "friend"; code?: string }
   | { name: "trial-setup"; trial: LegendTrial }
-  | { name: "match"; mode: Mode | "trial"; teamAIds: string[]; teamBIds: string[]; seed: number; trial?: LegendTrial }
-  | { name: "result"; outcome: MatchOutcome; mode: Mode | "trial"; teamAIds: string[]; teamBIds: string[]; trial?: LegendTrial; revealed: string[]; report: ProgressReport };
+  | { name: "match"; mode: Mode | "trial"; teamAIds: string[]; teamBIds: string[]; seed: number; trial?: LegendTrial; tutorial?: boolean }
+  | { name: "result"; outcome: MatchOutcome; mode: Mode | "trial"; teamAIds: string[]; teamBIds: string[]; trial?: LegendTrial; tutorial?: boolean; revealed: string[]; report: ProgressReport };
 
 function PlaySection({ onOpenReplays, onOpenRanked, initialMatchCode }: { onOpenReplays: () => void; onOpenRanked: () => void; initialMatchCode?: string }) {
   const { profile, update, store } = useProfile();
@@ -70,17 +71,19 @@ function PlaySection({ onOpenReplays, onOpenRanked, initialMatchCode }: { onOpen
       Date.now(),
     );
     // A finished match is a milestone: save it (and rotate the backups) immediately.
-    update(() => done.profile, { milestone: true });
+    update(() => (current.tutorial ? { ...done.profile, tutorial: { status: "done" } } : done.profile), { milestone: true });
     if (done.replay) void saveReplay(store, done.replay).catch(() => undefined);
     const revealed = done.report.revealed.map((id) => CHARACTER_LIBRARY[id]?.displayName ?? id);
-    setFlow({ name: "result", outcome, mode: current.mode, teamAIds: current.teamAIds, teamBIds: current.teamBIds, trial: current.trial, revealed, report: done.report });
+    setFlow({ name: "result", outcome, mode: current.mode, teamAIds: current.teamAIds, teamBIds: current.teamBIds, trial: current.trial, tutorial: current.tutorial, revealed, report: done.report });
   }
 
   switch (flow.name) {
     case "home":
       return (
         <PlayScreen
-          onStart={(mode) => (mode === "trials" ? setFlow({ name: "trials" }) : mode === "friend" ? setFlow({ name: "friend" }) : mode === "replays" ? onOpenReplays() : mode === "ranked" ? onOpenRanked() : setFlow({ name: "setup", mode }))}
+          showTutorialPitch={profile.tutorial.status === "new"}
+          onSkipTutorial={() => update((p) => ({ ...p, tutorial: { status: "skipped" } }), { milestone: true })}
+          onStart={(mode) => (mode === "tutorial" ? setFlow({ name: "match", mode: "bot", teamAIds: [...TUTORIAL_TEAM], teamBIds: [...TUTORIAL_FOE], seed: Date.now(), tutorial: true }) : mode === "trials" ? setFlow({ name: "trials" }) : mode === "friend" ? setFlow({ name: "friend" }) : mode === "replays" ? onOpenReplays() : mode === "ranked" ? onOpenRanked() : setFlow({ name: "setup", mode }))}
         />
       );
     case "setup":
@@ -109,7 +112,17 @@ function PlaySection({ onOpenReplays, onOpenRanked, initialMatchCode }: { onOpen
       return (
         <MatchScreen
           mode={flow.mode === "hotseat" ? "hotseat" : "bot"}
-          botLevel={flow.mode === "trial" ? "LEGEND_BOSS" : undefined}
+          botLevel={flow.mode === "trial" ? "LEGEND_BOSS" : flow.tutorial ? TUTORIAL_BOT_LEVEL : undefined}
+          tutorial={
+            flow.tutorial
+              ? {
+                  onSkip: () => {
+                    update((p) => (p.tutorial.status === "new" ? { ...p, tutorial: { status: "skipped" } } : p), { milestone: true });
+                    setFlow({ name: "home" });
+                  },
+                }
+              : undefined
+          }
           teamAIds={flow.teamAIds}
           teamBIds={flow.teamBIds}
           seed={flow.seed}
@@ -123,8 +136,12 @@ function PlaySection({ onOpenReplays, onOpenRanked, initialMatchCode }: { onOpen
           revealed={flow.revealed}
           report={flow.report}
           onHome={() => setFlow({ name: "home" })}
+          playAgainLabel={flow.tutorial ? "Choose my own team" : undefined}
+          extra={flow.tutorial ? <p role="status"><strong>Tutorial complete.</strong> Now build your own team. New fighters are unlocked through quests under Missions, and the Codex explains every rule.</p> : undefined}
           onPlayAgain={() =>
-            setFlow({ name: "match", mode: flow.mode, teamAIds: flow.teamAIds, teamBIds: flow.teamBIds, seed: Date.now(), trial: flow.trial })
+            flow.tutorial
+              ? setFlow({ name: "setup", mode: "bot" })
+              : setFlow({ name: "match", mode: flow.mode, teamAIds: flow.teamAIds, teamBIds: flow.teamBIds, seed: Date.now(), trial: flow.trial })
           }
         />
       );
