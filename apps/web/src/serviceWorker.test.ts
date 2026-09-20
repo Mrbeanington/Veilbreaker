@@ -3,6 +3,8 @@ import { join } from "node:path";
 import { URL } from "node:url";
 import { runInNewContext } from "node:vm";
 import { describe, expect, it, vi } from "vitest";
+import { GAME_TITLE } from "@veilbreak/content";
+import { buildManifest } from "../scripts/manifest";
 
 // phase-15 offline/PWA audit: the hand-written service worker is run inside a
 // fake ServiceWorkerGlobalScope so its rules are tested without a browser.
@@ -119,7 +121,7 @@ describe("service worker", () => {
 });
 
 describe("web app manifest", () => {
-  const manifest = JSON.parse(readFileSync(join(process.cwd(), "apps", "web", "public", "manifest.webmanifest"), "utf8")) as Record<string, unknown>;
+  const manifest = buildManifest(GAME_TITLE) as Record<string, unknown>;
   it("has what a browser needs to offer installation", () => {
     for (const key of ["name", "short_name", "start_url", "scope", "display", "icons", "id", "lang"]) expect(manifest[key], key).toBeTruthy();
     expect(manifest.display).toBe("standalone");

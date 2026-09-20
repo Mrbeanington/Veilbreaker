@@ -1,6 +1,7 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { GAME_TITLE } from "@veilbreak/content";
+import { buildManifest } from "./manifest";
 
 // phase-05-local-playable.md "PWA foundation: a web app manifest (name from
 // GAME_TITLE, generated placeholder icons, standalone display)". Run as a
@@ -28,24 +29,7 @@ mkdirSync(`${publicDir}/icons`, { recursive: true });
 writeFileSync(`${publicDir}/icons/icon-192.svg`, iconSvg(192));
 writeFileSync(`${publicDir}/icons/icon-512.svg`, iconSvg(512));
 
-const manifest = {
-  name: GAME_TITLE,
-  short_name: GAME_TITLE,
-  description: `${GAME_TITLE} — a client-only 3v3 turn-based arena.`,
-  id: "./",
-  lang: "en",
-  categories: ["games"],
-  orientation: "any",
-  start_url: "./",
-  scope: "./",
-  display: "standalone",
-  background_color: "#100d18",
-  theme_color: "#100d18",
-  icons: [
-    { src: "./icons/icon-192.svg", sizes: "192x192", type: "image/svg+xml", purpose: "any" },
-    { src: "./icons/icon-512.svg", sizes: "512x512", type: "image/svg+xml", purpose: "any" },
-  ],
-};
+const manifest = buildManifest(GAME_TITLE);
 writeFileSync(`${publicDir}/manifest.webmanifest`, JSON.stringify(manifest, null, 2));
 
 console.log(`Generated manifest.webmanifest and placeholder icons for "${GAME_TITLE}".`);
