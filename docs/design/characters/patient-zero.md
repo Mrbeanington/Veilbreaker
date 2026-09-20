@@ -1,4 +1,5 @@
 # Patient Zero
+> **Phase 15:** numbers in this note were rebalanced after 30,000-match simulations; the current values are listed in the Phase 15 section at the end.
 
 **Data:** `packages/content/src/data/characters/patient-zero.ts`
 **Rarity:** CORE · **Tags:** UNDEAD, EVOLUTION · **HP:** 110 → 140 (The Infected) → 180 (The Outbreak)
@@ -52,3 +53,7 @@ unmitigated `"affliction"` damage, so damage reduction/shields don't blunt it, b
 - **The evolution thresholds (4 and 8 Outbreak Progress) and the exact HP/kit changes at each stage**
   are this phase's own numbers — spec/03 names the shape ("→ The Infected → The Outbreak") but not
   specific values.
+
+## Phase 15 balance pass
+Changed in `docs/balance/drafts/phase-15-v1.json` (paths as in dev mode):
+- `characters/patient-zero/baseHp` is now **100**

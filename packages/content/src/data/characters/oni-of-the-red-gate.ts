@@ -41,18 +41,18 @@ export const CRIMSON_CLEAVE = ability({
     {
       kind: "conditional",
       condition: gateAtLeast(3),
-      ifTrue: [{ kind: "damage", amount: 70 }],
+      ifTrue: [{ kind: "damage", amount: 80 }],
       ifFalse: [
         {
           kind: "conditional",
           condition: gateAtLeast(2),
-          ifTrue: [{ kind: "damage", amount: 50 }],
+          ifTrue: [{ kind: "damage", amount: 60 }],
           ifFalse: [
             {
               kind: "conditional",
               condition: gateAtLeast(1),
-              ifTrue: [{ kind: "damage", amount: 30 }],
-              ifFalse: [{ kind: "damage", amount: 10 }],
+              ifTrue: [{ kind: "damage", amount: 40 }],
+              ifFalse: [{ kind: "damage", amount: 20 }],
             },
           ],
         },
@@ -73,8 +73,8 @@ export const OPEN_THE_GATE = ability({
   id: "ability.oni-of-the-red-gate.open-the-gate",
   displayName: "Open the Gate",
   description: "Pays 20 of his own health to swing the gate wide: two Red Gate pips.",
-  cost: { spirit: 2 },
-  cooldown: 4,
+  cost: { spirit: 1 },
+  cooldown: 3,
   target: SELF_ONLY,
   effects: [
     { kind: "damage", amount: 20, damageType: "affliction", target: SELF_ONLY },
@@ -102,7 +102,7 @@ export const ONI_OF_THE_RED_GATE: CharacterDefinition = characterDefinitionSchem
   displayName: "Oni of the Red Gate",
   rarity: "SECRET",
   tags: ["FOLKLORE", "BRUISER", "SECRET"],
-  baseHp: 160,
+  baseHp: 170,
   abilityIds: ONI_OF_THE_RED_GATE_ABILITIES.map((a) => a.id),
   passiveId: THE_GATE_CLOSES.id,
   resources: [GATE_RESOURCE],

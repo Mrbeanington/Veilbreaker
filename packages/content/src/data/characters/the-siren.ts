@@ -33,7 +33,7 @@ export const SHIPWRECK = ability({
   id: "ability.the-siren.shipwreck",
   displayName: "Shipwreck",
   description: "The last verse: 20 damage. After Lure then Lullaby, it drives the enemy onto the rocks for 60 and a stun.",
-  cost: { chaos: 2 },
+  cost: { chaos: 1 },
   cooldown: 2,
   target: ENEMY_SINGLE,
   effects: [
@@ -66,7 +66,7 @@ export const THE_SIREN: CharacterDefinition = characterDefinitionSchema.parse({
   displayName: "The Siren",
   rarity: "RARE",
   tags: ["MYTHOLOGY", "MUSIC", "CONTROLLER", "MAGE"],
-  baseHp: 100,
+  baseHp: 110,
   abilityIds: THE_SIREN_ABILITIES.map((a) => a.id),
   artSpecId: "the-siren",
 });

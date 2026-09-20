@@ -26,7 +26,7 @@ export const FROG_CURSE = ability({
   displayName: "Frog Curse",
   description: "A royal curse: the enemy is silenced for a turn and weakened for 2.",
   cost: { spirit: 2 },
-  cooldown: 4,
+  cooldown: 5,
   target: ENEMY_SINGLE,
   effects: [{ kind: "applyStatus", statusId: "status.silence", durationTurns: 1 }, { kind: "applyStatus", statusId: "status.weakness", magnitude: 10, durationTurns: 2 }],
 });
@@ -48,7 +48,7 @@ export const KING_CROAK: CharacterDefinition = characterDefinitionSchema.parse({
   displayName: "King Croak",
   rarity: "RARE",
   tags: ["FOLKLORE", "BEAST", "CONTROLLER"],
-  baseHp: 130,
+  baseHp: 120,
   abilityIds: KING_CROAK_ABILITIES.map((a) => a.id),
   artSpecId: "king-croak",
 });

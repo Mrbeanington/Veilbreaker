@@ -4,7 +4,7 @@ import { canAfford, getEffectiveCost } from "@veilbreak/engine";
 import { remainingPool } from "./energyBudget";
 import { startMatch } from "./setup";
 
-const FIXED: EnergyRules = { ...defaultEnergyRules, generation: { perLivingCharacter: 1, mode: "fixed" }, initiativePlayerSkipsTurnOneGeneration: false };
+const FIXED: EnergyRules = { ...defaultEnergyRules, generation: { perLivingCharacter: 1, minPerTeam: 0, mode: "fixed" }, initiativePlayerSkipsTurnOneGeneration: false };
 
 describe("team energy budget (regression: queued actions could exceed the shared pool)", () => {
   it("subtracts every other queued action, so the last character cannot overspend", () => {

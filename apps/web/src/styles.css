@@ -9,11 +9,11 @@
   --text: #ede8f5;
   --text-muted: #a89fc0;
   --accent: #e0b34d;
-  --enemy: #d8654f;
+  --enemy: #e2735d;
   --ally: #5fa8bf;
   --good: #5fbf8f;
   --warn: #e0b34d;
-  --danger: #d8654f;
+  --danger: #e2735d;
   --anim-duration: 160ms;
 }
 

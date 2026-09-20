@@ -1,4 +1,5 @@
 # King Croak
+> **Phase 15:** numbers in this note were rebalanced after 30,000-match simulations; the current values are listed in the Phase 15 section at the end.
 **Data:** `king-croak.ts` · RARE · FOLKLORE/BEAST/CONTROLLER · 130 HP
 
 ## Identity / win condition
@@ -12,3 +13,8 @@ One effect per ability.
 
 ## Deviations
 His tongue constant is prefixed because Umbrella Yokai already exports `TONGUE_LASH`. Tested in `packages/engine/src/scenarios/region8.scenario.test.ts`.
+
+## Phase 15 balance pass
+Changed in `docs/balance/drafts/phase-15-v1.json` (paths as in dev mode):
+- `characters/king-croak/baseHp` is now **120**
+- `abilities/ability.king-croak.frog-curse/cooldown` is now **5**

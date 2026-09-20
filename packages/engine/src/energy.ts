@@ -37,7 +37,7 @@ export function generateEnergy(
   const nextPool: EnergyPool = { ...pool };
   let state = rngState;
 
-  const totalUnits = unitsPerCharacter * params.livingCharacterCount;
+  const totalUnits = Math.max(unitsPerCharacter * params.livingCharacterCount, rules.generation.minPerTeam ?? 0);
 
   if (rules.generation.mode === "fixed") {
     for (const family of ENERGY_FAMILIES) {

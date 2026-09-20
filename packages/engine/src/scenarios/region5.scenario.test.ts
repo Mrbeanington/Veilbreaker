@@ -286,10 +286,10 @@ describe("Anubian Judge — the weighing", () => {
   it("Weigh the Heart is 20 against the innocent", () => {
     expect(500 - hp(turn(hero(ANUBIAN_JUDGE, defaultResourcesFor(ANUBIAN_JUDGE), foe()), [act("playerA", "anubian-judge", WEIGH_THE_HEART.id, ["attacker"])]), "attacker")).toBe(20);
   });
-  it("Weigh the Heart is 40 against an enemy that has dealt 60 or more damage", () => {
+  it("Weigh the Heart is 30 against an enemy that has dealt 60 or more damage", () => {
     const state = freshScenarioBattle({ playerId: "playerA", characters: [member(ANUBIAN_JUDGE), dummy()] }, { playerId: "playerB", characters: [foe()] });
     const guilty = turn(turn(state, [], [act("playerB", "attacker", hit30.id, ["dummy"])]), [], [act("playerB", "attacker", hit30.id, ["dummy"])]);
-    expect(dmg(guilty, turn(guilty, [act("playerA", "anubian-judge", WEIGH_THE_HEART.id, ["attacker"])]), "attacker")).toBe(40);
+    expect(dmg(guilty, turn(guilty, [act("playerA", "anubian-judge", WEIGH_THE_HEART.id, ["attacker"])]), "attacker")).toBe(30);
   });
   it("Feather Strike, Verdict of Ma'at and Balance the Scales", () => {
     expect(500 - hp(turn(hero(ANUBIAN_JUDGE), [act("playerA", "anubian-judge", FEATHER_STRIKE.id, ["dummy"])]), "dummy")).toBe(20);

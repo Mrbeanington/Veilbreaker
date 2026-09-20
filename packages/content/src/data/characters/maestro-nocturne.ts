@@ -46,7 +46,7 @@ export const STACCATO = ability({
   description: "Short, sharp strikes.",
   cost: { might: 1, focus: 1 },
   target: ENEMY_SINGLE,
-  effects: [{ kind: "damage", amount: 20 }],
+  effects: [{ kind: "damage", amount: 30 }],
 });
 
 // Every note he plays hurries the next Da Capo along.
@@ -66,7 +66,7 @@ export const MAESTRO_NOCTURNE: CharacterDefinition = characterDefinitionSchema.p
   displayName: "Maestro Nocturne",
   rarity: "RARE",
   tags: ["MUSIC", "SUPPORT", "CONTROLLER"],
-  baseHp: 100,
+  baseHp: 120,
   abilityIds: MAESTRO_NOCTURNE_ABILITIES.map((a) => a.id),
   passiveId: PERFECT_TEMPO.id,
   artSpecId: "maestro-nocturne",

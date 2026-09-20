@@ -99,6 +99,8 @@ export interface MatchConfig {
   /** Per-decision time budget; omit for deterministic, fixed-size searches (the CLI default). */
   budgetMs?: number;
   now?: () => number;
+  /** Diagnostics: called when a team has had no legal action for the lockout limit (phase-15). */
+  onLockout?: (state: BattleState, playerId: string) => void;
 }
 
 const STUN_STREAK_LIMIT = 5;
@@ -182,7 +184,10 @@ export function runMatch(
         }
         const lock = anyAlive && !anyLegal ? (lockoutStreak[team.playerId] ?? 0) + 1 : 0;
         lockoutStreak[team.playerId] = lock;
-        if (lock === LOCKOUT_STREAK_LIMIT) hit("energy-lockout", `${team.playerId} had no legal action for ${lock} turns (turn ${state.turn})`);
+        if (lock === LOCKOUT_STREAK_LIMIT) {
+          hit("energy-lockout", `${team.playerId} had no legal action for ${lock} turns (turn ${state.turn})`);
+          config.onLockout?.(state, team.playerId);
+        }
       }
 
       const plans: Record<string, PlayerAction[]> = {

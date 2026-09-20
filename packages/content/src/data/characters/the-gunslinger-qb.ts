@@ -25,7 +25,7 @@ export const LONG_BOMB = ability({
       outcome: {
         rerollable: false,
         branches: [
-          { weight: 1, effects: [{ kind: "damage", amount: 10 }, { kind: "damage", amount: 20, damageType: "affliction", target: SELF_ONLY }] },
+          { weight: 1, effects: [{ kind: "damage", amount: 10 }, { kind: "damage", amount: 10, damageType: "affliction", target: SELF_ONLY }] },
           { weight: 2, effects: [{ kind: "damage", amount: 40 }] },
           { weight: 2, effects: [{ kind: "damage", amount: 70 }] },
         ],

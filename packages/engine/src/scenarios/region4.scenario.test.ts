@@ -100,12 +100,12 @@ const withHp = (s: BattleState, id: string, value: number): BattleState => ({ ..
 const ready = (s: BattleState, id: string): BattleState => ({ ...s, characters: { ...s.characters, [id]: { ...s.characters[id]!, cooldowns: {} } } });
 
 describe("Draugr — the barrow feeds", () => {
-  it("heals 30 whenever an enemy falls", () => {
+  it("heals 10 whenever an enemy falls", () => {
     const killer = { characterId: "killer", maxHp: 100, abilityIds: [lethal.id] };
     const state = freshScenarioBattle({ playerId: "playerA", characters: [member(DRAUGR), killer] }, { playerId: "playerB", characters: [dummy(20)] });
     const s = turn(withHp(state, "draugr", 100), [act("playerA", "killer", lethal.id, ["dummy"])]);
     expect(s.characters.dummy?.alive).toBe(false);
-    expect(hp(s, "draugr")).toBe(120);
+    expect(hp(s, "draugr")).toBe(110);
   });
   it("Rusted Axe bleeds, Grave Chill cuts healing, Barrow Mound armours, Wight's Grip stuns", () => {
     expect(has(turn(hero(DRAUGR), [act("playerA", "draugr", RUSTED_AXE.id, ["dummy"])]), "dummy", "status.bleed")).toBe(true);

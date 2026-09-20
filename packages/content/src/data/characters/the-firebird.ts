@@ -29,7 +29,7 @@ export const RISE_FROM_ASHES: PassiveDefinition = passiveDefinitionSchema.parse(
   condition: { type: "resourceAtLeast", target: "self", resourceId: REBIRTH_RESOURCE.id, amount: 1 },
   effects: [
     { kind: "modifyResource", resourceId: REBIRTH_RESOURCE.id, amount: -1 },
-    { kind: "heal", healingClass: "setHp", amount: 40 },
+    { kind: "heal", healingClass: "setHp", amount: 30 },
   ],
 });
 
@@ -49,7 +49,7 @@ export const GLOWING_FEATHER = ability({
   displayName: "Glowing Feather",
   description: "Gives an ally a glowing feather: they heal 20, and healing on them is stronger for 3 turns.",
   cost: { spirit: 1 },
-  cooldown: 2,
+  cooldown: 3,
   target: ALLY_SINGLE,
   effects: [
     { kind: "heal", healingClass: "heal", amount: 20 },
@@ -61,7 +61,7 @@ export const DAWN_LIGHT = ability({
   displayName: "Dawn Light",
   description: "Burns away every harmful effect on an ally, and heals them 10.",
   cost: { spirit: 1, focus: 1 },
-  cooldown: 3,
+  cooldown: 4,
   target: ALLY_SINGLE,
   effects: [
     { kind: "removeStatus", dispelAll: true },

@@ -1,4 +1,5 @@
 # El Magnífico
+> **Phase 15:** numbers in this note were rebalanced after 30,000-match simulations; the current values are listed in the Phase 15 section at the end.
 **Data:** `el-magnifico.ts` · RARE · ATHLETE/ATTACKER/CONTROLLER · 130 HP
 
 ## Identity / win condition
@@ -12,3 +13,7 @@ The stun requirement is printed on the elbow.
 
 ## Deviations
 The elbow reads the target's Stun status, so **Bewitch**, **Glass Case** and other teammates' stuns power it too. Tested in `packages/engine/src/scenarios/region9.scenario.test.ts`.
+
+## Phase 15 balance pass
+Changed in `docs/balance/drafts/phase-15-v1.json` (paths as in dev mode):
+- `abilities/ability.el-magnifico.flying-elbow/effects/0/ifTrue/0/amount` is now **50**

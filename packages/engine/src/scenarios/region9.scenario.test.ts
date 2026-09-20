@@ -102,7 +102,7 @@ describe("Fourth & One — the downs", () => {
 });
 
 describe("The Gunslinger QB — the long bomb", () => {
-  it("Long Bomb is an interception (10 to the enemy and 20 to him), a 40, or a 70 touchdown", () => {
+  it("Long Bomb is an interception (10 to the enemy and 10 to him), a 40, or a 70 touchdown", () => {
     const seen = new Set<string>();
     for (let seed = 1; seed <= 60; seed += 1) {
       const before = hero(THE_GUNSLINGER_QB, defaultResourcesFor(THE_GUNSLINGER_QB), dummy(), seed);
@@ -110,7 +110,7 @@ describe("The Gunslinger QB — the long bomb", () => {
       const dealt = dmg(before, s, "dummy");
       const cost = dmg(before, s, "the-gunslinger-qb");
       if (dealt === 10) {
-        expect(cost).toBe(20);
+        expect(cost).toBe(10);
         seen.add("interception");
       } else if (dealt === 40) {
         expect(cost).toBe(0);
@@ -130,11 +130,11 @@ describe("The Gunslinger QB — the long bomb", () => {
 });
 
 describe("El Magnífico — slam, then fly", () => {
-  it("Body Slam stuns; Flying Elbow is 30, or 70 against a stunned enemy", () => {
+  it("Body Slam stuns; Flying Elbow is 30, or 50 against a stunned enemy", () => {
     expect(500 - hp(turn(hero(EL_MAGNIFICO), [act("playerA", "el-magnifico", FLYING_ELBOW.id, ["dummy"])]), "dummy")).toBe(30);
     const slammed = turn(hero(EL_MAGNIFICO), [act("playerA", "el-magnifico", BODY_SLAM.id, ["dummy"])]);
     expect(has(slammed, "dummy", "status.stun")).toBe(true);
-    expect(dmg(slammed, turn(slammed, [act("playerA", "el-magnifico", FLYING_ELBOW.id, ["dummy"])]), "dummy")).toBe(70);
+    expect(dmg(slammed, turn(slammed, [act("playerA", "el-magnifico", FLYING_ELBOW.id, ["dummy"])]), "dummy")).toBe(50);
   });
   it("Taunt the Crowd draws attacks and armours him; Second Wind heals 20", () => {
     const s = turn(hero(EL_MAGNIFICO), [act("playerA", "el-magnifico", TAUNT_THE_CROWD.id, ["el-magnifico"])]);

@@ -56,7 +56,7 @@ export const RAISE_THE_FORGOTTEN = ability({
   id: "ability.malachar.raise-the-forgotten",
   displayName: "Raise the Forgotten",
   description: "Spends Souls to raise a Thrall that absorbs damage meant for him.",
-  cost: { spirit: 2, chaos: 1 },
+  cost: { spirit: 1, chaos: 1 },
   cooldown: 2,
   target: SELF_ONLY,
   effects: [
@@ -79,7 +79,7 @@ export const BORROWED_LIFE = ability({
   cooldown: 1,
   target: ENEMY_SINGLE,
   effects: [
-    { kind: "damage", amount: 20 },
+    { kind: "damage", amount: 30 },
     { kind: "heal", healingClass: "lifeTransfer", amount: 20, target: EFFECT_TARGETS_SELF },
   ],
 });
@@ -105,7 +105,7 @@ export const YOU_BELONG_TO_ME = ability({
   id: "ability.malachar.you-belong-to-me",
   displayName: "You Belong to Me",
   description: "Extremely expensive. Binds a fallen combatant to fight at his side for a few turns.",
-  cost: { might: 2, focus: 2, spirit: 2, chaos: 2, neutral: 2 },
+  cost: { might: 1, focus: 1, spirit: 1, chaos: 1, neutral: 2 },
   cooldown: 5,
   target: SELF_ONLY,
   effects: [
@@ -121,7 +121,7 @@ export const EMBRACE_THE_THRONE = ability({
   id: "ability.malachar.embrace-the-throne",
   displayName: "Embrace the Throne",
   description: "At a high enough Soul threshold, ascends into the Death King.",
-  cost: { spirit: 3, chaos: 3, neutral: 2 },
+  cost: { spirit: 2, chaos: 2, neutral: 1 },
   cooldown: 3,
   target: SELF_ONLY,
   effects: [
@@ -155,7 +155,7 @@ export const TO_DEATH_KING: Transformation = transformationSchema.parse({
   characterId: "malachar",
   fromStageId: null,
   toStageId: "death-king",
-  trigger: { type: "resourceAtLeast", target: "self", resourceId: SOULS_RESOURCE.id, amount: 8 },
+  trigger: { type: "resourceAtLeast", target: "self", resourceId: SOULS_RESOURCE.id, amount: 5 },
   changes: { displayName: "Malachar, the Death King", maxHp: 150 },
 });
 
@@ -165,7 +165,7 @@ export const MALACHAR: CharacterDefinition = characterDefinitionSchema.parse({
   displayName: "Malachar, Lord of the Last Breath",
   rarity: "SECRET",
   tags: ["NECROMANCER", "SUMMONER", "UNDEAD", "CONTROLLER"],
-  baseHp: 115,
+  baseHp: 130,
   abilityIds: MALACHAR_ABILITIES.map((a) => a.id),
   passiveId: THE_DEAD_REMEMBER.id,
   resources: [SOULS_RESOURCE],

@@ -46,7 +46,7 @@ export const WINTER_TOUCH = ability({
   description: "A freezing grasp.",
   cost: { might: 1, focus: 1 },
   target: ENEMY_SINGLE,
-  effects: [{ kind: "damage", amount: 20 }],
+  effects: [{ kind: "damage", amount: 30 }],
 });
 export const IRON_GRIP = ability({
   id: "ability.koschei.iron-grip",
@@ -91,7 +91,7 @@ export const KOSCHEI: CharacterDefinition = characterDefinitionSchema.parse({
   displayName: "Koschei the Deathless",
   rarity: "SECRET",
   tags: ["SECRET", "UNDEAD", "FOLKLORE", "CONTROLLER"],
-  baseHp: 120,
+  baseHp: 140,
   abilityIds: KOSCHEI_ABILITIES.map((a) => a.id),
   passiveId: DEATH_HIDDEN_AWAY.id,
   resources: [DEATH_SEALS_RESOURCE],

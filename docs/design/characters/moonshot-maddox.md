@@ -1,4 +1,5 @@
 # Mason "Moonshot" Maddox
+> **Phase 15:** numbers in this note were rebalanced after 30,000-match simulations; the current values are listed in the Phase 15 section at the end.
 
 **Data:** `packages/content/src/data/characters/moonshot-maddox.ts`
 **Rarity:** CORE · **Tags:** ATHLETE, ATTACKER · **HP:** 100
@@ -53,3 +54,9 @@ counter always knows whether a Home Run Swing is a real threat or a 10-damage wh
   phase's scenario test (`packages/engine/src/scenarios/moonshot-maddox.scenario.test.ts`) uses a
   minimal test-fixture ability standing in for one, the same convention phase-04-first-five.md itself
   proposes for Father Bell's effect on Malachar.
+
+## Phase 15 balance pass
+Changed in `docs/balance/drafts/phase-15-v1.json` (paths as in dev mode):
+- `characters/moonshot-maddox/baseHp` is now **110**
+- `abilities/ability.moonshot-maddox.home-run-swing/cost/focus` is now **2**
+- `abilities/ability.moonshot-maddox.leadoff-single/effects/0/amount` is now **20**

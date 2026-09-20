@@ -1,4 +1,5 @@
 # The Firebird
+> **Phase 15:** numbers in this note were rebalanced after 30,000-match simulations; the current values are listed in the Phase 15 section at the end.
 **Data:** `the-firebird.ts` · RARE · FOLKLORE/SUPPORT/MAGE/HEALER · 70 HP
 
 ## Identity / win condition
@@ -12,3 +13,9 @@ The rebirth is a visible pip.
 
 ## Deviations
 The rebirth uses the `setHp` heal class, so Anti-Heal cannot stop it. Tested in `packages/engine/src/scenarios/region3.scenario.test.ts`.
+
+## Phase 15 balance pass
+Changed in `docs/balance/drafts/phase-15-v1.json` (paths as in dev mode):
+- `passives/passive.the-firebird.rise-from-ashes/effects/1/amount` is now **30**
+- `abilities/ability.the-firebird.dawn-light/cooldown` is now **4**
+- `abilities/ability.the-firebird.glowing-feather/cooldown` is now **3**

@@ -1,4 +1,5 @@
 # Mister Whiskers
+> **Phase 15:** numbers in this note were rebalanced after 30,000-match simulations; the current values are listed in the Phase 15 section at the end.
 
 **Data:** `packages/content/src/data/characters/mister-whiskers.ts`
 **Rarity:** CORE · **Tags:** CHEATER, BEAST, ASSASSIN · **HP:** 90
@@ -68,3 +69,7 @@ profile/unlocks system, not this phase's engine work. Logged as OQ-34.
   advance without new engine plumbing. A future "redirect onto a chosen ally" variant needs either a
   second player-selected target slot on the action, or a resolved-at-cast-time TargetRule for
   `retargetQueuedAction` — not built here, logged alongside OQ-36.
+
+## Phase 15 balance pass
+Changed in `docs/balance/drafts/phase-15-v1.json` (paths as in dev mode):
+- `characters/mister-whiskers/baseHp` is now **100**

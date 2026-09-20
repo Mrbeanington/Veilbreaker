@@ -19,7 +19,7 @@ export const WOODEN_FIST = ability({
   description: "A blow from a wooden hand on a string: 20 damage.",
   cost: { might: 1 },
   target: ENEMY_SINGLE,
-  effects: [{ kind: "damage", amount: 20 }],
+  effects: [{ kind: "damage", amount: 30 }],
 });
 export const RAISE_A_PUPPET = ability({
   id: "ability.the-marionettist.raise-a-puppet",
@@ -57,7 +57,7 @@ export const THE_MARIONETTIST: CharacterDefinition = characterDefinitionSchema.p
   displayName: "The Marionettist",
   rarity: "RARE",
   tags: ["FOLKLORE", "CONTROLLER", "SUMMONER"],
-  baseHp: 100,
+  baseHp: 110,
   abilityIds: THE_MARIONETTIST_ABILITIES.map((a) => a.id),
   artSpecId: "the-marionettist",
 });

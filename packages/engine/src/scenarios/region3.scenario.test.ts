@@ -142,13 +142,13 @@ describe("Rusalka — curse, then drink", () => {
     const s = turn(hero(RUSALKA), [act("playerA", "rusalka", COLD_WHISPER.id, ["dummy"])]);
     expect(has(s, "dummy", "status.curse")).toBe(true);
   });
-  it("Drowning Embrace is 20 on a clean enemy, and 50 (healing her 20) on a cursed one", () => {
+  it("Drowning Embrace is 20 on a clean enemy, and 40 (healing her 20) on a cursed one", () => {
     const clean = turn(hero(RUSALKA), [act("playerA", "rusalka", DROWNING_EMBRACE.id, ["dummy"])]);
     expect(500 - hp(clean, "dummy")).toBe(20);
     const cursed = turn(hero(RUSALKA), [act("playerA", "rusalka", COLD_WHISPER.id, ["dummy"])]);
     const woundedRusalka = withHp(ready(cursed, "rusalka"), "rusalka", 60);
     const s = turn(woundedRusalka, [act("playerA", "rusalka", DROWNING_EMBRACE.id, ["dummy"])]);
-    expect(dmg(woundedRusalka, s, "dummy")).toBe(50);
+    expect(dmg(woundedRusalka, s, "dummy")).toBe(40);
     expect(hp(s, "rusalka")).toBe(80);
   });
   it("Willow Veil armours and heals; Song of the River hits and weakens all", () => {
@@ -227,10 +227,10 @@ describe("The Firebird — rebirth, feathers and dawn", () => {
   const foe = { ...attacker };
   const duel = (resources = defaultResourcesFor(THE_FIREBIRD)) =>
     freshScenarioBattle({ playerId: "playerA", characters: [member(THE_FIREBIRD, { resources })] }, { playerId: "playerB", characters: [foe] });
-  it("rises from her ashes once: a lethal blow leaves her alive at 40 health", () => {
+  it("rises from her ashes once: a lethal blow leaves her alive at 30 health", () => {
     const s = turn(duel(), [], [act("playerB", "attacker", lethal.id, ["the-firebird"])]);
     expect(s.characters["the-firebird"]?.alive).toBe(true);
-    expect(hp(s, "the-firebird")).toBe(40);
+    expect(hp(s, "the-firebird")).toBe(30);
     expect(res(s, "the-firebird", "resource.rebirth")).toBe(0);
   });
   it("the second lethal blow kills her", () => {

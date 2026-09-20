@@ -1,4 +1,5 @@
 # The Gunslinger QB
+> **Phase 15:** numbers in this note were rebalanced after 30,000-match simulations; the current values are listed in the Phase 15 section at the end.
 **Data:** `the-gunslinger-qb.ts` · RARE · ATHLETE/ATTACKER/RANDOM · 100 HP
 
 ## Identity / win condition
@@ -12,3 +13,7 @@ Every branch and its weight is printed.
 
 ## Deviations
 Branches are listed worst to best (interception, completion, touchdown), so a Cheater's forced roll means what it says (ADR-027). Tested in `packages/engine/src/scenarios/region9.scenario.test.ts`.
+
+## Phase 15 balance pass
+Changed in `docs/balance/drafts/phase-15-v1.json` (paths as in dev mode):
+- `abilities/ability.the-gunslinger-qb.long-bomb/effects/0/outcome/branches/0/effects/1/amount` is now **10**

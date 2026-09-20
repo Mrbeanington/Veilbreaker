@@ -55,7 +55,7 @@ export const BLOW_THE_WHISTLE = ability({
   description: "A sharp blast.",
   cost: { focus: 1 },
   target: ENEMY_SINGLE,
-  effects: [{ kind: "damage", amount: 20 }],
+  effects: [{ kind: "damage", amount: 30 }],
 });
 export const PENALTY_FLAG = ability({
   id: "ability.the-referee.penalty-flag",
@@ -100,7 +100,7 @@ export const THE_REFEREE: CharacterDefinition = characterDefinitionSchema.parse(
   displayName: "The Referee",
   rarity: "SECRET",
   tags: ["SECRET", "ATHLETE", "CONTROLLER"],
-  baseHp: 100,
+  baseHp: 110,
   abilityIds: THE_REFEREE_ABILITIES.map((a) => a.id),
   passiveId: PLAY_ON_THE_WHISTLE.id,
   resources: [FOULS_RESOURCE],

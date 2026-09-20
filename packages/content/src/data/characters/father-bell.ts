@@ -64,7 +64,7 @@ export const FATHER_BELL: CharacterDefinition = characterDefinitionSchema.parse(
   displayName: "Father Bell",
   rarity: "RARE",
   tags: ["SUPPORT", "CONTROLLER", "DEFENDER"],
-  baseHp: 110,
+  baseHp: 130,
   abilityIds: FATHER_BELL_ABILITIES.map((a) => a.id),
   passiveId: LET_THE_DEAD_REST.id,
   knowledgeLevel: "DISCOVERABLE",

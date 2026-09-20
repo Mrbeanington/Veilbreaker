@@ -89,7 +89,7 @@ export const THE_PAINTED_RONIN: CharacterDefinition = characterDefinitionSchema.
   displayName: "The Painted Ronin",
   rarity: "SECRET",
   tags: ["FOLKLORE", "WARRIOR", "ASSASSIN", "SECRET"],
-  baseHp: 110,
+  baseHp: 120,
   abilityIds: THE_PAINTED_RONIN_ABILITIES.map((a) => a.id),
   resources: [INK_RESOURCE],
   knowledgeLevel: "DISCOVERABLE",

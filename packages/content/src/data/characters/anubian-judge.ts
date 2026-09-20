@@ -23,7 +23,7 @@ export const WEIGH_THE_HEART = ability({
     {
       kind: "conditional",
       condition: { type: "damageDealtAtLeast", target: "target", amount: 60 },
-      ifTrue: [{ kind: "damage", amount: 40 }],
+      ifTrue: [{ kind: "damage", amount: 30 }],
       ifFalse: [{ kind: "damage", amount: 20 }],
     },
   ],

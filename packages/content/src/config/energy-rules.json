@@ -1,6 +1,7 @@
 {
   "generation": {
     "perLivingCharacter": 2,
+    "minPerTeam": 4,
     "mode": "random"
   },
   "poolCap": 10,

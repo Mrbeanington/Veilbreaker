@@ -14,12 +14,13 @@
     "build": "pnpm -r --if-present run build",
     "verify-client-only": "node scripts/verify-client-only.mjs",
     "generate-coverage": "pnpm --filter @veilbreak/content run generate-coverage",
-    "ci": "pnpm typecheck && pnpm lint && pnpm test && pnpm build && pnpm verify-client-only && pnpm verify-no-dev-mode",
+    "ci": "pnpm typecheck && pnpm lint && pnpm test && pnpm build && pnpm verify-client-only && pnpm verify-no-dev-mode && pnpm verify-bundle-budget",
     "sim": "pnpm --filter @veilbreak/ai run sim",
     "meta": "pnpm --filter @veilbreak/ai run meta",
     "verify-no-dev-mode": "node scripts/verify-no-dev-mode.mjs",
     "art:audit": "pnpm --filter @veilbreak/content run art-audit",
-    "art:export": "pnpm --filter @veilbreak/content run export-art-specs"
+    "art:export": "pnpm --filter @veilbreak/content run export-art-specs",
+    "verify-bundle-budget": "node scripts/verify-bundle-budget.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^9.12.0",

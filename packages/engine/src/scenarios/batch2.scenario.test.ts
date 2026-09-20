@@ -253,7 +253,7 @@ describe("Zeiron (Legend)", () => {
     const r = expectOk(resolveTurn(state, [act("playerA", "zeiron", WRATH_OF_THE_UNCHAINED_SKY.id)], [], deps()));
     for (const id of ["e1", "e2", "e3"]) expect(r.state.characters[id]?.currentHp).toBe(130);
     const cost = WRATH_OF_THE_UNCHAINED_SKY.cost;
-    expect(cost.might + cost.focus + cost.spirit + cost.chaos + cost.neutral).toBeGreaterThanOrEqual(8);
+    expect(cost.might + cost.focus + cost.spirit + cost.chaos + cost.neutral).toBeGreaterThanOrEqual(6); // phase 15: was 8 before the balance pass
     expect(WRATH_OF_THE_UNCHAINED_SKY.cooldown).toBeGreaterThanOrEqual(5);
   });
 

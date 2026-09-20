@@ -29,6 +29,8 @@ export type ResolutionOrder = z.infer<typeof resolutionOrderSchema>;
 export const energyRulesSchema = z.object({
   generation: z.object({
     perLivingCharacter: z.number().int().min(0).default(1),
+    /** A floor on a team's total units per turn (phase-15): a last survivor is not starved by a 2-unit trickle. 0 means no floor. */
+    minPerTeam: z.number().int().min(0).default(0),
     mode: z.enum(["random", "fixed"]).default("random"),
   }),
   poolCap: z.number().int().positive().default(10),

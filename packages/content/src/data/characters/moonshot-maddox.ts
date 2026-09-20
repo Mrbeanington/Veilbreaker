@@ -39,7 +39,7 @@ export const LEADOFF_SINGLE = ability({
   description: "A clean base hit — advances one base.",
   cost: { focus: 1 },
   target: ENEMY_SINGLE,
-  effects: [{ kind: "damage", amount: 15 }],
+  effects: [{ kind: "damage", amount: 20 }],
 });
 
 export const DOUBLE_DOWN_THE_LINE = ability({
@@ -70,7 +70,7 @@ export const HOME_RUN_SWING = ability({
   id: "ability.moonshot-maddox.home-run-swing",
   displayName: "Home Run Swing",
   description: "Swings for the fences. Only a real payoff if the bases are loaded.",
-  cost: { focus: 3, might: 1 },
+  cost: { focus: 2, might: 1 },
   cooldown: 3,
   target: ENEMY_SINGLE,
   effects: [
@@ -152,7 +152,7 @@ export const MOONSHOT_MADDOX: CharacterDefinition = characterDefinitionSchema.pa
   displayName: "Mason \"Moonshot\" Maddox",
   rarity: "CORE",
   tags: ["ATHLETE", "ATTACKER"],
-  baseHp: 100,
+  baseHp: 110,
   abilityIds: MOONSHOT_MADDOX_ABILITIES.map((a) => a.id),
   passiveId: AT_THE_PLATE.id,
   resources: [BASES_RESOURCE, STRIKES_RESOURCE],

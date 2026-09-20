@@ -1,4 +1,5 @@
 # Draugr
+> **Phase 15:** numbers in this note were rebalanced after 30,000-match simulations; the current values are listed in the Phase 15 section at the end.
 **Data:** `draugr.ts` · CORE · MYTHOLOGY/UNDEAD/BRUISER · 140 HP
 
 ## Identity / win condition
@@ -12,3 +13,8 @@ One passive line and four numbers.
 
 ## Deviations
 None. Tested in `packages/engine/src/scenarios/region4.scenario.test.ts`.
+
+## Phase 15 balance pass
+Changed in `docs/balance/drafts/phase-15-v1.json` (paths as in dev mode):
+- `characters/draugr/baseHp` is now **130**
+- `passives/passive.draugr.barrow-hunger/effects/0/amount` is now **10**

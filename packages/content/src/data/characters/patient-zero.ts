@@ -152,7 +152,7 @@ export const PATIENT_ZERO: CharacterDefinition = characterDefinitionSchema.parse
   displayName: "Patient Zero",
   rarity: "CORE",
   tags: ["UNDEAD", "EVOLUTION"],
-  baseHp: 110,
+  baseHp: 100,
   abilityIds: [BITE.id, FESTERING_WOUND.id, SHAMBLING_GRASP.id, OUTBREAK_PULSE.id],
   passiveId: THE_HUNGER_GROWS.id,
   resources: [OUTBREAK_PROGRESS_RESOURCE],

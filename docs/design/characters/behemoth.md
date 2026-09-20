@@ -1,4 +1,5 @@
 # Behemoth (Legend)
+> **Phase 15:** numbers in this note were rebalanced after 30,000-match simulations; the current values are listed in the Phase 15 section at the end.
 **Data:** `behemoth.ts` · LEGENDARY · BEAST/BRUISER · 220 HP
 
 ## Identity / win condition
@@ -17,3 +18,9 @@ Also: **Father Bell**'s Hush shuts down a whole turn.
 
 ## Deviations
 Unhealable blocks only the `heal` class, matching OQ-04 (life transfer and HP-setting still work). New status `status.unhealable` (ADR-013).
+
+## Phase 15 balance pass
+Changed in `docs/balance/drafts/phase-15-v1.json` (paths as in dev mode):
+- `abilities/ability.behemoth.gore/cost/might` is now **2**
+- `abilities/ability.behemoth.primordial-stomp/cost/might` is now **2**
+- `abilities/ability.behemoth.rampage/cost/might` is now **3**

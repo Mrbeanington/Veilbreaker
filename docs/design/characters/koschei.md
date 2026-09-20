@@ -1,4 +1,5 @@
 # Koschei the Deathless
+> **Phase 15:** numbers in this note were rebalanced after 30,000-match simulations; the current values are listed in the Phase 15 section at the end.
 **Data:** `koschei.ts` · SECRET · UNDEAD/FOLKLORE/CONTROLLER · 120 HP
 
 ## Identity / win condition
@@ -12,3 +13,8 @@ Everything is a number or a pip. "Seals: hold at least 2 for full Fury" is the o
 
 ## Deviations
 "Relics" is modelled by the Seals resource plus the passive that spends them; a physical, destructible relic object would need targetable summons (OQ-32). Tested in `batch2.scenario.test.ts`.
+
+## Phase 15 balance pass
+Changed in `docs/balance/drafts/phase-15-v1.json` (paths as in dev mode):
+- `characters/koschei/baseHp` is now **140**
+- `abilities/ability.koschei.winter-touch/effects/0/amount` is now **30**

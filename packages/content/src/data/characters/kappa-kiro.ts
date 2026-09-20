@@ -101,7 +101,7 @@ export const KAPPA_KIRO: CharacterDefinition = characterDefinitionSchema.parse({
   displayName: "Kappa Kiro",
   rarity: "RARE",
   tags: ["FOLKLORE", "CONTROLLER", "BEAST"],
-  baseHp: 120,
+  baseHp: 145,
   abilityIds: KAPPA_KIRO_ABILITIES.map((a) => a.id),
   passiveId: DISH_SPILLS.id,
   resources: [DISH_RESOURCE],

@@ -21,7 +21,7 @@ import { createBattle, resolveTurn, type CreateBattleTeamInput } from "./resolve
 // tests aren't sensitive to which side createBattle's coin flip favors,
 // which isn't what any test below is exercising.
 const testEnergyRules: EnergyRules = {
-  generation: { perLivingCharacter: 1, mode: "fixed" },
+  generation: { perLivingCharacter: 1, minPerTeam: 0, mode: "fixed" },
   poolCap: 10,
   carryover: true,
   initiativePlayerSkipsTurnOneGeneration: false,

@@ -45,7 +45,7 @@ export const SUE = ability({
   displayName: "Sue",
   description: "Takes the enemy to court: 10 damage, and he takes 1 energy of theirs.",
   cost: { chaos: 1 },
-  cooldown: 3,
+  cooldown: 4,
   target: ENEMY_SINGLE,
   effects: [{ kind: "damage", amount: 10 }, { kind: "drainEnergy", family: "any", amount: 1, grantToSelf: true }],
 });
@@ -63,7 +63,7 @@ export const CROSS_EXAMINE = ability({
   displayName: "Cross-Examine",
   description: "Badgers the witness: 20 damage and it is silenced for a turn.",
   cost: { might: 1, focus: 1 },
-  cooldown: 3,
+  cooldown: 4,
   target: ENEMY_SINGLE,
   effects: [{ kind: "damage", amount: 20 }, { kind: "applyStatus", statusId: "status.silence", durationTurns: 1 }],
 });
@@ -76,7 +76,7 @@ export const THE_LAWYER: CharacterDefinition = characterDefinitionSchema.parse({
   displayName: "The Lawyer",
   rarity: "SECRET",
   tags: ["FOLKLORE", "CONTROLLER", "CHEATER", "SECRET"],
-  baseHp: 90,
+  baseHp: 80,
   abilityIds: THE_LAWYER_ABILITIES.map((a) => a.id),
   passiveId: TECHNICALITY.id,
   resources: [APPEALS_RESOURCE],

@@ -1,4 +1,5 @@
 # The Referee
+> **Phase 15:** numbers in this note were rebalanced after 30,000-match simulations; the current values are listed in the Phase 15 section at the end.
 **Data:** `the-referee.ts` · SECRET · ATHLETE/CONTROLLER · 100 HP
 
 ## Identity / win condition
@@ -12,3 +13,8 @@ Fouls only come from repetition, so alternating two abilities never draws one (t
 
 ## Deviations
 Ejection is modelled as a two-turn Stun rather than removal from the match, so it stays answerable (CLAUDE.md rule 8). The Foul pips sit on the offender, and the character card renders any tracked resource on a character generically, so the count is visible.
+
+## Phase 15 balance pass
+Changed in `docs/balance/drafts/phase-15-v1.json` (paths as in dev mode):
+- `characters/the-referee/baseHp` is now **110**
+- `abilities/ability.the-referee.blow-the-whistle/effects/0/amount` is now **30**

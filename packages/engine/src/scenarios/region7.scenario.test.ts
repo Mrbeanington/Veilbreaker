@@ -116,10 +116,10 @@ describe("The Marionettist — strings", () => {
     expect(has(turn(hero(THE_MARIONETTIST), [act("playerA", "the-marionettist", STRINGS_TAUT.id, ["dummy"])]), "dummy", "status.cooldown-increase")).toBe(true);
     expect(has(turn(hero(THE_MARIONETTIST), [act("playerA", "the-marionettist", MARIONETTE_DANCE.id, ["dummy"])]), "dummy", "status.stun")).toBe(true);
   });
-  it("Raise a Puppet summons a puppet; Wooden Fist is 20", () => {
+  it("Raise a Puppet summons a puppet; Wooden Fist is 30", () => {
     const s = turn(hero(THE_MARIONETTIST), [act("playerA", "the-marionettist", RAISE_A_PUPPET.id, ["the-marionettist"])]);
     expect(Object.values(s.summons).some((x) => x.summonId === "summon.the-marionettist.puppet")).toBe(true);
-    expect(500 - hp(turn(hero(THE_MARIONETTIST), [act("playerA", "the-marionettist", WOODEN_FIST.id, ["dummy"])]), "dummy")).toBe(20);
+    expect(500 - hp(turn(hero(THE_MARIONETTIST), [act("playerA", "the-marionettist", WOODEN_FIST.id, ["dummy"])]), "dummy")).toBe(30);
   });
 });
 

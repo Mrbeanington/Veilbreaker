@@ -1,4 +1,5 @@
 # The Lawyer
+> **Phase 15:** numbers in this note were rebalanced after 30,000-match simulations; the current values are listed in the Phase 15 section at the end.
 **Data:** `the-lawyer.ts` · SECRET · FOLKLORE/CONTROLLER/CHEATER/SECRET · 90 HP
 
 ## Identity / win condition
@@ -15,3 +16,9 @@ The pip and the passive text say once per battle.
 
 ## Deviations
 The same restore-at-health mechanism as The Firebird's rebirth (an `onWouldDie` passive with `setHp`), used here as a Cheater rule-break. DISCOVERABLE secret with a silhouette prompt. Tested in `packages/engine/src/scenarios/region11.scenario.test.ts`.
+
+## Phase 15 balance pass
+Changed in `docs/balance/drafts/phase-15-v1.json` (paths as in dev mode):
+- `abilities/ability.the-lawyer.cross-examine/cooldown` is now **4**
+- `abilities/ability.the-lawyer.sue/cooldown` is now **4**
+- `characters/the-lawyer/baseHp` is now **80**

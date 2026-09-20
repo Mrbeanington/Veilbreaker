@@ -11,7 +11,7 @@ export const BARROW_HUNGER: PassiveDefinition = passiveDefinitionSchema.parse({
   displayName: "Barrow Hunger",
   description: "Whenever an enemy falls, it heals 20.",
   trigger: { event: "onDeath", relation: "enemy", effectTarget: "self" },
-  effects: [{ kind: "heal", healingClass: "heal", amount: 20 }],
+  effects: [{ kind: "heal", healingClass: "heal", amount: 10 }],
 });
 
 export const RUSTED_AXE = ability({
@@ -64,7 +64,7 @@ export const DRAUGR: CharacterDefinition = characterDefinitionSchema.parse({
   displayName: "Draugr",
   rarity: "CORE",
   tags: ["MYTHOLOGY", "UNDEAD", "BRUISER"],
-  baseHp: 140,
+  baseHp: 130,
   abilityIds: DRAUGR_ABILITIES.map((a) => a.id),
   passiveId: BARROW_HUNGER.id,
   artSpecId: "draugr",

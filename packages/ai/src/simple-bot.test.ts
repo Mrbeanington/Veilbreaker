@@ -16,7 +16,7 @@ function freshState(seed = 1) {
   return createBattle([TEAM_A, TEAM_B], seed, {
     balanceVersionId: "test",
     matchFormat: { teamSize: 1, maxTurns: 40 },
-    energyRules: { generation: { perLivingCharacter: 5, mode: "fixed" }, poolCap: 20, carryover: true, initiativePlayerSkipsTurnOneGeneration: false },
+    energyRules: { generation: { perLivingCharacter: 5, minPerTeam: 0, mode: "fixed" }, poolCap: 20, carryover: true, initiativePlayerSkipsTurnOneGeneration: false },
   });
 }
 

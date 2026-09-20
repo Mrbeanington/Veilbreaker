@@ -1,3 +1,4 @@
+/* global URL */
 // phase-05-local-playable.md "PWA foundation: ... a service worker that
 // precaches the build so the game works offline and is installable."
 // Hand-written on purpose (docs/DECISIONS.md ADR-012): a workbox-generated
@@ -19,13 +20,19 @@ const CACHE_NAME = "veilbreak-__CACHE_VERSION__";
 // with a real JSON array.
 const PRECACHE_URLS = "__PRECACHE_URLS__";
 
+// phase-15 (offline/PWA audit): a new build's worker now WAITS instead of
+// taking over at once. Taking over immediately deleted the previous build's
+// cache while a tab was still running the previous build's scripts, so its
+// next lazy request (the bot worker starts only when a match begins) could miss
+// both the cache and the server. Saves live in IndexedDB and are untouched
+// either way. The new build takes over when the last old tab closes, or when
+// the page asks with {type: "SKIP_WAITING"}.
 self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches
-      .open(CACHE_NAME)
-      .then((cache) => cache.addAll(PRECACHE_URLS))
-      .then(() => self.skipWaiting()),
-  );
+  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(PRECACHE_URLS)));
+});
+
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {
@@ -38,14 +45,29 @@ self.addEventListener("activate", (event) => {
 });
 
 // Same-origin cache-first: every asset this game needs is already precached
-// above, so a cache hit serves instantly offline; anything uncached (there
-// shouldn't be anything, for this single-page app) falls through to a
-// same-origin network fetch, never a third-party one (CLAUDE.md "client-
-// only" — this file only ever intercepts requests the browser itself made
-// for this app's own origin).
+// above, so a cache hit serves instantly offline. Only this app's own
+// requests are ever answered (CLAUDE.md "client-only"): anything from another
+// origin is left to the browser, so this file can never proxy a third party.
+// A page navigation ignores the query string (a link such as `?dev=1` must
+// still open offline) and falls back to the cached shell.
 self.addEventListener("fetch", (event) => {
-  if (event.request.method !== "GET") return;
-  event.respondWith(
-    caches.match(event.request).then((cached) => cached ?? fetch(event.request)),
-  );
+  const request = event.request;
+  if (request.method !== "GET") return;
+  if (new URL(request.url).origin !== self.location.origin) return;
+  // `ignoreVary`: a static host that sends `Vary: Origin` would otherwise make
+  // every module-script request (which carries an Origin header) miss the
+  // precached copy (found in the real-browser offline test, phase 15).
+  // Look only in THIS build's cache. `caches.match` searches every cache, oldest
+  // first, so while a previous build's cache still exists it could answer with
+  // the previous build's index.html against this build's scripts.
+  const own = () => caches.open(CACHE_NAME);
+  if (request.mode === "navigate") {
+    event.respondWith(
+      own()
+        .then((cache) => cache.match(request, { ignoreSearch: true, ignoreVary: true }).then((cached) => cached ?? cache.match("./index.html", { ignoreVary: true })))
+        .then((cached) => cached ?? fetch(request)),
+    );
+    return;
+  }
+  event.respondWith(own().then((cache) => cache.match(request, { ignoreVary: true })).then((cached) => cached ?? fetch(request)));
 });

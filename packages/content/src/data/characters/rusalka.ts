@@ -30,7 +30,7 @@ export const DROWNING_EMBRACE = ability({
       kind: "conditional",
       condition: { type: "hasStatus", target: "target", statusId: "status.curse" },
       ifTrue: [
-        { kind: "damage", amount: 50 },
+        { kind: "damage", amount: 40 },
         { kind: "heal", healingClass: "lifeTransfer", amount: 20, target: SELF_ONLY },
       ],
       ifFalse: [{ kind: "damage", amount: 20 }],

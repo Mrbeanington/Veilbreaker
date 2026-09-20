@@ -1,4 +1,5 @@
 # Púca
+> **Phase 15:** numbers in this note were rebalanced after 30,000-match simulations; the current values are listed in the Phase 15 section at the end.
 **Data:** `puca.ts` · RARE · MYTHOLOGY/BEAST/CONTROLLER/RANDOM · 100 HP
 
 ## Identity / win condition
@@ -12,3 +13,8 @@ The three shapes are printed.
 
 ## Deviations
 The random result uses the battle's seeded RNG (replays identically). Tested in `packages/engine/src/scenarios/region4.scenario.test.ts`.
+
+## Phase 15 balance pass
+Changed in `docs/balance/drafts/phase-15-v1.json` (paths as in dev mode):
+- `characters/puca/baseHp` is now **110**
+- `abilities/ability.puca.wild-ride/effects/0/amount` is now **40**

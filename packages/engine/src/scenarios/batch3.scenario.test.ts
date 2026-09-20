@@ -216,7 +216,7 @@ describe("The Black Knight — versus a Legend", () => {
 
   it("Cold Blade deals 55 to a Legend but only 30 to anyone else", () => {
     const legend = turn(vsLegend(), [act("playerA", "black-knight", COLD_BLADE.id, ["zeiron"])]);
-    expect(legend.characters.zeiron?.currentHp).toBe(130 - 55);
+    expect(legend.characters.zeiron?.currentHp).toBe(140 - 55); // Zeiron has 140 HP since the phase-15 pass
     const ordinary = turn(vsOrdinary(), [act("playerA", "black-knight", COLD_BLADE.id, ["dummy"])]);
     expect(ordinary.characters.dummy?.currentHp).toBe(300 - 30);
   });
@@ -224,7 +224,7 @@ describe("The Black Knight — versus a Legend", () => {
   it("Oathbreaker silences a Legend, but is just a 20 damage blow against anyone else", () => {
     const legend = turn(vsLegend(), [act("playerA", "black-knight", OATHBREAKER.id, ["zeiron"])]);
     expect(has(legend, "zeiron", "status.silence")).toBe(true);
-    expect(legend.characters.zeiron?.currentHp).toBe(100);
+    expect(legend.characters.zeiron?.currentHp).toBe(110);
     const ordinary = turn(vsOrdinary(), [act("playerA", "black-knight", OATHBREAKER.id, ["dummy"])]);
     expect(has(ordinary, "dummy", "status.silence")).toBe(false);
     expect(ordinary.characters.dummy?.currentHp).toBe(280);

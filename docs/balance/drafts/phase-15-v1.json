@@ -1,0 +1,242 @@
+{
+  "format": "veilbreak-balance",
+  "formatVersion": 1,
+  "id": "phase-15-v1",
+  "baseVersionId": "phase-05-v1",
+  "createdAt": "2026-09-20T00:00:00.000Z",
+  "changeNotes": "Phase 15 balance pass: cheaper heavy abilities and more health for the weakest older kits, small trims for the strongest new ones (30,000-match runs at two bot levels).",
+  "changes": [
+    {
+      "path": "characters/oni-of-the-red-gate/baseHp",
+      "value": 170
+    },
+    {
+      "path": "abilities/ability.oni-of-the-red-gate.open-the-gate/cost/spirit",
+      "value": 1
+    },
+    {
+      "path": "abilities/ability.oni-of-the-red-gate.open-the-gate/cooldown",
+      "value": 3
+    },
+    {
+      "path": "characters/malachar/baseHp",
+      "value": 130
+    },
+    {
+      "path": "abilities/ability.malachar.raise-the-forgotten/cost/spirit",
+      "value": 1
+    },
+    {
+      "path": "abilities/ability.malachar.you-belong-to-me/cost/might",
+      "value": 1
+    },
+    {
+      "path": "abilities/ability.malachar.you-belong-to-me/cost/focus",
+      "value": 1
+    },
+    {
+      "path": "abilities/ability.malachar.you-belong-to-me/cost/spirit",
+      "value": 1
+    },
+    {
+      "path": "abilities/ability.malachar.you-belong-to-me/cost/chaos",
+      "value": 1
+    },
+    {
+      "path": "abilities/ability.malachar.embrace-the-throne/cost/spirit",
+      "value": 2
+    },
+    {
+      "path": "abilities/ability.malachar.embrace-the-throne/cost/chaos",
+      "value": 2
+    },
+    {
+      "path": "abilities/ability.malachar.embrace-the-throne/cost/neutral",
+      "value": 1
+    },
+    {
+      "path": "characters/maestro-nocturne/baseHp",
+      "value": 120
+    },
+    {
+      "path": "abilities/ability.maestro-nocturne.staccato/effects/0/amount",
+      "value": 30
+    },
+    {
+      "path": "characters/the-referee/baseHp",
+      "value": 110
+    },
+    {
+      "path": "abilities/ability.the-referee.blow-the-whistle/effects/0/amount",
+      "value": 30
+    },
+    {
+      "path": "characters/moonshot-maddox/baseHp",
+      "value": 110
+    },
+    {
+      "path": "abilities/ability.moonshot-maddox.home-run-swing/cost/focus",
+      "value": 2
+    },
+    {
+      "path": "abilities/ability.moonshot-maddox.leadoff-single/effects/0/amount",
+      "value": 20
+    },
+    {
+      "path": "characters/koschei/baseHp",
+      "value": 140
+    },
+    {
+      "path": "abilities/ability.koschei.winter-touch/effects/0/amount",
+      "value": 30
+    },
+    {
+      "path": "characters/zeiron/baseHp",
+      "value": 140
+    },
+    {
+      "path": "abilities/ability.zeiron.wrath-of-the-unchained-sky/cost/might",
+      "value": 3
+    },
+    {
+      "path": "abilities/ability.zeiron.wrath-of-the-unchained-sky/cost/spirit",
+      "value": 2
+    },
+    {
+      "path": "abilities/ability.behemoth.gore/cost/might",
+      "value": 2
+    },
+    {
+      "path": "abilities/ability.behemoth.primordial-stomp/cost/might",
+      "value": 2
+    },
+    {
+      "path": "abilities/ability.behemoth.rampage/cost/might",
+      "value": 3
+    },
+    {
+      "path": "characters/puca/baseHp",
+      "value": 110
+    },
+    {
+      "path": "abilities/ability.puca.wild-ride/effects/0/amount",
+      "value": 40
+    },
+    {
+      "path": "characters/kappa-kiro/baseHp",
+      "value": 145
+    },
+    {
+      "path": "characters/the-marionettist/baseHp",
+      "value": 110
+    },
+    {
+      "path": "abilities/ability.the-marionettist.wooden-fist/effects/0/amount",
+      "value": 30
+    },
+    {
+      "path": "characters/the-siren/baseHp",
+      "value": 110
+    },
+    {
+      "path": "abilities/ability.the-siren.shipwreck/cost/chaos",
+      "value": 1
+    },
+    {
+      "path": "characters/the-painted-ronin/baseHp",
+      "value": 120
+    },
+    {
+      "path": "characters/father-bell/baseHp",
+      "value": 130
+    },
+    {
+      "path": "passives/passive.the-firebird.rise-from-ashes/effects/1/amount",
+      "value": 30
+    },
+    {
+      "path": "abilities/ability.the-firebird.dawn-light/cooldown",
+      "value": 4
+    },
+    {
+      "path": "characters/draugr/baseHp",
+      "value": 130
+    },
+    {
+      "path": "passives/passive.draugr.barrow-hunger/effects/0/amount",
+      "value": 10
+    },
+    {
+      "path": "characters/patient-zero/baseHp",
+      "value": 100
+    },
+    {
+      "path": "abilities/ability.el-magnifico.flying-elbow/effects/0/ifTrue/0/amount",
+      "value": 50
+    },
+    {
+      "path": "characters/king-croak/baseHp",
+      "value": 120
+    },
+    {
+      "path": "abilities/ability.king-croak.frog-curse/cooldown",
+      "value": 5
+    },
+    {
+      "path": "abilities/ability.the-lawyer.cross-examine/cooldown",
+      "value": 4
+    },
+    {
+      "path": "abilities/ability.the-lawyer.sue/cooldown",
+      "value": 4
+    },
+    {
+      "path": "abilities/ability.rusalka.drowning-embrace/effects/0/ifTrue/0/amount",
+      "value": 40
+    },
+    {
+      "path": "abilities/ability.anubian-judge.weigh-the-heart/effects/0/ifTrue/0/amount",
+      "value": 30
+    },
+    {
+      "path": "abilities/ability.oni-of-the-red-gate.crimson-cleave/effects/0/ifTrue/0/amount",
+      "value": 80
+    },
+    {
+      "path": "abilities/ability.oni-of-the-red-gate.crimson-cleave/effects/0/ifFalse/0/ifTrue/0/amount",
+      "value": 60
+    },
+    {
+      "path": "abilities/ability.oni-of-the-red-gate.crimson-cleave/effects/0/ifFalse/0/ifFalse/0/ifTrue/0/amount",
+      "value": 40
+    },
+    {
+      "path": "abilities/ability.oni-of-the-red-gate.crimson-cleave/effects/0/ifFalse/0/ifFalse/0/ifFalse/0/amount",
+      "value": 20
+    },
+    {
+      "path": "transformations/transformation.malachar.to-death-king/trigger/amount",
+      "value": 5
+    },
+    {
+      "path": "abilities/ability.malachar.borrowed-life/effects/0/amount",
+      "value": 30
+    },
+    {
+      "path": "abilities/ability.the-gunslinger-qb.long-bomb/effects/0/outcome/branches/0/effects/1/amount",
+      "value": 10
+    },
+    {
+      "path": "characters/mister-whiskers/baseHp",
+      "value": 100
+    },
+    {
+      "path": "abilities/ability.the-firebird.glowing-feather/cooldown",
+      "value": 3
+    },
+    {
+      "path": "characters/the-lawyer/baseHp",
+      "value": 80
+    }
+  ]
+}

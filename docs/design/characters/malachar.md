@@ -1,4 +1,5 @@
 # Malachar, Lord of the Last Breath
+> **Phase 15:** numbers in this note were rebalanced after 30,000-match simulations; the current values are listed in the Phase 15 section at the end.
 
 **Data:** `packages/content/src/data/characters/malachar.ts`
 **Rarity:** SECRET · **Tags:** NECROMANCER, SUMMONER, UNDEAD, CONTROLLER · **HP:** 115 → 150 (the Death King)
@@ -74,3 +75,17 @@ of this phase's acceptance criteria needed — logged as OQ-36 rather than guess
   needed for "The Dead Remember" to work at all: a reactive effect previously always landed on
   whoever the triggering event was *about* (the corpse), never on the trigger's holder — which made
   "whenever ANYONE dies, *I* gain a Soul" structurally impossible before this phase.
+
+## Phase 15 balance pass
+Changed in `docs/balance/drafts/phase-15-v1.json` (paths as in dev mode):
+- `characters/malachar/baseHp` is now **130**
+- `abilities/ability.malachar.raise-the-forgotten/cost/spirit` is now **1**
+- `abilities/ability.malachar.you-belong-to-me/cost/might` is now **1**
+- `abilities/ability.malachar.you-belong-to-me/cost/focus` is now **1**
+- `abilities/ability.malachar.you-belong-to-me/cost/spirit` is now **1**
+- `abilities/ability.malachar.you-belong-to-me/cost/chaos` is now **1**
+- `abilities/ability.malachar.embrace-the-throne/cost/spirit` is now **2**
+- `abilities/ability.malachar.embrace-the-throne/cost/chaos` is now **2**
+- `abilities/ability.malachar.embrace-the-throne/cost/neutral` is now **1**
+- `transformations/transformation.malachar.to-death-king/trigger/amount` is now **5**
+- `abilities/ability.malachar.borrowed-life/effects/0/amount` is now **30**

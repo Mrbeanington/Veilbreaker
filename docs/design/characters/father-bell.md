@@ -1,4 +1,5 @@
 # Father Bell
+> **Phase 15:** numbers in this note were rebalanced after 30,000-match simulations; the current values are listed in the Phase 15 section at the end.
 **Data:** `packages/content/src/data/characters/father-bell.ts` · RARE · SUPPORT/CONTROLLER/DEFENDER · 110 HP
 
 ## Identity / win condition
@@ -15,3 +16,7 @@ Toll the Bell: 20 damage. Hush: silence 1 turn. Sanctuary: shield 30. Last Rites
 
 ## Deviations
 Passive keys on `onHpThreshold` (fires with the damage, before the death-check tier) because a dead character can't receive a status; the 25% line is this phase's number. It also consecrates a survivor who dips under 25% and lives — harmless, and only matters if that character is later killed while still marked (statuses persist).
+
+## Phase 15 balance pass
+Changed in `docs/balance/drafts/phase-15-v1.json` (paths as in dev mode):
+- `characters/father-bell/baseHp` is now **130**

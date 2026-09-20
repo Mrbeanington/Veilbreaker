@@ -1,4 +1,5 @@
 # The Painted Ronin
+> **Phase 15:** numbers in this note were rebalanced after 30,000-match simulations; the current values are listed in the Phase 15 section at the end.
 **Data:** `the-painted-ronin.ts` · SECRET · FOLKLORE/WARRIOR/ASSASSIN/SECRET · 110 HP
 
 ## Identity / win condition
@@ -12,3 +13,7 @@ Ink is a pip resource with a printed payoff.
 
 ## Deviations
 "Ink" is a resource, not a status: enemies cannot be inked (no ink-status yet). DISCOVERABLE secret with a silhouette prompt. Tested in `packages/engine/src/scenarios/region2.scenario.test.ts`.
+
+## Phase 15 balance pass
+Changed in `docs/balance/drafts/phase-15-v1.json` (paths as in dev mode):
+- `characters/the-painted-ronin/baseHp` is now **120**

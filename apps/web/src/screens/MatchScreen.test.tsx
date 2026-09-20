@@ -22,7 +22,7 @@ afterEach(cleanup);
 // energy.test.ts and resolver.test.ts use this exact pattern for the same
 // reason).
 const GENEROUS_ENERGY: EnergyRules = {
-  generation: { perLivingCharacter: 10, mode: "fixed" },
+  generation: { perLivingCharacter: 10, minPerTeam: 0, mode: "fixed" },
   poolCap: 40,
   carryover: true,
   initiativePlayerSkipsTurnOneGeneration: false,
@@ -100,7 +100,7 @@ describe("MatchScreen — validation feedback (phase-05-local-playable.md)", () 
     // (packages/engine/src/energy.test.ts) — this only checks the UI reflects
     // whatever the engine says is affordable, never recomputing it itself.
     const zeroEnergy: EnergyRules = {
-      generation: { perLivingCharacter: 0, mode: "fixed" },
+      generation: { perLivingCharacter: 0, minPerTeam: 0, mode: "fixed" },
       poolCap: 10,
       carryover: true,
       initiativePlayerSkipsTurnOneGeneration: false,
@@ -128,7 +128,7 @@ describe("MatchScreen — validation feedback (phase-05-local-playable.md)", () 
     // a character always needing a queued action would make the turn
     // permanently unconfirmable.
     const zeroEnergy: EnergyRules = {
-      generation: { perLivingCharacter: 0, mode: "fixed" },
+      generation: { perLivingCharacter: 0, minPerTeam: 0, mode: "fixed" },
       poolCap: 10,
       carryover: true,
       initiativePlayerSkipsTurnOneGeneration: false,

@@ -27,7 +27,7 @@ import type { BattleState, PlayerAction } from "@veilbreak/content";
 // within a turn or two of saving, matching how these characters were
 // actually designed (docs/design/characters/*.md).
 export const SCENARIO_ENERGY_RULES: EnergyRules = {
-  generation: { perLivingCharacter: 4, mode: "fixed" },
+  generation: { perLivingCharacter: 4, minPerTeam: 0, mode: "fixed" },
   poolCap: 20,
   carryover: true,
   initiativePlayerSkipsTurnOneGeneration: false,

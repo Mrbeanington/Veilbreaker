@@ -113,7 +113,7 @@ export const MISTER_WHISKERS: CharacterDefinition = characterDefinitionSchema.pa
   displayName: "Mister Whiskers",
   rarity: "CORE",
   tags: ["CHEATER", "BEAST", "ASSASSIN"],
-  baseHp: 90,
+  baseHp: 100,
   abilityIds: MISTER_WHISKERS_ABILITIES.map((a) => a.id),
   passiveId: NINE_LIVES.id,
   resources: [NINE_LIVES_RESOURCE],

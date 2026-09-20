@@ -120,7 +120,7 @@ describe("Malachar — Borrowed Life (lifeTransfer)", () => {
     const hurt = { ...freshScenarioBattle(TEAM_A, TEAM_B) };
     const state = { ...hurt, characters: { ...hurt.characters, malachar: { ...hurt.characters.malachar!, currentHp: 50 } } };
     const result = expectOk(resolveTurn(state, [act("playerA", "malachar", BORROWED_LIFE.id, ["victim"])], [], deps()));
-    expect(result.state.characters.victim?.currentHp).toBe(20); // 40 - 20 damage
+    expect(result.state.characters.victim?.currentHp).toBe(10); // 40 - 30 damage (phase 15: was 20)
     expect(result.state.characters.malachar?.currentHp).toBe(70); // 50 + 20 restored, not the victim
   });
 });

@@ -1,4 +1,5 @@
 # Rusalka
+> **Phase 15:** numbers in this note were rebalanced after 30,000-match simulations; the current values are listed in the Phase 15 section at the end.
 **Data:** `rusalka.ts` · RARE · FOLKLORE/MAGE/CURSE/CONTROLLER · 100 HP
 
 ## Identity / win condition
@@ -12,3 +13,7 @@ The 50 needs the curse first (two abilities), and a dispel removes it. Fragile a
 
 ## Deviations
 None. Tested in `packages/engine/src/scenarios/region3.scenario.test.ts`.
+
+## Phase 15 balance pass
+Changed in `docs/balance/drafts/phase-15-v1.json` (paths as in dev mode):
+- `abilities/ability.rusalka.drowning-embrace/effects/0/ifTrue/0/amount` is now **40**

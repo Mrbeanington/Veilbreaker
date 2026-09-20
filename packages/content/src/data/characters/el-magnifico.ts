@@ -24,7 +24,7 @@ export const FLYING_ELBOW = ability({
     {
       kind: "conditional",
       condition: { type: "hasStatus", target: "target", statusId: "status.stun" },
-      ifTrue: [{ kind: "damage", amount: 70 }],
+      ifTrue: [{ kind: "damage", amount: 50 }],
       ifFalse: [{ kind: "damage", amount: 30 }],
     },
   ],

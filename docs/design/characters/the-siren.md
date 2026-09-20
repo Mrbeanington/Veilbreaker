@@ -1,4 +1,5 @@
 # The Siren
+> **Phase 15:** numbers in this note were rebalanced after 30,000-match simulations; the current values are listed in the Phase 15 section at the end.
 **Data:** `the-siren.ts` · RARE · MYTHOLOGY/MUSIC/CONTROLLER/MAGE · 100 HP
 
 ## Identity / win condition
@@ -12,3 +13,8 @@ One combo, three verses, spelled out.
 
 ## Deviations
 The sequence check reads the character's own last two abilities, so passing a turn does not break it, but acting with any other ability does. Tested in `packages/engine/src/scenarios/region1.scenario.test.ts`.
+
+## Phase 15 balance pass
+Changed in `docs/balance/drafts/phase-15-v1.json` (paths as in dev mode):
+- `characters/the-siren/baseHp` is now **110**
+- `abilities/ability.the-siren.shipwreck/cost/chaos` is now **1**

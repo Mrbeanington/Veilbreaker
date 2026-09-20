@@ -4,7 +4,7 @@ import { canAfford, createEmptyPool, generateEnergy, payCost, type EnergyPool } 
 import { createRng } from "./rng";
 
 const rules: EnergyRules = {
-  generation: { perLivingCharacter: 1, mode: "random" },
+  generation: { perLivingCharacter: 1, minPerTeam: 0, mode: "random" },
   poolCap: 10,
   carryover: true,
   initiativePlayerSkipsTurnOneGeneration: true,
@@ -15,6 +15,15 @@ function cost(partial: Partial<Cost>): Cost {
 }
 
 describe("generateEnergy", () => {
+  it("a minPerTeam floor keeps a last survivor from being starved (phase-15 regression)", () => {
+    const floored: EnergyRules = { ...rules, generation: { perLivingCharacter: 2, minPerTeam: 3, mode: "random" } };
+    const total = (livingCharacterCount: number) =>
+      Object.values(generateEnergy(createEmptyPool(), floored, { livingCharacterCount, isInitiativePlayer: false, isFirstTurn: false }, createRng(7)).pool).reduce((a, b) => a + b, 0);
+    expect(total(1)).toBe(3); // 2 per character would be only 2
+    expect(total(2)).toBe(4); // the floor never lowers a bigger team's income
+    expect(total(3)).toBe(6);
+  });
+
   it("is deterministic for a given seed", () => {
     const a = generateEnergy(createEmptyPool(), rules, {
       livingCharacterCount: 3,
@@ -72,7 +81,7 @@ describe("generateEnergy", () => {
   });
 
   it("fixed mode grants one unit of every family per living character, with no RNG draw", () => {
-    const fixedRules: EnergyRules = { ...rules, generation: { perLivingCharacter: 1, mode: "fixed" } };
+    const fixedRules: EnergyRules = { ...rules, generation: { perLivingCharacter: 1, minPerTeam: 0, mode: "fixed" } };
     const seed = createRng(11);
     const result = generateEnergy(createEmptyPool(), fixedRules, {
       livingCharacterCount: 1,
@@ -84,7 +93,7 @@ describe("generateEnergy", () => {
   });
 
   it("fixed mode scales with living character count", () => {
-    const fixedRules: EnergyRules = { ...rules, generation: { perLivingCharacter: 1, mode: "fixed" } };
+    const fixedRules: EnergyRules = { ...rules, generation: { perLivingCharacter: 1, minPerTeam: 0, mode: "fixed" } };
     const result = generateEnergy(createEmptyPool(), fixedRules, {
       livingCharacterCount: 3,
       isInitiativePlayer: false,

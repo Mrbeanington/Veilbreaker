@@ -24,7 +24,7 @@ describe("generateAbilityTooltip", () => {
 
   it("describes a multi-effect ability as a sequence of sentences", () => {
     const tooltip = generateAbilityTooltip(BORROWED_LIFE);
-    expect(tooltip).toContain("Deal 20 normal damage.");
+    expect(tooltip).toContain("Deal 30 normal damage.");
     expect(tooltip).toContain("Restore 20 HP (lifeTransfer).");
   });
 

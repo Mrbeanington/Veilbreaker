@@ -1,4 +1,5 @@
 # Zeiron, the God Who Refused Olympus (Legend)
+> **Phase 15:** numbers in this note were rebalanced after 30,000-match simulations; the current values are listed in the Phase 15 section at the end.
 **Data:** `zeiron.ts` · LEGENDARY · MAGE/MYTHOLOGY/ATTACKER · 130 HP
 
 ## Identity / win condition
@@ -17,3 +18,9 @@ Four abilities, one big number. The passive is a single condition.
 
 ## Deviations
 Lightning is `normal` damage (no special type) so ordinary defences apply; elemental typing is not in the engine. Art is `draft` with a Legend reveal prompt; must never resemble a commercial Zeus (recorded in the spec's `avoid`).
+
+## Phase 15 balance pass
+Changed in `docs/balance/drafts/phase-15-v1.json` (paths as in dev mode):
+- `characters/zeiron/baseHp` is now **140**
+- `abilities/ability.zeiron.wrath-of-the-unchained-sky/cost/might` is now **3**
+- `abilities/ability.zeiron.wrath-of-the-unchained-sky/cost/spirit` is now **2**

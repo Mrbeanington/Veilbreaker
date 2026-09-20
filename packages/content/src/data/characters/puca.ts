@@ -57,7 +57,7 @@ export const WILD_RIDE = ability({
   cooldown: 3,
   target: ENEMY_SINGLE,
   effects: [
-    { kind: "damage", amount: 30 },
+    { kind: "damage", amount: 40 },
     { kind: "applyStatus", statusId: "status.weakness", magnitude: 10, durationTurns: 2 },
   ],
 });
@@ -70,7 +70,7 @@ export const PUCA: CharacterDefinition = characterDefinitionSchema.parse({
   displayName: "Púca",
   rarity: "RARE",
   tags: ["MYTHOLOGY", "BEAST", "CONTROLLER", "RANDOM"],
-  baseHp: 100,
+  baseHp: 110,
   abilityIds: PUCA_ABILITIES.map((a) => a.id),
   artSpecId: "puca",
 });

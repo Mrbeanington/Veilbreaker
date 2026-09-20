@@ -1,6 +1,6 @@
 # Progress
 
-**Current phase:** 15 (Balance pass, polish, accessibility, offline/PWA, security) is next. Phases 13 and 14 are complete: 120 character definitions (119 playable), all twelve Legends, and an audited art export.
+**Current phase:** none: all fifteen phases are complete. Remaining work is listed in `docs/balance/phase15-report.md` (real-device and cross-browser offline checks, an EXPERT-level balance batch, playtests, art production, cultural review).
 
 | Phase | Title | Status |
 |---|---|---|
@@ -19,7 +19,7 @@
 | 12 | Dev-mode balance tools & local analytics | ✅ done |
 | 13 | Scale the roster to 120 | ✅ done |
 | 14 | Art spec completion | ✅ done |
-| 15 | Balance pass, polish, accessibility, offline/PWA, security | ☐ |
+| 15 | Balance pass, polish, accessibility, offline/PWA, security | ✅ done (with open real-device checks) |
 
 ## Session log
 <!-- Append one entry per session: date, phase, what was done, files created/changed, deviations, open questions raised. -->
@@ -462,3 +462,6 @@ The Ranked section is now a working ladder against bots. Hidden Elo rating, 16 v
 
 ### 2026-09-20 — Phase 14 (Art spec completion and audit)
 **Audit:** `auditArt` (`packages/content/src/artAudit.ts`) over all 119 playable characters: empty fields, identity anchors, forbidden references (style imitation, franchises, living artists, artist credits), requests for text or logos, Secret silhouettes, Legend reveals, transformation art, four icons, draft status; run as a test in CI and by `pnpm art:audit`. It first found 136 errors, all fixed: 60 specs without a `colorPalette` (now derived from `paletteConcept`), Malachar's missing silhouette prompt, missing transformation prompts for The Forgotten Titan and Chef Ramble, and three risky wordings (Rusalka, The Lawyer, Moonshot Maddox). **Export:** `pnpm art:export` writes `docs/art/art-specs.json` (120 characters, 873 assets, shared negative prompt, canvas sizes, pipeline guidance, cultural-review groups by priority); a test fails if it is stale. **Guide:** `docs/art/README.md`. No image is generated (no image tool available); every spec stays `draft` pending cultural review (OQ-12). **Files:** `packages/content/src/{artAudit,artExport,artAudit.test}.ts`, `schemas/art.ts`, `data/characters/{helpers,malachar,the-forgotten-titan,chef-ramble,moonshot-maddox,rusalka,the-lawyer}.ts`, `packages/content/scripts/{art-audit,export-art-specs}.ts`, both `package.json` files, `docs/art/*`, docs. ADR-033; OQ-104, OQ-105. **Custom scripts:** none. **Recommended next step:** Phase 15, balance pass, polish, accessibility, offline and PWA, and security (`docs/phases/phase-15-balance-polish.md`).
+
+### 2026-09-20 — Phase 15 (balance, accessibility, performance, security, offline)
+**Balance:** 30,000-match baselines at two bot levels; a real resource lock found and fixed (`generation.minPerTeam = 4`); balance patch `phase-15-v1` (58 edits) simulated in two rounds and baked into source with a value-by-value verification; spread of win rates 9.4 to 7.9 points, characters under 35% from 10 to 1. **Accessibility:** axe-core over every main screen and a WCAG AA contrast audit in CI (one contrast failure fixed). **Performance:** turn-cost test and a gzip bundle budget in `pnpm ci` (279 KB initial, 125 KB worker). **Security:** fuzz tests for backups, transfer codes, replays and friend-match codes; CSP tightened and tested; source sink scans. **Offline:** hand-written service worker audited in a real Chromium (server stopped, app loaded from cache); two bugs fixed (stale-cache mixing, `Vary: Origin`); waits for old tabs; ten unit tests. **Not done:** Firefox, WebKit, real devices, Lighthouse, Playwright, single-file build. **Files:** `packages/content/src/{config/energy-rules.json,schemas/config.ts}`, `packages/engine/src/energy.ts` (+ test), 24 character files (numbers), `packages/ai/src/{simulate.ts,performance.test.ts}`, `packages/ai/scripts/diag-lockout.ts`, `packages/content/scripts/dump-tunables.ts`, `packages/persistence/src/untrusted.test.ts`, `packages/protocol/src/untrusted.test.ts`, `apps/web/{sw-template.js,index.html,scripts/generate-manifest.ts,src/{accessibility.test.tsx,security.test.ts,serviceWorker.test.ts,styles.css}}`, `scripts/{verify-bundle-budget.mjs,make-p15-draft.py,bake-p15.py,compare-balance.py,energy-trial.py,annotate-notes-p15.py}`, `docs/balance/{phase15-report.md,drafts/phase-15-v1.json,report-*p15*}`, 24 design notes, both `package.json` files, docs. ADR-034; OQ-106 to OQ-110. **Custom scripts:** none. **Recommended next step:** the release checklist in `docs/balance/phase15-report.md` (recommendations 1-5).

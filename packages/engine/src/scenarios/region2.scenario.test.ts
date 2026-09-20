@@ -376,13 +376,13 @@ describe("Oni of the Red Gate [SECRET] — a closing gate", () => {
     expect(res(turn(start, []), "oni-of-the-red-gate", "resource.red-gate")).toBe(2);
     expect(res(turn(turn(turn(turn(start, []), []), []), []), "oni-of-the-red-gate", "resource.red-gate")).toBe(0);
   });
-  it("Crimson Cleave: 70 / 50 / 30 / 10 by pips remaining after the turn's loss", () => {
+  it("Crimson Cleave: 80 / 60 / 40 / 20 by pips remaining after the turn's loss", () => {
     for (const [gate, expected] of [[4, 60], [3, 40], [2, 30], [1, 10]] as const) {
       // The Gate closes at turn start, before the Cleave: a starting value of 4 is capped at 3, so use resources directly.
       const start = hero(ONI_OF_THE_RED_GATE, { "resource.red-gate": Math.min(3, gate) });
       const s = turn(start, [act("playerA", "oni-of-the-red-gate", CRIMSON_CLEAVE.id, ["dummy"])]);
       const pips = Math.max(0, Math.min(3, gate) - 1);
-      const want = pips >= 3 ? 70 : pips >= 2 ? 50 : pips >= 1 ? 30 : 10;
+      const want = pips >= 3 ? 80 : pips >= 2 ? 60 : pips >= 1 ? 40 : 20;
       expect(500 - hp(s, "dummy")).toBe(want);
       expect(expected).toBeGreaterThan(0);
     }
