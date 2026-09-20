@@ -83,4 +83,8 @@ The source spec leaves these ambiguous. Each has a **proposed default** so work 
 | OQ-77 | (Phase 13) Transfer codes now carry only each pair table's strongest 300 entries, so a very heavy player loses their weakest pair statistics on a device transfer (the Codex reads counts of 2 or more only). Backups are complete. | Accepted; revisit if the Codex starts to use more pair data. |
 | OQ-78 | (Phase 13, region 2) The resurrection ability has no visual "fallen" targeting in the match screen beyond highlighting the dead card; and the bots rarely choose it. | Playtest and polish in Phase 15. |
 | OQ-79 | (Phase 13, region 2) "Relics" is the only required mechanic with no character. | A later region (Egypt / desert is a natural home). |
+| OQ-80 | (Phase 13, region 3) Region 3's new kits average 58% against heuristic bots, more than regions 1 and 2, while the oldest conditional kits sit at 28-33%. Balance is drifting toward "simple and efficient". | Phase 15: raise the oldest kits as well as trimming the new ones; re-run at Expert level. |
+| OQ-81 | (Phase 13, region 3) One-Eyed Likho (42%) is the low outlier; The Firebird (64%), Zmey Gorynych (62%), Marya (61%) and Domovoi (61%) are slightly above the flag. | Phase 15. |
+| OQ-82 | (Phase 13, region 3) The Firebird's rebirth sets her health (a `setHp` heal), so Anti-Heal and Healing Reduction cannot stop it. Only erasure and two lethal hits in one turn beat it. | Accepted as counterplay; review with real players. |
+| OQ-83 | (Phase 13, region 3) Relics are a resource, not objects: the Tsar's relics cannot be stolen or destroyed by the enemy. | See OQ-32 (targetable summons and objects). |
 

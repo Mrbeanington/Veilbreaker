@@ -32,8 +32,10 @@ describe("coverage matrix", () => {
     }
   });
 
-  it("honestly reports zero coverage for a mechanic no character touches yet", () => {
-    expect(charactersCoveringMechanic("relics")).toEqual([]);
+  it("credits the region 3 relic user, so no required mechanic is left uncovered", () => {
+    expect(charactersCoveringMechanic("relics").map((c) => c.id)).toContain("the-midnight-tsar");
+    const gaps = MECHANICS.filter((m) => charactersCoveringMechanic(m).length === 0);
+    expect(gaps).toEqual([]);
   });
 
   it("credits region 1 (Ancient Mediterranean) with the mechanics it was written for", () => {
@@ -71,6 +73,19 @@ describe("coverage matrix", () => {
     expect(covers("water/tides")).toEqual(expect.arrayContaining(["kappa-kiro", "umbrella-yokai"]));
     expect(covers("energy stealing")).toContain("umbrella-yokai");
     expect(covers("summons")).toContain("the-paper-monk");
+  });
+
+  it("credits region 3 (Slavic / Russian Night) with the mechanics it was written for", () => {
+    const covers = (mechanic: Parameters<typeof charactersCoveringMechanic>[0]) => charactersCoveringMechanic(mechanic).map((c) => c.id);
+    expect(covers("relics")).toEqual(["the-midnight-tsar"]);
+    expect(covers("combo sequences")).toContain("zmey-gorynych");
+    expect(covers("curses")).toEqual(expect.arrayContaining(["rusalka", "one-eyed-likho", "the-midnight-tsar"]));
+    expect(covers("randomness")).toContain("one-eyed-likho");
+    expect(covers("death")).toContain("the-firebird");
+    expect(covers("HP sacrifice")).toContain("one-eyed-likho");
+    expect(covers("anti-healing")).toContain("the-birch-witch");
+    expect(covers("energy stealing")).toContain("domovoi");
+    expect(covers("fire")).toEqual(expect.arrayContaining(["zmey-gorynych", "the-firebird"]));
   });
 
   it("generates a markdown table with a row per mechanic", () => {

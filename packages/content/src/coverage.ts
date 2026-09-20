@@ -206,7 +206,7 @@ export const MECHANIC_DETECTORS: Record<Mechanic, (character: CharacterDefinitio
   petrification: (_c, p) => appliesStatus(p, "status.petrification"),
   prophecy: (_c, p) => appliesStatus(p, "status.foretold") || mentions(p, /\b(prophec\w*|foretell|oracle)\b/),
   souls: (_c, p) => p.resourceIds.has("resource.souls"),
-  relics: () => false,
+  relics: (_c, p) => p.resourceIds.has("resource.relics") || mentions(p, /\brelics?\b/),
   tails: (_c, p) => p.resourceIds.has("resource.tails"),
   heads: (_c, p) => p.resourceIds.has("resource.heads"),
   bases: (_c, p) => p.resourceIds.has("resource.bases"),

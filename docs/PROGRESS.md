@@ -1,6 +1,6 @@
 # Progress
 
-**Current phase:** 13 in progress: regions 1 and 2 done (46 of 120 characters built). Next: region 3 (Slavic / Russian Night), one region per session.
+**Current phase:** 13 in progress: regions 1-3 done (56 of 120 characters built). Next: region 4 (Northern / Celtic), one region per session.
 
 | Phase | Title | Status |
 |---|---|---|
@@ -17,7 +17,7 @@
 | 10 | Friend matches (serverless) | ✅ done |
 | 11 | Local ranked | ✅ done |
 | 12 | Dev-mode balance tools & local analytics | ✅ done |
-| 13 | Scale the roster to 120 | 🔄 region 2 of 11 done |
+| 13 | Scale the roster to 120 | 🔄 region 3 of 11 done |
 | 14 | Art spec completion | ☐ |
 | 15 | Balance pass, polish, accessibility, offline/PWA, security | ☐ |
 
@@ -432,3 +432,6 @@ The Ranked section is now a working ladder against bots. Hidden Elo rating, 16 v
 
 ### 2026-09-19 — Phase 13, region 2 (Japanese Folklore / Ink Realm)
 **13 new characters:** Red Oni, Blue Oni, Kappa Kiro, Yuki-Onna, Tengu Swordsman, Lantern Spirit, Umbrella Yokai, The Paper Monk, Nekomata, The Mirror Samurai, Gashadokuro, and the Secrets Oni of the Red Gate and The Painted Ronin (The Nine-Tailed Trickster and Shiro already existed; region complete at 15). Data, art, design notes and 41 scenario tests each. **Engine:** `TargetRule.includeDead` (resurrection targets the fallen; engine, match screen and bots), and a dying character's own `self` onDeath trigger now fires. **Firsts:** resurrection (Nekomata), a pet (Paper Crane Familiar), ink, energy generation, ice, a decaying resource, `teamComposition`. **Checks:** coverage matrix (only relics uncovered), template overlap (no pair over 70%, closest 60%), 5,000-match simulation, 0 engine errors (notes in `docs/balance/phase13-region2-notes.md`). **QR scale fix:** transfer codes send each pair table's strongest 300 pairs only (a maxed profile no longer fit at 46 characters). Ranked meta pool regenerated (46 characters). Shared roster test kit (`regionRoster.testkit.ts`). **Files:** thirteen `packages/content/src/data/characters/*.ts`, `index.ts`, `schemas/common.ts`, `coverage.ts`, `regionRoster.testkit.ts`, `region{1,2}.roster.test.ts`, `packages/engine/src/{targeting,triggers}.ts` (+ tests, `scenarios/region2.scenario.test.ts`), `apps/web/src/screens/MatchScreen.tsx`, `packages/persistence/src/{codec,index}.ts`, `packages/ai/src/meta-pool.json`, design notes, `docs/balance/*`, docs. **Tests:** see CI (up from 673). ADR-023; OQ-75 to OQ-79. **Custom scripts:** none. **Recommended next step:** region 3, Slavic / Russian Night (12 characters; Baba Yaga and Koschei already exist).
+
+### 2026-09-20 — Phase 13, region 3 (Slavic / Russian Night)
+**10 new characters:** Leshy, Domovoi, Rusalka, Father Frost, The Birch Witch, Zmey Gorynych, The Firebird, One-Eyed Likho, Marya the Warrior, and the Secret The Midnight Tsar (Baba Yaga and Koschei already existed; region complete at 12). Data, art, design notes and 30 scenario tests each. **No engine changes**: the Firebird's rebirth reuses `onWouldDie` with `setHp`; Domovoi's shield uses a subject-targeted trigger; the Zmey's chain reuses the sequence condition. **Coverage:** the last uncovered mechanic (relics, The Midnight Tsar) is now covered, so **all 55 required mechanics have a character** and a test fails if that ever regresses. **Overlap:** Marya first overlapped Tortuga Rex by 75% and was reworked; no pair now exceeds 60%. **Simulation:** 5,000 matches, 0 engine errors, notes in `docs/balance/phase13-region3-notes.md` (Firebird 64%, Zmey 62%, Likho 42%). Ranked meta pool regenerated (56 characters). **Files:** ten `packages/content/src/data/characters/*.ts`, `index.ts`, `coverage.ts`, `coverage.test.ts`, `region3.roster.test.ts`, `packages/engine/src/scenarios/region3.scenario.test.ts`, `packages/ai/src/meta-pool.json`, design notes, `docs/balance/*`, docs. **Tests:** see CI (up from 724). ADR-024; OQ-80 to OQ-83. **Custom scripts:** none. **Recommended next step:** region 4, Northern / Celtic (11 characters; Morrigan [Legend] is not built yet either, so 11 are new).
