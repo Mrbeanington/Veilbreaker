@@ -20,7 +20,7 @@ Balance numbers are data. Changing them never means editing character source fil
 
 ## 4. Publish it
 1. Download the draft JSON.
-2. Add the file's contents to `SHIPPED_BALANCE_PATCHES` in `packages/content/src/balance.ts` (the draft id, for example `release-2`, is the balance version id; patches are cumulative against `release-1`, so a new patch contains every change since the base).
+2. Save the draft as `packages/content/src/balance-patches/<id>.json`, import it in `packages/content/src/balance.ts` and add it to `SHIPPED_BALANCE_PATCHES` (the draft id, for example `release-2`, is the balance version id; patches are cumulative against `release-1`, so a new patch contains every change since the base). Add a pinned-fingerprint test for it like the one for release-2.
 3. Add a test for anything that matters, run `pnpm ci`, and note the change in `docs/DECISIONS.md`.
 4. Old replays keep the version id they were recorded with, and `librariesForVersion` resolves them under those numbers. A replay from a version this build does not know is flagged, not silently replayed.
 5. Re-run `pnpm meta` (the ranked ladder's meta pool) after a balance change.

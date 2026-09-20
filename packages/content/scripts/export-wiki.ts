@@ -2,7 +2,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { ABILITY_LIBRARY, CHARACTER_ART_LIBRARY, CHARACTER_LIBRARY, PASSIVE_LIBRARY, STUB_CHARACTER_IDS, TRANSFORMATION_LIBRARY } from "../src/data/characters/index";
 import { STATUS_LIBRARY } from "../src/data/statuses";
-import { defaultEnergyRules } from "../src/balance";
+import { activateBalance, defaultEnergyRules } from "../src/balance";
 import { CHARACTER_LORE } from "../src/data/lore";
 import { generateAbilityTooltip } from "../src/tooltip";
 import { culturalGroupOf } from "../src/artExport";
@@ -10,6 +10,8 @@ import { culturalGroupOf } from "../src/artExport";
 // A player-facing snapshot of the roster for the wiki page: only what the game
 // itself shows a player. Secret characters are flagged so a page can hide them
 // by default. Usage: `pnpm --filter @veilbreak/content exec tsx scripts/export-wiki.ts <out.json>`.
+// The wiki shows the numbers new matches use: the newest published balance.
+const balanceVersion = activateBalance();
 const out = resolve(process.argv[2] ?? "wiki-data.json");
 
 const title = (id: string) => id.replace(/^stage\./, "").replace(/[.-]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
@@ -46,7 +48,7 @@ const statuses = Object.values(STATUS_LIBRARY)
   .map((s) => ({ id: s.id, name: s.displayName, text: s.tooltip, stack: s.stackRule, maxStacks: s.maxStacks, dispellable: s.dispellable, tick: s.tickBehavior, source: s.source }))
   .sort((a, b) => a.name.localeCompare(b.name));
 
-const data = { generated: new Date().toISOString(), energy: defaultEnergyRules, characters, statuses };
+const data = { generated: new Date().toISOString(), balanceVersion, energy: defaultEnergyRules, characters, statuses };
 mkdirSync(dirname(out), { recursive: true });
 writeFileSync(out, JSON.stringify(data));
 console.log(`Wrote ${out}: ${characters.length} characters, ${statuses.length} statuses`);

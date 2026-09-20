@@ -1,5 +1,6 @@
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { CURRENT_BALANCE_VERSION_ID, baseLibraries, librariesForVersion } from "@veilbreak/content";
 import { defaultSimDeps, runBatch } from "../src/simulate";
 import { buildMetaPool } from "../src/ladder";
 
@@ -24,7 +25,8 @@ const { report, records } = runBatch({
   seed,
   botA: "INTERMEDIATE",
   botB: "INTERMEDIATE",
-  deps: defaultSimDeps(),
+  // The ladder meta follows the newest published balance, not whatever the source files hold.
+  deps: defaultSimDeps(librariesForVersion(CURRENT_BALANCE_VERSION_ID) ?? baseLibraries()),
   onProgress: (done, total) => {
     if (Date.now() - lastPrint > 2000 || done === total) {
       lastPrint = Date.now();

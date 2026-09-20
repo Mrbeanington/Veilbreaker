@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { BASE_BALANCE_VERSION_ID, SHIPPED_BALANCE_PATCHES, baseLibraries, createDraft, listTunables, type BalanceDraft } from "@veilbreak/content";
+import { CURRENT_BALANCE_VERSION_ID, SHIPPED_BALANCE_PATCHES, baseLibraries, createDraft, listTunables, type BalanceDraft } from "@veilbreak/content";
 import { finishMatch } from "./finishMatch";
 import { createDefaultProfile } from "@veilbreak/persistence";
 import { runReplay } from "./replay";
@@ -7,8 +7,10 @@ import { playRealMatch } from "./testing";
 
 // phase-12: "old replays keep resolving under their shipped versions."
 const patches = SHIPPED_BALANCE_PATCHES as BalanceDraft[]; // the array is readonly for callers; tests publish a version temporarily
+const published = [...patches];
 afterEach(() => {
   patches.length = 0;
+  patches.push(...published);
 });
 
 const team = ["tortuga-rex", "hydra", "plague-doctor"];
@@ -26,7 +28,7 @@ describe("replays and balance versions", () => {
     const before = runReplay(replay);
     patches.push(createDraft("phase-12-test", [{ path: hydraHp.path, value: hydraHp.value + 100 }], "2026-09-19T00:00:00.000Z"));
     const after = runReplay(replay);
-    expect(replay.balanceVersionId).toBe(BASE_BALANCE_VERSION_ID);
+    expect(replay.balanceVersionId).toBe(CURRENT_BALANCE_VERSION_ID);
     expect(before.ok && after.ok).toBe(true);
     if (before.ok && after.ok) {
       expect(after.frames.map((f) => f.state)).toEqual(before.frames.map((f) => f.state));

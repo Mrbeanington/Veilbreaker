@@ -6,6 +6,7 @@ export default defineConfig({
   test: {
     // CI runners are slower than a development machine, and jsdom screens that do real crypto (friend matches) or run axe-core take several seconds there.
     testTimeout: 30000,
+    setupFiles: ["./vitest.setup.ts"],
     include: ["packages/*/src/**/*.test.ts", "apps/*/src/**/*.test.{ts,tsx}"],
     coverage: {
       provider: "v8",

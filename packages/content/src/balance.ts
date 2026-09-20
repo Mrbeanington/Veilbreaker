@@ -9,6 +9,7 @@ import { statusDefinitionSchema } from "./schemas/status";
 import { transformationSchema } from "./schemas/transformation";
 import { idSchema } from "./schemas/common";
 import energyRulesJson from "./config/energy-rules.json";
+import release2 from "./balance-patches/release-2.json";
 
 // phase-12 / spec/06 "Balance tools": a balance change is *data*, never source.
 // A BalanceDraft lists numeric edits by path; applying it to the shipped
@@ -275,7 +276,7 @@ export function applyBalanceDraft(base: BalanceLibraries, input: unknown): Apply
 // ------------------------------------------------------------- versions
 
 /** Balance versions published with the game, oldest first. Each is cumulative against the base. See docs/design/balance-workflow.md. */
-export const SHIPPED_BALANCE_PATCHES: readonly BalanceDraft[] = [];
+export const SHIPPED_BALANCE_PATCHES: readonly BalanceDraft[] = [balanceDraftSchema.parse(release2)];
 
 /** The version new matches are recorded under and the UI and engine read: the newest shipped patch, else the base. */
 export function currentBalanceVersionId(patches: readonly BalanceDraft[] = SHIPPED_BALANCE_PATCHES): string {

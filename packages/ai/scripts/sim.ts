@@ -1,13 +1,14 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { applyBalanceDraft, baseLibraries } from "@veilbreak/content";
+import { CURRENT_BALANCE_VERSION_ID, applyBalanceDraft, baseLibraries, librariesForVersion } from "@veilbreak/content";
 import { defaultSimDeps, parseBotLevel, playablePool, renderMarkdown, runBatch } from "../src/index";
 
 // Dev CLI: pnpm sim --matches 10000 --bots expert --seed 1
 //   --bots <level>            both seats use the same level
 //   --bots <levelA>:<levelB>  different levels per seat
 //   --out <dir>               where to write report files (default docs/balance)
-//   --balance <file>          simulate a balance draft exported from dev mode (validated first)
+//   --balance <file>          simulate a balance draft exported from dev mode, applied to the release-1 base (validated first)
+// Without --balance the simulation uses the newest published balance version.
 //   --label <text>            suffix for the file name, e.g. "beginner"
 // Reproducible: the same seed, bots and content always give the same report.
 
@@ -26,9 +27,9 @@ const outDir = arg("out", join(process.cwd(), "..", "..", "docs", "balance"));
 const label = arg("label", "");
 
 const balanceFile = arg("balance", "");
-let libs = baseLibraries();
+let libs = librariesForVersion(CURRENT_BALANCE_VERSION_ID) ?? baseLibraries();
 if (balanceFile) {
-  const applied = applyBalanceDraft(libs, JSON.parse(readFileSync(balanceFile, "utf8")));
+  const applied = applyBalanceDraft(baseLibraries(), JSON.parse(readFileSync(balanceFile, "utf8")));
   if (!applied.ok) {
     console.error(["Balance file rejected:", ...applied.errors.map((e) => `  - ${e}`)].join("\n"));
     process.exit(2);
@@ -45,7 +46,7 @@ const { report } = runBatch({
   botA,
   botB,
   deps: defaultSimDeps(libs),
-  pool: balanceFile ? playablePool(libs) : undefined,
+  pool: playablePool(libs),
   onProgress: (done, total) => {
     if (Date.now() - lastPrint > 2000 || done === total) {
       lastPrint = Date.now();

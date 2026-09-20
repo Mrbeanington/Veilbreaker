@@ -51,24 +51,46 @@ describe("the released base balance", () => {
   });
 });
 
+describe("the published release-2 patch", () => {
+  const patch = SHIPPED_BALANCE_PATCHES.find((p) => p.id === "release-2")!;
+  it("is shipped, is the current version, and builds on release-1", () => {
+    expect(patch).toBeDefined();
+    expect(patch.baseVersionId).toBe(BASE_BALANCE_VERSION_ID);
+    expect(CURRENT_BALANCE_VERSION_ID).toBe("release-2");
+  });
+  it("applies cleanly: every change alters a number, stays in the damage language and passes its schema", () => {
+    const applied = applyBalanceDraft(baseLibraries(), patch);
+    expect(applied.ok).toBe(true);
+    if (!applied.ok) return;
+    expect(applied.diff).toHaveLength(patch.changes.length);
+    expect(applied.warnings).toEqual([]);
+  });
+  it("has a pinned fingerprint, so an edit to the patch file is deliberate", () => {
+    expect(balanceFingerprint(librariesForVersion("release-2")!)).toBe("87a63a4e");
+  });
+  it("leaves release-1 exactly as released for old replays", () => {
+    expect(balanceFingerprint(librariesForVersion(BASE_BALANCE_VERSION_ID)!)).toBe("bd1d5c96");
+  });
+});
+
 describe("activating a published patch", () => {
   const target = listTunables(baseLibraries()).find((t) => t.category === "damage")!;
   const before = target.value;
   const energy = listTunables(baseLibraries()).find((t) => t.library === "energyRules" && t.path.endsWith("poolCap"))!;
-  const patch = createDraft("release-2", [{ path: target.path, value: before + 10 }, { path: energy.path, value: energy.value + 1 }], "2026-09-20T00:00:00.000Z");
+  const patch = createDraft("release-test", [{ path: target.path, value: before + 10 }, { path: energy.path, value: energy.value + 1 }], "2026-09-20T00:00:00.000Z");
   const patches = [patch];
 
   it("reports the newest patch as current and keeps every version resolvable", () => {
-    expect(currentBalanceVersionId(patches)).toBe("release-2");
+    expect(currentBalanceVersionId(patches)).toBe("release-test");
     const old = librariesForVersion(BASE_BALANCE_VERSION_ID, patches)!;
-    const next = librariesForVersion("release-2", patches)!;
+    const next = librariesForVersion("release-test", patches)!;
     expect(listTunables(old).find((t) => t.path === target.path)!.value).toBe(before);
     expect(listTunables(next).find((t) => t.path === target.path)!.value).toBe(before + 10);
   });
 
   it("changes the live libraries in place, while the base stays exactly as released", () => {
     const fingerprint = balanceFingerprint(baseLibraries());
-    expect(activateBalance(patches)).toBe("release-2");
+    expect(activateBalance(patches)).toBe("release-test");
     const live = listTunables({ characters: CHARACTER_LIBRARY, abilities: ABILITY_LIBRARY, passives: PASSIVE_LIBRARY, statuses: STATUS_LIBRARY, transformations: TRANSFORMATION_LIBRARY, summons: SUMMON_LIBRARY, energyRules: defaultEnergyRules });
     expect(live.find((t) => t.path === target.path)?.value).toBe(before + 10);
     expect(defaultEnergyRules.poolCap).toBe(energy.value + 1);
