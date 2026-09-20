@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { PICKABLE_CHARACTERS, TEAM_SIZE } from "../game/roster";
 import { filterCharacters, filterOptions, NO_FILTERS, type CharacterFilters } from "../game/filters";
 import { characterVisibility, isUnlocked } from "../game/knowledge";
+import { lockedHint } from "../game/quests";
 import { useProfile } from "../profile/ProfileContext";
 import { CharacterFilterBar } from "./CharacterFilterBar";
 import { Icon } from "./Icon";
@@ -89,7 +90,7 @@ export function TeamPicker({ label, picked, onChange, showPresets = true, everyt
                   <Icon name="lock" size={22} />
                 </span>
                 <span>Unknown fighter</span>
-                <span className="hp-text">Meet them in a match to unlock</span>
+                <span className="hp-text">Meet them in a match to learn more</span>
               </div>
             );
           }
@@ -98,7 +99,7 @@ export function TeamPicker({ label, picked, onChange, showPresets = true, everyt
               <div key={character.id} role="listitem" className="roster-card locked">
                 <Portrait characterId={character.id} displayName={character.displayName} size={56} />
                 <span>{character.displayName}</span>
-                <span className="hp-text">Win its trial to unlock</span>
+                <span className="hp-text">{lockedHint(character, profile)}</span>
               </div>
             );
           }

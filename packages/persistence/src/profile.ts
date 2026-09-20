@@ -9,6 +9,9 @@ import { rankedSchema } from "./ranked";
 //   v3 (Phase 11): adds the local ranked ladder (`ranked`).
 export const PROFILE_VERSION = 3;
 
+/** The unlock rules a new profile follows (see `unlocks.model`). */
+export const UNLOCK_MODEL = 2;
+
 const pairTable = z.record(z.string(), z.record(z.string(), z.number().int().min(0)));
 
 export const settingsSchema = z.object({
@@ -75,6 +78,13 @@ export const profileSchema = z.object({
     .object({
       legends: z.array(z.string()).default([]),
       namelessBossDefeated: z.boolean().default(false),
+      /** Rare and Secret fighters unlocked by finishing their quests (ADR-038). */
+      fighters: z.array(z.string()).default([]),
+      /**
+       * Which unlock rules this save follows. Saves from before quests (missing field) are 1: Core and Rare
+       * fighters were open from the start, and stay open. New profiles are 2: only the starter roster is open.
+       */
+      model: z.number().int().min(1).default(1),
     })
     .default({}),
   trialsWon: z.array(z.string()).default([]),
@@ -101,7 +111,7 @@ export const profileSchema = z.object({
 export type Profile = z.infer<typeof profileSchema>;
 
 export function createDefaultProfile(): Profile {
-  return profileSchema.parse({ version: PROFILE_VERSION });
+  return profileSchema.parse({ version: PROFILE_VERSION, unlocks: { model: UNLOCK_MODEL } });
 }
 
 // ---------------------------------------------------------------- levels

@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
 import { PICKABLE_CHARACTERS } from "../game/roster";
 import { filterCharacters, filterOptions, NO_FILTERS, type CharacterFilters } from "../game/filters";
-import { characterVisibility, unlockHint } from "../game/knowledge";
+import { characterVisibility } from "../game/knowledge";
+import { unlockHint } from "../game/quests";
 import { useProfile } from "../profile/ProfileContext";
 import { CharacterFilterBar } from "./CharacterFilterBar";
 import { CharacterSheet } from "./CharacterSheet";
@@ -74,7 +75,7 @@ export function CharacterBrowser({ mode, idPrefix }: { mode: "roster" | "codex";
             ) : (
               <article className="sheet">
                 <h3 className="sheet-name">Unknown fighter</h3>
-                <p>{unlockHint(selected)}</p>
+                <p>{unlockHint(selected, profile)}</p>
                 <p className="hp-text">Nothing else is known yet.</p>
               </article>
             ))}

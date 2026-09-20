@@ -16,7 +16,7 @@ const played = (): Profile => ({
   xp: 950,
   matchesPlayed: 12,
   favorites: ["hydra"],
-  unlocks: { legends: ["zeiron"], namelessBossDefeated: false },
+  unlocks: { legends: ["zeiron"], namelessBossDefeated: false, fighters: [], model: 2 },
   trialsWon: ["trial.zeiron"],
   discovered: { characters: ["koschei", "zeiron"], abilities: [], passives: [], transformations: [] },
   achievements: ["achievement.clean-hands"],

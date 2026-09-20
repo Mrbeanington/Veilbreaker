@@ -151,7 +151,7 @@ describe("Legend Chamber (spec/05)", () => {
     expect(screen.getByText(/0 of 12 Legends awake/)).toBeInTheDocument();
     cleanup();
 
-    const won = await seededStore((p) => ({ ...p, discovered: { ...p.discovered, characters: ["zeiron"] }, unlocks: { legends: ["zeiron"], namelessBossDefeated: false } }));
+    const won = await seededStore((p) => ({ ...p, discovered: { ...p.discovered, characters: ["zeiron"] }, unlocks: { legends: ["zeiron"], namelessBossDefeated: false, fighters: [], model: 2 } }));
     await renderApp(won);
     await user.click(screen.getByRole("button", { name: "Legends" }));
     await waitFor(() => expect(screen.getByRole("button", { name: /^Position 1: Zeiron[^(]*$/ })).toBeInTheDocument());
@@ -160,13 +160,13 @@ describe("Legend Chamber (spec/05)", () => {
 
   it("a met Legend cannot be picked for a team until its trial is won", async () => {
     const user = userEvent.setup();
-    const store = await seededStore((p) => ({ ...p, discovered: { ...p.discovered, characters: ["zeiron", "shiro"] }, unlocks: { legends: ["shiro"], namelessBossDefeated: false } }));
+    const store = await seededStore((p) => ({ ...p, discovered: { ...p.discovered, characters: ["zeiron", "shiro"] }, unlocks: { legends: ["shiro"], namelessBossDefeated: false, fighters: [], model: 2 } }));
     await renderApp(store);
     await user.click(screen.getByRole("button", { name: "Play" }));
     await user.click(await screen.findByRole("button", { name: /Vs\. AI/ }));
     expect(await screen.findByRole("button", { name: /^Shiro/ })).toBeEnabled(); // unlocked: pickable
     expect(screen.queryByRole("button", { name: /Zeiron/ })).not.toBeInTheDocument(); // met but locked: not a button
-    expect(screen.getByText(/Win its trial to unlock/)).toBeInTheDocument();
+    expect(screen.getByText(/Reach level 4, finish its quest, then win its trial/)).toBeInTheDocument();
   });
 
   it("the Nameless One's boss encounter stays sealed in the trials list", async () => {
@@ -234,7 +234,7 @@ describe("favorites", () => {
 describe("progress survives a reload", () => {
   it("what one session saves, the next session shows", async () => {
     const user = userEvent.setup();
-    const store = await seededStore((p) => ({ ...p, xp: 350, matchesPlayed: 4, unlocks: { legends: ["shiro"], namelessBossDefeated: false } }));
+    const store = await seededStore((p) => ({ ...p, xp: 350, matchesPlayed: 4, unlocks: { legends: ["shiro"], namelessBossDefeated: false, fighters: [], model: 2 } }));
     await renderApp(store);
     await user.click(screen.getByRole("button", { name: "Profile" }));
     expect(await screen.findByText("Level 3", { selector: "strong" })).toBeInTheDocument();
@@ -262,7 +262,7 @@ describe("progress survives a reload", () => {
 describe("device transfer between two devices", () => {
   it("a code made on device A is confirmed and applied on device B, keeping B's old save as a backup", async () => {
     const user = userEvent.setup();
-    const deviceA: Profile = { ...createDefaultProfile(), install: { firstLaunchHandled: true, installed: false, asks: 0 }, xp: 620, matchesPlayed: 12, lastPlayedAt: 1_700_000_000_000, unlocks: { legends: ["zeiron", "shiro"], namelessBossDefeated: false }, achievements: ["achievement.by-a-thread"] };
+    const deviceA: Profile = { ...createDefaultProfile(), install: { firstLaunchHandled: true, installed: false, asks: 0 }, xp: 620, matchesPlayed: 12, lastPlayedAt: 1_700_000_000_000, unlocks: { legends: ["zeiron", "shiro"], namelessBossDefeated: false, fighters: [], model: 2 }, achievements: ["achievement.by-a-thread"] };
     const code = encodeTransfer(deviceA, buildIdTable());
 
     const storeB = await seededStore((p) => ({ ...p, xp: 30, matchesPlayed: 1 }));

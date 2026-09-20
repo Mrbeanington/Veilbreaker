@@ -160,7 +160,8 @@ describe("migrations (every path)", () => {
     expect(p.beat.hydra?.shiro).toBe(2);
     expect(p.matchesPlayed).toBe(7);
     expect(p.xp).toBe(0);
-    expect(p.unlocks).toEqual({ legends: [], namelessBossDefeated: false });
+    // A save from before quests keeps the old rules (model 1): Core and Rare fighters stay open.
+    expect(p.unlocks).toEqual({ legends: [], namelessBossDefeated: false, fighters: [], model: 1 });
     expect(p.history).toEqual([]);
     expect(p.install.firstLaunchHandled).toBe(false);
   });
@@ -197,7 +198,7 @@ describe("account level", () => {
   });
 
   it("summarises a profile for the overwrite confirmation", () => {
-    const s = summarizeProfile({ ...withXp(300), matchesPlayed: 9, lastPlayedAt: 5, unlocks: { legends: ["zeiron", "shiro"], namelessBossDefeated: false } });
+    const s = summarizeProfile({ ...withXp(300), matchesPlayed: 9, lastPlayedAt: 5, unlocks: { legends: ["zeiron", "shiro"], namelessBossDefeated: false, fighters: [], model: 2 } });
     expect(s).toEqual({ level: 3, legends: 2, matches: 9, lastPlayedAt: 5 });
   });
 });

@@ -152,7 +152,7 @@ function explain(problem: Problem): string {
 
 function HostSetup({ onCancel, onCreated }: { onCancel: () => void; onCreated: (matchId: string) => void }) {
   const { store } = useProfile();
-  const [rule, setRule] = useState<"own" | "all">("all");
+  const [rule, setRule] = useState<"own" | "all">("own");
   const [team, setTeam] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
 

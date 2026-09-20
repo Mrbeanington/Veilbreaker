@@ -153,7 +153,7 @@ describe("playing a ranked match", () => {
   it("at Diamond both sides bring four: pick four, then ban one of the bot's", async () => {
     const user = userEvent.setup();
     // Baba Yaga is a discoverable fighter, so she has to have been met before she can be picked.
-    const store = await mount(placedAt(1300), (p) => ({ ...p, discovered: { ...p.discovered, characters: ["baba-yaga"] } }));
+    const store = await mount(placedAt(1300), (p) => ({ ...p, discovered: { ...p.discovered, characters: ["baba-yaga"] }, unlocks: { ...p.unlocks, fighters: ["baba-yaga"] } }));
     await user.click(await screen.findByRole("button", { name: "Play a ranked match" }));
     expect(await screen.findByRole("heading", { name: "Choose your four" })).toBeInTheDocument();
     expect(screen.getByText(/Expert bot/)).toBeInTheDocument();

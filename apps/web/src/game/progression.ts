@@ -2,6 +2,9 @@ import { ABILITY_LIBRARY, CHARACTER_LIBRARY, PASSIVE_LIBRARY, PLAYABLE_CHARACTER
 import { levelForXp, type Profile } from "@veilbreak/persistence";
 import { applyMatchToProfile, type MatchSummary } from "./discovery";
 import { originOf, rolesOf } from "./knowledge";
+import { LEGEND_ORDER, NAMELESS_ID, QUESTS, QUEST_MISSIONS, legendTrialOpen } from "./quests";
+
+export { LEGEND_ORDER, NAMELESS_ID };
 
 // spec/06 "Progression": account level, mastery, missions, faction challenges,
 // secret achievements, Legend trials. Nothing is purchasable. Every rule here
@@ -22,23 +25,6 @@ const losersOf = (m: MatchSummary): readonly string[] => (m.winnerPlayerId === "
 const isLegend = (id: string): boolean => CHARACTER_LIBRARY[id]?.rarity === "LEGENDARY";
 
 // ------------------------------------------------------------------ Legends
-
-/** spec/03 "The Twelve Legends", in chamber order. All twelve are built. */
-export const LEGEND_ORDER = [
-  "zeiron",
-  "shiro",
-  "morrigan",
-  "aurelia",
-  "madame-fortuna",
-  "behemoth",
-  "minotaur-king",
-  "black-knight",
-  "orpheon",
-  "calypsa",
-  "emperor-zero",
-  "the-nameless-one",
-] as const;
-export const NAMELESS_ID = "the-nameless-one";
 
 export interface LegendTrial {
   id: string;
@@ -74,7 +60,7 @@ export function namelessUnlocked(profile: Profile): boolean {
 }
 
 export function trialAvailable(profile: Profile, trial: LegendTrial): boolean {
-  return trial.legendId === NAMELESS_ID ? namelessGateOpen(profile) : true;
+  return trial.legendId === NAMELESS_ID ? namelessGateOpen(profile) : legendTrialOpen(profile, trial.legendId);
 }
 
 export function legendUnlocked(profile: Profile, legendId: string): boolean {
@@ -92,6 +78,10 @@ export interface MissionDef {
   /** New progress value, given the previous one, the updated profile and the match. */
   advance: (previous: number, profile: Profile, match: ProgressMatch) => number;
   faction?: string;
+  /** Unlock quest step (ADR-038): the fighter that finishing every step of the quest unlocks. */
+  unlocks?: string;
+  /** When set, the mission only counts while this is true for the profile as it was before the match. */
+  available?: (profile: Profile) => boolean;
 }
 
 const won = (m: MatchSummary): boolean => m.winnerPlayerId !== null;
@@ -152,7 +142,7 @@ function factionMissions(): MissionDef[] {
   return out;
 }
 
-export const MISSIONS: MissionDef[] = [...BASE_MISSIONS, ...factionMissions()];
+export const MISSIONS: MissionDef[] = [...BASE_MISSIONS, ...factionMissions(), ...QUEST_MISSIONS];
 
 // ------------------------------------------------------------------ secret achievements
 
@@ -243,6 +233,8 @@ export interface ProgressReport {
   revealed: string[];
   achievements: string[];
   missionsCompleted: string[];
+  /** Rare and Secret fighters whose quest was finished by this match. */
+  fightersUnlocked: string[];
   legendUnlocked?: string;
 }
 
@@ -268,7 +260,7 @@ export function applyMatchProgress(profile: Profile, match: ProgressMatch, repla
     const legends = next.unlocks.legends.includes(trial.legendId) ? next.unlocks.legends : [...next.unlocks.legends, trial.legendId];
     next = {
       ...next,
-      unlocks: { legends, namelessBossDefeated: next.unlocks.namelessBossDefeated || trial.legendId === NAMELESS_ID },
+      unlocks: { ...next.unlocks, legends, namelessBossDefeated: next.unlocks.namelessBossDefeated || trial.legendId === NAMELESS_ID },
       trialsWon: next.trialsWon.includes(trial.id) ? next.trialsWon : [...next.trialsWon, trial.id],
     };
     if (!profile.unlocks.legends.includes(trial.legendId)) {
@@ -285,6 +277,7 @@ export function applyMatchProgress(profile: Profile, match: ProgressMatch, repla
   const missionsCompleted: string[] = [];
   for (const mission of MISSIONS) {
     if (completed.includes(mission.id)) continue;
+    if (mission.available && !mission.available(profile)) continue;
     const value = mission.advance(progress[mission.id] ?? 0, next, scoring);
     progress[mission.id] = Math.min(mission.goal, value);
     if (progress[mission.id]! >= mission.goal) {
@@ -294,6 +287,14 @@ export function applyMatchProgress(profile: Profile, match: ProgressMatch, repla
     }
   }
   next = { ...next, missions: { progress, completed } };
+
+  // A finished quest unlocks its fighter (Legends still need their trial).
+  const fightersUnlocked: string[] = [];
+  for (const quest of Object.values(QUESTS)) {
+    if (quest.kind === "legend" || next.unlocks.fighters.includes(quest.characterId)) continue;
+    if (quest.steps.every((step) => completed.includes(step.id))) fightersUnlocked.push(quest.characterId);
+  }
+  if (fightersUnlocked.length > 0) next = { ...next, unlocks: { ...next.unlocks, fighters: [...next.unlocks.fighters, ...fightersUnlocked] } };
 
   // Secret achievements.
   const achievements: string[] = [];
@@ -327,6 +328,7 @@ export function applyMatchProgress(profile: Profile, match: ProgressMatch, repla
       revealed,
       achievements,
       missionsCompleted,
+      fightersUnlocked,
       legendUnlocked,
     },
   };

@@ -112,6 +112,8 @@ describe("Friend Match screens", () => {
     // --- host creates the match
     mount(hostStore);
     await user.click(await screen.findByRole("button", { name: /Start a match/ }));
+    // Own unlocks is the default now; this test plays with everything open so it can use Rare fighters.
+    await user.click(await screen.findByLabelText(/Everything unlocked/));
     for (const name of [/^Tortuga Rex/, /^Hydra/, /^The Plague Doctor/]) await user.click(await screen.findByRole("button", { name: name }));
     await user.click(screen.getByRole("button", { name: "Create invite" }));
     const invite = ((await screen.findByLabelText("Your code")) as HTMLTextAreaElement).value;

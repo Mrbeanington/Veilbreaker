@@ -57,7 +57,7 @@ describe("when the install pitch appears", () => {
 
   it("re-asks gently after the first Legend unlock, but never nags", () => {
     const noLegend = handled();
-    const withLegend = handled({ unlocks: { legends: ["zeiron"], namelessBossDefeated: false } });
+    const withLegend = handled({ unlocks: { legends: ["zeiron"], namelessBossDefeated: false, fighters: [], model: 2 } });
     expect(installPlan(noLegend, env(), "chromium", now)).toBe("none");
     expect(installPlan(withLegend, env(), "chromium", now)).toBe("banner");
     const justAsked = handled({ unlocks: withLegend.unlocks, install: { firstLaunchHandled: true, installed: false, asks: 1, lastAskAt: now - 1000 } });
@@ -69,7 +69,7 @@ describe("when the install pitch appears", () => {
   });
 
   it("never pitches installing on Firefox desktop after the first screen (backups are emphasised instead)", () => {
-    const p = handled({ unlocks: { legends: ["zeiron"], namelessBossDefeated: false } });
+    const p = handled({ unlocks: { legends: ["zeiron"], namelessBossDefeated: false, fighters: [], model: 2 } });
     expect(installPlan(p, env(), "firefox-desktop", now)).toBe("none");
   });
 
@@ -168,7 +168,7 @@ describe("a maxed-out profile with the real game content fits one QR code", () =
       wonWith: pairs(),
       matchesPlayed: 99999,
       xp: 9_999_999,
-      unlocks: { legends: [...LEGEND_ORDER], namelessBossDefeated: true },
+      unlocks: { legends: [...LEGEND_ORDER], namelessBossDefeated: true, fighters: [], model: 2 },
       trialsWon: LEGEND_TRIALS.map((t) => t.id),
       missions: { progress: Object.fromEntries(MISSIONS.map((m) => [m.id, m.goal])), completed: MISSIONS.map((m) => m.id) },
       achievements: ACHIEVEMENTS.map((a) => a.id),
@@ -186,7 +186,7 @@ describe("a maxed-out profile with the real game content fits one QR code", () =
     expect(decoded.ok).toBe(true);
     if (!decoded.ok) return;
     expect(decoded.profile.unlocks).toEqual(maxed().unlocks);
-    expect(decoded.profile.missions.completed).toEqual(maxed().missions.completed);
+    expect([...decoded.profile.missions.completed].sort()).toEqual([...maxed().missions.completed].sort());
     expect(decoded.profile.achievements).toEqual(maxed().achievements);
     expect(decoded.profile.xp).toBe(9_999_999);
   });

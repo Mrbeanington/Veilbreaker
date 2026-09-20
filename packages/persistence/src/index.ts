@@ -7,6 +7,7 @@ export {
   MAX_HISTORY,
   MIGRATIONS,
   PROFILE_VERSION,
+  UNLOCK_MODEL,
   createDefaultProfile,
   historyEntrySchema,
   levelForXp,

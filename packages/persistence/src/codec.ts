@@ -200,9 +200,10 @@ function encodeTransferWith(profile: Profile, idTable: readonly string[], pairLi
     d: [profile.discovered.characters, profile.discovered.abilities, profile.discovered.passives, profile.discovered.transformations].map((ids) => packIds(ids, idTable, toRef)),
     b: packPairs(profile.beat, toRef, pairLimit),
     w: packPairs(profile.wonWith, toRef, pairLimit),
-    u: [list(profile.unlocks.legends), profile.unlocks.namelessBossDefeated ? 1 : 0],
+    u: [list(profile.unlocks.legends), profile.unlocks.namelessBossDefeated ? 1 : 0, profile.unlocks.model, packIds(profile.unlocks.fighters, idTable, toRef)],
     tw: list(profile.trialsWon),
-    ms: [Object.entries(profile.missions.progress).map(([id, n]) => [toRef(id), n]), list(profile.missions.completed)],
+    // A finished mission's counter is implied by it being finished, so only unfinished counters travel.
+    ms: [Object.entries(profile.missions.progress).filter(([id]) => !profile.missions.completed.includes(id)).map(([id, n]) => [toRef(id), n]), packIds(profile.missions.completed, idTable, toRef)],
     ac: list(profile.achievements),
     i: [profile.install.installed ? 1 : 0, profile.install.asks, profile.install.firstLaunchHandled ? 1 : 0],
     // Ranked: the standing and personal bests travel; the recent list, usage table and past seasons stay in backups (like history).
@@ -310,7 +311,7 @@ export function decodeTransfer(code: string, idTable: readonly string[]): Transf
       discovered: { characters: ids(d[0]), abilities: ids(d[1]), passives: ids(d[2]), transformations: ids(d[3]) },
       beat: pairs(p.b),
       wonWith: pairs(p.w),
-      unlocks: { legends: ids(u[0]), namelessBossDefeated: u[1] === 1 },
+      unlocks: { legends: ids(u[0]), namelessBossDefeated: u[1] === 1, model: typeof u[2] === "number" ? u[2] : 1, fighters: ids(u[3]) },
       trialsWon: ids(p.tw),
       missions: { progress: counts(ms[0]), completed: ids(ms[1]) },
       achievements: ids(p.ac),

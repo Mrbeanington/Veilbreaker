@@ -3,6 +3,7 @@ import { ScreenBar } from "../components/ScreenBar";
 import { Icon } from "../components/Icon";
 import { isDiscovered } from "../game/knowledge";
 import { LEGEND_TRIALS, legendUnlocked, trialAvailable, type LegendTrial } from "../game/progression";
+import { lockedHint } from "../game/quests";
 import { useProfile } from "../profile/ProfileContext";
 
 interface TrialsScreenProps {
@@ -28,12 +29,12 @@ export function TrialsScreen({ onStart, onBack }: TrialsScreenProps) {
           const unlocked = legendUnlocked(profile, trial.legendId) || profile.trialsWon.includes(trial.id);
           const known = isDiscovered(profile, trial.legendId) || profile.settings.showAllCharacters;
           const isBoss = trial.legendId === "the-nameless-one";
-          const title = !available ? "???" : known && legend ? legend.displayName : "A hidden Legend";
+          const title = isBoss && !available ? "???" : known && legend ? legend.displayName : "A hidden Legend";
           return (
             <div key={trial.id} className={`mode-card${available ? "" : " unavailable"}`}>
               <Icon name={unlocked ? "legends" : available ? "sword" : "lock"} size={22} />
               <strong>{isBoss && available ? "Boss encounter" : "Trial"}: {title}</strong>
-              <span>{unlocked ? "Won. This Legend is unlocked." : available ? "Three fighters against a Legend and two allies." : "Sealed until every other Legend is unlocked."}</span>
+              <span>{unlocked ? "Won. This Legend is unlocked." : available ? "Three fighters against a Legend and two allies." : isBoss || !legend ? "Sealed until every other Legend is unlocked." : lockedHint(legend, profile)}</span>
               {available && (
                 <button type="button" className="btn primary" onClick={() => onStart(trial)}>
                   {unlocked ? "Play again" : "Begin trial"}

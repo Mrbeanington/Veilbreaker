@@ -87,22 +87,26 @@ export function RulesPage() {
         <p className="hp-text">A stun lands before standard attacks, so a stunned fighter's move usually never happens.</p>
       </section>
       <section className="panel">
-        <h3>Rarity</h3>
+        <h3>Rarity and unlocking</h3>
         <dl className="codex-list">
           <div>
-            <dt>Core and Rare</dt>
-            <dd>Available from the start.</dd>
+            <dt>Core</dt>
+            <dd>Every Core fighter, plus the Moon Rabbit, is yours from the start.</dd>
+          </div>
+          <div>
+            <dt>Rare</dt>
+            <dd>Unlocked by a short quest of one to three steps, such as winning with a particular fighter or role. Simpler fighters open first.</dd>
           </div>
           <div>
             <dt>Secret</dt>
-            <dd>Hidden until you face one in a match. Then it joins your Codex.</dd>
+            <dd>Meeting one in a match reveals it and shows its quest. Finish the quest to unlock it.</dd>
           </div>
           <div>
             <dt>Legend</dt>
-            <dd>Meet one in battle to learn its name, then win its trial to unlock it.</dd>
+            <dd>Reach its level and finish its quest, then win its trial in the Legend trials.</dd>
           </div>
         </dl>
-        <p className="hp-text">Rarity is not power. A Core fighter can counter a Legend, and every Legend and rule-breaker has counterplay.</p>
+        <p className="hp-text">Quests are listed under Missions. Rarity is not power: a Core fighter can counter a Legend, and every Legend and rule-breaker has counterplay.</p>
       </section>
       <section className="panel">
         <h3>Roles</h3>

@@ -196,7 +196,9 @@ describe("Legend unlocks and the Nameless One gate", () => {
     match({ mode: "trial", trialId: trial(legendId).id, teamBIds: [...trial(legendId).enemyTeam], ...over });
 
   it("winning a Legend trial unlocks that Legend and reports it", () => {
-    const r = applyMatchProgress(fresh(), trialMatch("zeiron"), undefined, 1);
+    // An older save (unlock model 1) has every trial open; the new gating has its own tests in quests.test.ts.
+    const older: Profile = { ...fresh(), unlocks: { ...fresh().unlocks, model: 1 } };
+    const r = applyMatchProgress(older, trialMatch("zeiron"), undefined, 1);
     expect(r.profile.unlocks.legends).toContain("zeiron");
     expect(r.profile.trialsWon).toContain("trial.zeiron");
     expect(r.report.legendUnlocked).toBe("zeiron");
@@ -221,7 +223,7 @@ describe("Legend unlocks and the Nameless One gate", () => {
     const met = { ...fresh(), discovered: { ...fresh().discovered, characters: ["zeiron"] } };
     expect(characterVisibility(zeiron, met)).toBe("full");
     expect(isPickable(zeiron, met)).toBe(false);
-    expect(isPickable(zeiron, { ...met, unlocks: { legends: ["zeiron"], namelessBossDefeated: false } })).toBe(true);
+    expect(isPickable(zeiron, { ...met, unlocks: { legends: ["zeiron"], namelessBossDefeated: false, fighters: [], model: 2 } })).toBe(true);
   });
 
   it("all six built Legends have a trial, and trial teams start with their Legend", () => {
@@ -234,7 +236,7 @@ describe("Legend unlocks and the Nameless One gate", () => {
 
   describe("The Nameless One gate (11 Legends + boss)", () => {
     const others = LEGEND_ORDER.filter((id) => id !== NAMELESS_ID);
-    const withLegends = (legends: string[], namelessBossDefeated = false): Profile => ({ ...fresh(), unlocks: { legends, namelessBossDefeated } });
+    const withLegends = (legends: string[], namelessBossDefeated = false): Profile => ({ ...fresh(), unlocks: { legends, namelessBossDefeated, fighters: [], model: 2 } });
 
     it("the boss encounter is sealed until all eleven other Legends are unlocked", () => {
       expect(others).toHaveLength(11);

@@ -98,7 +98,8 @@ describe("device transfer code", () => {
     if (!decoded.ok) return;
     const p = decoded.profile;
     expect(p.xp).toBe(profile.xp);
-    expect(p.unlocks).toEqual(profile.unlocks);
+    const sortedUnlocks = (u: typeof p.unlocks) => ({ ...u, fighters: [...u.fighters].sort() });
+    expect(sortedUnlocks(p.unlocks)).toEqual(sortedUnlocks(profile.unlocks));
     expect(p.achievements).toEqual(profile.achievements);
     expect(p.missions).toEqual(profile.missions);
     // Long lists travel as bitsets over the id table, so their order is the table's (a Codex is a set).

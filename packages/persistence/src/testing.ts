@@ -39,7 +39,7 @@ export function maxedProfile(): Profile {
     wonWith: pairs(),
     matchesPlayed: 99999,
     xp: 987654,
-    unlocks: { legends, namelessBossDefeated: true },
+    unlocks: { legends, namelessBossDefeated: true, fighters: characters.slice(0, 40), model: 2 },
     trialsWon: legends.map((l) => `trial.${l}`),
     missions: {
       progress: Object.fromEntries(Array.from({ length: 30 }, (_, i) => [`mission.progress-${i}`, 500])),

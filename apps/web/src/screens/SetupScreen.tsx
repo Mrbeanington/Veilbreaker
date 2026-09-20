@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { ScreenBar } from "../components/ScreenBar";
 import { TeamPicker } from "../components/TeamPicker";
+import { opponentPool } from "../game/quests";
+import { useProfile } from "../profile/ProfileContext";
 import { PICKABLE_CHARACTERS, TEAM_SIZE } from "../game/roster";
 
 interface SetupScreenProps {
@@ -19,6 +21,7 @@ function randomTeam(exclude: string[], pool: { id: string }[]): string[] {
 }
 
 export function SetupScreen({ mode, opponentIds, title, onReady, onBack }: SetupScreenProps) {
+  const { profile } = useProfile();
   const [teamA, setTeamA] = useState<string[]>([]);
   const [teamB, setTeamB] = useState<string[]>([]);
 
@@ -26,7 +29,7 @@ export function SetupScreen({ mode, opponentIds, title, onReady, onBack }: Setup
   const teamBReady = mode === "bot" || opponentIds !== undefined || teamB.length === TEAM_SIZE;
 
   function handleContinue() {
-    onReady(teamA, opponentIds ? [...opponentIds] : mode === "bot" ? randomTeam(teamA, PICKABLE_CHARACTERS) : teamB);
+    onReady(teamA, opponentIds ? [...opponentIds] : mode === "bot" ? randomTeam(teamA, opponentPool(profile, PICKABLE_CHARACTERS)) : teamB);
   }
 
   return (

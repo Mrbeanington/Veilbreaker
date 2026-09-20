@@ -11,8 +11,8 @@ import {
   passiveOf,
   passiveRevealed,
   rolesOf,
-  unlockHint,
 } from "../game/knowledge";
+import { unlockHint } from "../game/quests";
 import { Icon, type IconName } from "./Icon";
 import { Portrait } from "./Portrait";
 
@@ -155,7 +155,7 @@ export function CharacterSheet({ character, profile, mode, isFavorite, onToggleF
           <p>{CHARACTER_LORE[character.id] ?? (art?.visualTheme ? capitalize(art.visualTheme) + "." : "Nothing is known.")}</p>
 
           <h4 className="sheet-section">How to unlock</h4>
-          <p>{unlockHint(character)}</p>
+          <p>{unlockHint(character, profile)}</p>
         </>
       )}
     </article>

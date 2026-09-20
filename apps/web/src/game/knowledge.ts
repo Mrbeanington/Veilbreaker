@@ -27,10 +27,22 @@ export function characterVisibility(character: CharacterDefinition, profile: Pro
   return "full";
 }
 
-/** Legends are accomplishments (spec/06): meeting one reveals it, but only winning its trial unlocks it for your team. */
+/** The roster a new account starts with: every Core fighter, plus a healer so no team lacks one (ADR-038). */
+export const EXTRA_STARTERS: readonly string[] = ["the-moon-rabbit"];
+export function isStarter(character: CharacterDefinition): boolean {
+  return character.rarity === "CORE" || EXTRA_STARTERS.includes(character.id);
+}
+
+/**
+ * Meeting a fighter only reveals it. Owning it is earned (ADR-038): the starters are open, a Legend needs its
+ * trial, and every other fighter needs its quest. Saves from before quests (unlock model 1) keep Core, Rare
+ * and Secret fighters open, as they always were.
+ */
 export function isUnlocked(character: CharacterDefinition, profile: Profile): boolean {
-  if (character.rarity !== "LEGENDARY") return true;
-  return profile.settings.showAllCharacters || profile.unlocks.legends.includes(character.id);
+  if (profile.settings.showAllCharacters) return true;
+  if (character.rarity === "LEGENDARY") return profile.unlocks.legends.includes(character.id);
+  if (profile.unlocks.model < 2 || isStarter(character)) return true;
+  return profile.unlocks.fighters.includes(character.id);
 }
 
 /** Only revealed, unlocked characters may be picked for a team. */
@@ -94,17 +106,6 @@ const ROLE_TAGS = new Set([
 
 export function rolesOf(character: CharacterDefinition): string[] {
   return character.tags.filter((t) => ROLE_TAGS.has(t));
-}
-
-export function unlockHint(character: CharacterDefinition): string {
-  switch (character.rarity) {
-    case "LEGENDARY":
-      return "A Legend. Meet one in battle to learn its name, then win its trial to unlock it.";
-    case "SECRET":
-      return "A secret fighter. Face it in a match to uncover it.";
-    default:
-      return "Available from the start.";
-  }
 }
 
 /** Foes who have beaten `characterId` at least twice in the player's own matches. */
