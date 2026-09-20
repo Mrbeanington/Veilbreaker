@@ -101,7 +101,9 @@ describe("device transfer code", () => {
     expect(p.unlocks).toEqual(profile.unlocks);
     expect(p.achievements).toEqual(profile.achievements);
     expect(p.missions).toEqual(profile.missions);
-    expect(p.discovered).toEqual(profile.discovered);
+    // Long lists travel as bitsets over the id table, so their order is the table's (a Codex is a set).
+    const sorted = (d: typeof p.discovered) => ({ characters: [...d.characters].sort(), abilities: [...d.abilities].sort(), passives: [...d.passives].sort(), transformations: [...d.transformations].sort() });
+    expect(sorted(p.discovered)).toEqual(sorted(profile.discovered));
     expect(p.favorites).toEqual(profile.favorites);
     expect(p.presets).toEqual(profile.presets);
     expect(p.settings).toEqual(profile.settings);

@@ -134,6 +134,15 @@ describe("coverage matrix", () => {
     expect(covers("summons")).toContain("the-marionettist");
   });
 
+  it("credits region 8 (Animals / Weird Characters) with the mechanics it was written for", () => {
+    const covers = (mechanic: Parameters<typeof charactersCoveringMechanic>[0]) => charactersCoveringMechanic(mechanic).map((c) => c.id);
+    expect(covers("target manipulation")).toContain("minotaur-king");
+    expect(covers("cooldown manipulation")).toEqual(expect.arrayContaining(["professor-octopus", "general-goose"]));
+    expect(covers("stuns")).toEqual(expect.arrayContaining(["minotaur-king", "sir-hopsalot"]));
+    expect(covers("poison")).toContain("king-croak");
+    expect(covers("counterattacks")).toContain("sir-hopsalot");
+  });
+
   it("generates a markdown table with a row per mechanic", () => {
     const markdown = generateCoverageMarkdown();
     expect(markdown).toContain("# Mechanical Coverage Matrix");

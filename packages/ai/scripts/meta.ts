@@ -38,7 +38,7 @@ const winRates = Object.fromEntries(report.characters.map((c) => [c.id, c.winRat
 // With n characters there are n(n-1)(n-2)/6 trios; ask for about 60% of the average games per trio.
 const n = report.characters.length;
 const trios = (n * (n - 1) * (n - 2)) / 6;
-const minGames = Math.max(6, Math.round(((matches * 2) / trios) * 0.6));
+const minGames = Math.max(3, Math.round(((matches * 2) / trios) * 0.6));
 const pool = buildMetaPool(records, winRates, { matches, seed, bots: "INTERMEDIATE", date: new Date().toISOString().slice(0, 10) }, minGames);
 writeFileSync(out, `${JSON.stringify(pool, null, 2)}\n`);
 console.log(`Wrote ${out}: ${Object.keys(winRates).length} characters, ${pool.topTeams.length} top teams, ${((Date.now() - started) / 1000).toFixed(1)}s, ${report.errors.length} engine errors`);

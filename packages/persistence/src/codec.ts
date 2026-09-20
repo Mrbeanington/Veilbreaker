@@ -157,6 +157,23 @@ function packPairs(table: Profile["beat"], toRef: (id: string) => Ref, limit: nu
  * code: the pair limit halves until the code is small enough (the rest of the
  * payload is small and fixed). Backups always carry everything.
  */
+/**
+ * A long id list (a fully discovered Codex is hundreds of ids) is sent as a
+ * bitset over the shared id table instead: one bit per id. Order is the table's
+ * order, which is how the game builds these lists; a list with an id outside the
+ * table is sent as a plain array so nothing is lost.
+ */
+function packIds(ids: readonly string[], idTable: readonly string[], toRef: (id: string) => Ref): Ref[] | string {
+  const index = new Map(idTable.map((id, i) => [id, i]));
+  if (ids.length < 24 || new Set(ids).size !== ids.length || ids.some((id) => !index.has(id))) return ids.map(toRef);
+  const bytes = new Uint8Array(Math.ceil(idTable.length / 8));
+  for (const id of ids) {
+    const i = index.get(id) as number;
+    bytes[i >> 3] = (bytes[i >> 3] ?? 0) | (1 << (i & 7));
+  }
+  return toBase64Url(bytes);
+}
+
 export function encodeTransfer(profile: Profile, idTable: readonly string[]): string {
   let limit = MAX_TRANSFER_PAIRS;
   for (;;) {
@@ -180,7 +197,7 @@ function encodeTransferWith(profile: Profile, idTable: readonly string[], pairLi
     r: list(profile.recent),
     p: Object.entries(profile.played).map(([id, n]) => [toRef(id), n]),
     t: profile.presets.map((p) => [p.id, p.name, list(p.characterIds)]),
-    d: [list(profile.discovered.characters), list(profile.discovered.abilities), list(profile.discovered.passives), list(profile.discovered.transformations)],
+    d: [profile.discovered.characters, profile.discovered.abilities, profile.discovered.passives, profile.discovered.transformations].map((ids) => packIds(ids, idTable, toRef)),
     b: packPairs(profile.beat, toRef, pairLimit),
     w: packPairs(profile.wonWith, toRef, pairLimit),
     u: [list(profile.unlocks.legends), profile.unlocks.namelessBossDefeated ? 1 : 0],
@@ -225,7 +242,19 @@ export function decodeTransfer(code: string, idTable: readonly string[]): Transf
   // Positions only mean the same thing if both devices built the same id table.
   if (p.k !== checksumOf(idTable.join("|"))) return { ok: false, error: "That code was made by a different version of the game. Update both devices and try again." };
   const { fromRef } = refs(idTable);
-  const ids = (v: unknown): string[] => (isArr(v) ? v.map(fromRef).filter((x): x is string => x !== undefined) : []);
+  const ids = (v: unknown): string[] => {
+    if (typeof v === "string") {
+      // A bitset over the id table (see packIds).
+      const bytes = fromBase64Url(v);
+      if (!bytes) return [];
+      const out: string[] = [];
+      idTable.forEach((id, i) => {
+        if (((bytes[i >> 3] ?? 0) >> (i & 7)) & 1) out.push(id);
+      });
+      return out;
+    }
+    return isArr(v) ? v.map(fromRef).filter((x): x is string => x !== undefined) : [];
+  };
   const counts = (v: unknown): Record<string, number> => {
     const out: Record<string, number> = {};
     if (isArr(v)) for (const e of v) if (isArr(e)) { const id = fromRef(e[0]); if (id !== undefined) out[id] = Number(e[1]); }
