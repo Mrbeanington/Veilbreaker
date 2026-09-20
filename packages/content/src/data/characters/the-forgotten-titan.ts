@@ -158,6 +158,7 @@ const built = buildArt({
     "a giant fist rising through broken chains, for Titan's Wrath",
   ],
   secretSilhouetteScene: "a mountain ridge shaped like a sleeping giant, no other detail",
+  transformationScenes: ["the Titan awake: the mountain-like body rising to its full height, moss and stone sliding away, eyes open for the first time and the ground splitting beneath it"],
 });
 export const THE_FORGOTTEN_TITAN_VISUAL_BIBLE = built.bible;
 export const THE_FORGOTTEN_TITAN_ART = built.art;

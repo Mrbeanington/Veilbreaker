@@ -1,6 +1,6 @@
 # Progress
 
-**Current phase:** 14 (Art spec completion) is next. Phase 13 is complete: the roster is 120 character definitions (119 playable), including all twelve Legends.
+**Current phase:** 15 (Balance pass, polish, accessibility, offline/PWA, security) is next. Phases 13 and 14 are complete: 120 character definitions (119 playable), all twelve Legends, and an audited art export.
 
 | Phase | Title | Status |
 |---|---|---|
@@ -18,7 +18,7 @@
 | 11 | Local ranked | ✅ done |
 | 12 | Dev-mode balance tools & local analytics | ✅ done |
 | 13 | Scale the roster to 120 | ✅ done |
-| 14 | Art spec completion | ☐ |
+| 14 | Art spec completion | ✅ done |
 | 15 | Balance pass, polish, accessibility, offline/PWA, security | ☐ |
 
 ## Session log
@@ -459,3 +459,6 @@ The Ranked section is now a working ladder against bots. Hidden Elo rating, 16 v
 
 ### 2026-09-20 — Phase 13, region 11 (the Final Seven) — Phase 13 complete
 **4 new characters:** The Tax Collector, the Secret The Lawyer, the Legend Calypsa, Queen Beneath the Sea, and the Secret The Gatekeeper (Father Bell, Emperor Zero and The Nameless One already existed; region complete at 7). Data, art, design notes and 22 scenario tests. **New:** Calypsa's Legend trial (`trial.calypsa`): **all twelve Legends are built**. No new statuses and no engine changes. **Checks:** coverage matrix regenerated with region 11 assertions, template overlap (no pair over 70%), 5,000-match simulation with 0 engine errors (notes in `docs/balance/phase13-region11-notes.md`), ranked meta pool regenerated for 119 characters. **Phase 13 end-of-phase report:** `docs/balance/phase13-summary.md` (120 definitions, 119 playable: 23 Core, 70 Rare, 14 Secret, 12 Legendary; per-region results; engine changes; guard tests; balance pattern; open items). **Files:** four `packages/content/src/data/characters/*.ts`, `characters/index.ts`, `coverage.test.ts`, `region11.roster.test.ts`, `packages/engine/src/scenarios/region11.scenario.test.ts`, `apps/web/src/game/progression.ts`, `packages/ai/src/meta-pool.json`, `packages/content/coverage.md`, four design notes, `docs/balance/*`, docs. ADR-032; OQ-102, OQ-103. **Custom scripts:** none. **Recommended next step:** Phase 14, art spec completion (`docs/phases/phase-14-art-specs.md`).
+
+### 2026-09-20 — Phase 14 (Art spec completion and audit)
+**Audit:** `auditArt` (`packages/content/src/artAudit.ts`) over all 119 playable characters: empty fields, identity anchors, forbidden references (style imitation, franchises, living artists, artist credits), requests for text or logos, Secret silhouettes, Legend reveals, transformation art, four icons, draft status; run as a test in CI and by `pnpm art:audit`. It first found 136 errors, all fixed: 60 specs without a `colorPalette` (now derived from `paletteConcept`), Malachar's missing silhouette prompt, missing transformation prompts for The Forgotten Titan and Chef Ramble, and three risky wordings (Rusalka, The Lawyer, Moonshot Maddox). **Export:** `pnpm art:export` writes `docs/art/art-specs.json` (120 characters, 873 assets, shared negative prompt, canvas sizes, pipeline guidance, cultural-review groups by priority); a test fails if it is stale. **Guide:** `docs/art/README.md`. No image is generated (no image tool available); every spec stays `draft` pending cultural review (OQ-12). **Files:** `packages/content/src/{artAudit,artExport,artAudit.test}.ts`, `schemas/art.ts`, `data/characters/{helpers,malachar,the-forgotten-titan,chef-ramble,moonshot-maddox,rusalka,the-lawyer}.ts`, `packages/content/scripts/{art-audit,export-art-specs}.ts`, both `package.json` files, `docs/art/*`, docs. ADR-033; OQ-104, OQ-105. **Custom scripts:** none. **Recommended next step:** Phase 15, balance pass, polish, accessibility, offline and PWA, and security (`docs/phases/phase-15-balance-polish.md`).

@@ -25,6 +25,8 @@ export interface ArtInput {
   iconScenes: string[];
   legendRevealScene?: string;
   secretSilhouetteScene?: string;
+  /** One scene per transformed state (phase-14: every transformation needs art). */
+  transformationScenes?: string[];
 }
 
 export function buildArt(input: ArtInput): { bible: CharacterVisualBible; art: CharacterArtSpec } {
@@ -43,6 +45,7 @@ export function buildArt(input: ArtInput): { bible: CharacterVisualBible; art: C
     battleAvatarPrompt: composePrompt(bible, "battleAvatar", input.avatarScene),
     abilityIconPrompts: input.iconScenes.map((scene) => composePrompt(bible, "abilityIcon", scene)),
     legendRevealPrompt: input.legendRevealScene ? composePrompt(bible, "legendReveal", input.legendRevealScene) : undefined,
+    transformationPrompts: (input.transformationScenes ?? []).map((scene) => composePrompt(bible, "transformation", scene)),
     secretSilhouettePrompt: input.secretSilhouetteScene
       ? composePrompt(bible, "secretSilhouette", input.secretSilhouetteScene)
       : undefined,

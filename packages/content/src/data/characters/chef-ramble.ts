@@ -130,6 +130,7 @@ const built = buildArt({
   splashScene: "hurling the cleaver overhead with flames roaring behind and pots boiling over on the range",
   portraitScene: "a red-faced scowl under a crumpled chef's hat",
   avatarScene: "close crop on the hat and moustache",
+  transformationScenes: ["transformed into The Five-Star Fiend: a towering, cleaver-armed monster of steam, flame and black iron pans, the crumpled chef's hat now a crown of blades, the whole kitchen boiling over behind"],
   iconScenes: ["a cleaver mid-chop through a carrot, for Chop", "a pan sizzling with a searing steak, for Sear", "a whoosh of flame over a pan, for Flambé", "a covered silver dish being lifted, for Plate It"],
 });
 export const CHEF_RAMBLE_VISUAL_BIBLE = built.bible;

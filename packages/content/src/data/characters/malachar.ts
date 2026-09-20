@@ -214,6 +214,7 @@ export const MALACHAR_ART: CharacterArtSpec = characterArtSpecSchema.parse({
     composePrompt(MALACHAR_VISUAL_BIBLE, "abilityIcon", "chains of soul-fire binding a spectral figure to his side, for the ability You Belong to Me"),
     composePrompt(MALACHAR_VISUAL_BIBLE, "abilityIcon", "the fragment crown erupting into a full soul-fire corona, for the ability Embrace the Throne"),
   ],
+  secretSilhouettePrompt: composePrompt(MALACHAR_VISUAL_BIBLE, "secretSilhouette", "a tall crowned figure among faint spectral shapes in a dark chamber, no other detail"),
   transformationPrompts: [
     composePrompt(
       MALACHAR_VISUAL_BIBLE,

@@ -37,7 +37,7 @@ export type CharacterVisualBible = z.infer<typeof characterVisualBibleSchema>;
 // OQ-12: every spec starts (and stays, until Phase 14) `status: "draft"`,
 // since a human — ideally from the represented culture — has to review final
 // production art.
-export const characterArtSpecSchema = z.object({
+const characterArtSpecObject = z.object({
   characterId: idSchema,
   status: z.enum(["draft", "reviewed", "final"]).default("draft"),
   region: z.string().optional(),
@@ -62,6 +62,19 @@ export const characterArtSpecSchema = z.object({
   secretSilhouettePrompt: z.string().optional(),
   legendRevealPrompt: z.string().optional(),
 });
+/** A palette concept is a comma-separated list of colour names; an image pipeline wants them as separate entries. */
+export function paletteFromConcept(concept: string): string[] {
+  return concept
+    .split(",")
+    .map((c) => c.trim())
+    .filter((c) => c.length > 0);
+}
+
+// phase-14: a spec that does not list its colours gets them from paletteConcept, so no spec ships an empty palette.
+export const characterArtSpecSchema = characterArtSpecObject.transform((spec) => ({
+  ...spec,
+  colorPalette: spec.colorPalette.length > 0 ? spec.colorPalette : paletteFromConcept(spec.paletteConcept),
+}));
 export type CharacterArtSpec = z.infer<typeof characterArtSpecSchema>;
 
 export type PromptShotType = "splash" | "portrait" | "battleAvatar" | "abilityIcon" | "transformation" | "secretSilhouette" | "legendReveal";

@@ -100,7 +100,7 @@ const built = buildArt({
   iconScenes: [
     "a whispered breath curling above water, for Cold Whisper",
     "pale hands rising from the water to a wrist, for Drowning Embrace",
-    "willow branches drawn like a veil, for Willow Veil",
+    "willow branches hanging in a pale veil, for Willow Veil",
     "ripples spreading in concentric songlines, for Song of the River",
   ],
 });

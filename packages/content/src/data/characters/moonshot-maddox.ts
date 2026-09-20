@@ -168,7 +168,7 @@ export const MOONSHOT_MADDOX_VISUAL_BIBLE: CharacterVisualBible = characterVisua
   ageRange: "prime athletic adulthood",
   face: "a confident, competitive expression",
   bodyType: "powerful athletic build",
-  clothingArmor: "a completely original cream and dark-red uniform with no real-world logos",
+  clothingArmor: "a completely original cream and dark-red uniform with plain, unmarked panels and no real-world team or sponsor identity",
   weaponsProps: "a wooden bat, resting over one shoulder",
   markings: "dirt and chalk marks around his cleats",
   silhouette: "a classic power-hitter stance silhouette",
