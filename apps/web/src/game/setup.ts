@@ -12,6 +12,7 @@ import {
   defaultResourcesFor,
   type BalanceLibraries,
   type CharacterDefinition,
+  CURRENT_BALANCE_VERSION_ID,
 } from "@veilbreak/content";
 import type { EnergyRules } from "@veilbreak/content";
 import { createBattle, type BattleState, type CreateBattleTeamInput, type ResolveTurnDeps } from "@veilbreak/engine";
@@ -21,7 +22,7 @@ import { createBattle, type BattleState, type CreateBattleTeamInput, type Resolv
 // real engine (createBattle/resolveTurn) or reads its outputs — nothing in
 // apps/web ever touches HP, statuses, or resources directly.
 
-export const BALANCE_VERSION_ID = "phase-05-v1";
+export const BALANCE_VERSION_ID = CURRENT_BALANCE_VERSION_ID;
 
 export function buildTeamInput(playerId: string, characterIds: readonly string[], characters: Record<string, CharacterDefinition> = CHARACTER_LIBRARY): CreateBattleTeamInput {
   return {

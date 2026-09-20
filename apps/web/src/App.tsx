@@ -6,6 +6,8 @@ import { useProfile } from "./profile/ProfileContext";
 import { Icon, type IconName } from "./components/Icon";
 import { CharacterBrowser } from "./components/CharacterBrowser";
 import { InstallBanner, InstallScreen } from "./components/InstallScreen";
+import { UpdateBanner } from "./components/UpdateBanner";
+import { getUpdateWatcher } from "./registerServiceWorker";
 import { PlayScreen } from "./screens/PlayScreen";
 import { SetupScreen } from "./screens/SetupScreen";
 import { MatchScreen, type MatchOutcome } from "./screens/MatchScreen";
@@ -229,6 +231,7 @@ export function AppShell() {
           </Suspense>
         ) : (
           <>
+            <UpdateBanner watcher={getUpdateWatcher()} />
             {plan === "banner" && <InstallBanner canPrompt={canPrompt} onInstall={() => void install()} onNotNow={() => asked()} />}
             {section === "play" && <PlaySection onOpenReplays={() => go("profile")} onOpenRanked={() => go("ranked")} initialMatchCode={initial.match} />}
             {section === "characters" && (

@@ -4,6 +4,9 @@ import { App } from "./App";
 import "@fontsource/cinzel/latin-600.css";
 import "./styles.css";
 import { registerServiceWorker } from "./registerServiceWorker";
+import { activateBalance } from "@veilbreak/content";
+
+activateBalance();
 
 const container = document.getElementById("root");
 if (!container) {

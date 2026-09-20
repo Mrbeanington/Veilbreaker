@@ -1,5 +1,6 @@
 import { createRandom, decideActions, type BotLevel } from "@veilbreak/ai";
 import type { BattleState, PlayerAction } from "@veilbreak/engine";
+import { activateBalance } from "@veilbreak/content";
 import { matchDeps } from "./setup";
 
 // phase-05 "The bot runs in a Web Worker", extended in phase-07: the decision
@@ -29,6 +30,7 @@ interface WorkerScope {
 }
 
 const scope = self as unknown as WorkerScope;
+activateBalance();
 const deps = matchDeps();
 
 scope.onmessage = (event) => {

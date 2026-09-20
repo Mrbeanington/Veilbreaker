@@ -20,9 +20,9 @@ Balance numbers are data. Changing them never means editing character source fil
 
 ## 4. Publish it
 1. Download the draft JSON.
-2. Add the file's contents to `SHIPPED_BALANCE_PATCHES` in `packages/content/src/balance.ts` (the exported id, for example `phase-13-v1`, is the balance version id).
+2. Add the file's contents to `SHIPPED_BALANCE_PATCHES` in `packages/content/src/balance.ts` (the draft id, for example `release-2`, is the balance version id; patches are cumulative against `release-1`, so a new patch contains every change since the base).
 3. Add a test for anything that matters, run `pnpm ci`, and note the change in `docs/DECISIONS.md`.
 4. Old replays keep the version id they were recorded with, and `librariesForVersion` resolves them under those numbers. A replay from a version this build does not know is flagged, not silently replayed.
 5. Re-run `pnpm meta` (the ranked ladder's meta pool) after a balance change.
 
-> Not yet done when the first version is published: new matches record `BALANCE_VERSION_ID` (`apps/web/src/game/setup.ts`) and the UI reads the shipped libraries for text. Point both at the newest published version when you publish one (OQ-65).
+> New matches and the UI follow the newest published patch automatically: `CURRENT_BALANCE_VERSION_ID` feeds `BALANCE_VERSION_ID`, and `activateBalance()` (called at startup on the page and in the bot worker) applies the newest patch to the live libraries. The numbers written in character source are the frozen `release-1` base: never edit them after release. Change a number only by publishing a patch. A fingerprint test (`balance.release.test.ts`) fails if source drifts from the base (ADR-035).

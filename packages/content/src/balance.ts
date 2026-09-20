@@ -22,7 +22,15 @@ import energyRulesJson from "./config/energy-rules.json";
 // production builds.
 
 export const BALANCE_FORMAT = "veilbreak-balance";
-export const BASE_BALANCE_VERSION_ID = "phase-05-v1";
+/**
+ * The numbers the first public release shipped with (they include the phase-15
+ * pass). Replays recorded under the earlier development id `phase-05-v1` are
+ * reported as an unknown version rather than replayed with different numbers.
+ */
+export const BASE_BALANCE_VERSION_ID = "release-1";
+
+/** Live energy rules. Shared with the engine's default deps; `activateBalance` may patch it in place. */
+export const defaultEnergyRules: EnergyRules = energyRulesSchema.parse(energyRulesJson);
 
 export interface BalanceLibraries {
   characters: typeof CHARACTER_LIBRARY;
@@ -34,8 +42,15 @@ export interface BalanceLibraries {
   energyRules: EnergyRules;
 }
 
-/** The libraries exactly as shipped. Shared, never mutate. */
+let pristine: BalanceLibraries | null = null;
+
+/**
+ * The libraries exactly as released in BASE_BALANCE_VERSION_ID. Shared, never
+ * mutate. Before any patch is activated these are the live objects; activation
+ * snapshots them first, so the base stays the base.
+ */
 export function baseLibraries(): BalanceLibraries {
+  if (pristine) return pristine;
   return {
     characters: CHARACTER_LIBRARY,
     abilities: ABILITY_LIBRARY,
@@ -259,15 +274,51 @@ export function applyBalanceDraft(base: BalanceLibraries, input: unknown): Apply
 
 // ------------------------------------------------------------- versions
 
-/** Balance versions published with the game, oldest first. Commit an exported draft here (see docs/design/balance-workflow.md). */
+/** Balance versions published with the game, oldest first. Each is cumulative against the base. See docs/design/balance-workflow.md. */
 export const SHIPPED_BALANCE_PATCHES: readonly BalanceDraft[] = [];
 
+/** The version new matches are recorded under and the UI and engine read: the newest shipped patch, else the base. */
+export function currentBalanceVersionId(patches: readonly BalanceDraft[] = SHIPPED_BALANCE_PATCHES): string {
+  return patches[patches.length - 1]?.id ?? BASE_BALANCE_VERSION_ID;
+}
+export const CURRENT_BALANCE_VERSION_ID = currentBalanceVersionId();
+
 /** Libraries for a recorded BalanceVersion id, or null if this build does not know it. Old replays resolve through this. */
-export function librariesForVersion(id: string): BalanceLibraries | null {
+export function librariesForVersion(id: string, patches: readonly BalanceDraft[] = SHIPPED_BALANCE_PATCHES): BalanceLibraries | null {
   const base = baseLibraries();
   if (id === BASE_BALANCE_VERSION_ID) return base;
-  const patch = SHIPPED_BALANCE_PATCHES.find((p) => p.id === id);
+  const patch = patches.find((p) => p.id === id);
   if (!patch) return null;
   const applied = applyBalanceDraft(base, patch);
   return applied.ok ? applied.libs : null;
+}
+
+/**
+ * Makes the shared live libraries (what tooltips, the roster and the engine's
+ * default deps read) carry the newest patch's numbers, in place. Call once at
+ * startup on every thread. A no-op when no patch is shipped. Returns the id now active.
+ */
+export function activateBalance(patches: readonly BalanceDraft[] = SHIPPED_BALANCE_PATCHES): string {
+  const id = currentBalanceVersionId(patches);
+  if (id === BASE_BALANCE_VERSION_ID) return id;
+  const patch = patches[patches.length - 1]!;
+  if (!pristine) pristine = clone(baseLibraries());
+  const applied = applyBalanceDraft(pristine, patch);
+  if (!applied.ok) throw new Error(`Balance patch ${id} is invalid: ${applied.errors.join("; ")}`);
+  const live: BalanceLibraries = { characters: CHARACTER_LIBRARY, abilities: ABILITY_LIBRARY, passives: PASSIVE_LIBRARY, statuses: STATUSES, transformations: TRANSFORMATION_LIBRARY, summons: SUMMON_LIBRARY, energyRules: defaultEnergyRules };
+  for (const change of patch.changes) {
+    const [library, ownerId, ...trail] = change.path.split("/");
+    const table = library === "energyRules" ? { "energy-rules": live.energyRules } : (live as unknown as Record<string, Record<string, unknown>>)[library ?? ""];
+    setAtPath({ v: (table as Record<string, unknown>)[ownerId ?? ""] }, ["v", ...trail], change.value);
+  }
+  return id;
+}
+
+/** A short fingerprint of every tunable number in `libs`. A test pins the base's, so source numbers cannot drift without a patch. */
+export function balanceFingerprint(libs: BalanceLibraries): string {
+  let h = 0x811c9dc5;
+  for (const t of listTunables(libs)) {
+    for (const ch of `${t.path}=${t.value};`) h = Math.imul(h ^ ch.charCodeAt(0), 0x01000193) >>> 0;
+  }
+  return h.toString(16).padStart(8, "0");
 }

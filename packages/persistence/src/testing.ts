@@ -59,7 +59,7 @@ export function sampleReplay(id = "r1", turns = 3): ReplayRecord {
     playedAt: 1_700_000_000_000,
     mode: "bot",
     seed: 12345,
-    balanceVersionId: "phase-05-v1",
+    balanceVersionId: "release-1",
     energyRules: defaultEnergyRules,
     teamAIds: ["tortuga-rex", "hydra", "malachar"],
     teamBIds: ["shiro", "koschei", "father-bell"],
