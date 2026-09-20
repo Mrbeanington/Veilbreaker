@@ -1,5 +1,6 @@
-import { mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { ABILITY_LIBRARY, CHARACTER_ART_LIBRARY, CHARACTER_LIBRARY, PASSIVE_LIBRARY, STUB_CHARACTER_IDS, TRANSFORMATION_LIBRARY } from "../src/data/characters/index";
 import { STATUS_LIBRARY } from "../src/data/statuses";
 import { activateBalance, defaultEnergyRules } from "../src/balance";
@@ -13,6 +14,13 @@ import { culturalGroupOf } from "../src/artExport";
 // The wiki shows the numbers new matches use: the newest published balance.
 const balanceVersion = activateBalance();
 const out = resolve(process.argv[2] ?? "wiki-data.json");
+
+// Fighters with a portrait (apps/web/src/art/portraits, ADR-042) carry it as a small data URI so the wiki page stays one file.
+const portraitDir = fileURLToPath(new URL("../../../apps/web/src/art/portraits", import.meta.url));
+const portraitOf = (id: string): string | null => {
+  const file = resolve(portraitDir, `${id}.webp`);
+  return existsSync(file) ? `data:image/webp;base64,${readFileSync(file).toString("base64")}` : null;
+};
 
 const title = (id: string) => id.replace(/^stage\./, "").replace(/[.-]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 
@@ -30,6 +38,7 @@ const characters = Object.values(CHARACTER_LIBRARY)
       origin: culturalGroupOf(art?.region).label,
       theme: art?.visualTheme ?? "",
       lore: CHARACTER_LORE[c.id] ?? "",
+      portrait: portraitOf(c.id),
       palette: (art?.colorPalette ?? []).slice(0, 3),
       cheater: c.isCheater ? { rule: c.cheaterRuleBreak ?? "", counterplay: c.counterplay ?? "" } : null,
       abilities: c.abilityIds.map((id) => {

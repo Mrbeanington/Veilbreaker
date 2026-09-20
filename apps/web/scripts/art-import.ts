@@ -9,7 +9,8 @@ import { PORTRAIT_SIZE, checkSource, fighterIdFromFileName } from "../src/art/po
 // Shrinks each `<id>.portrait.png` to a 256 pixel square WebP in apps/web/src/art/portraits, so the
 // game stays small (about 15 KB a portrait) and works offline. Prints what was imported, what did
 // not match a fighter, and which fighters still have no portrait. Dev tool only: never shipped.
-const input = process.argv[2];
+// pnpm runs scripts from apps/web, so a relative folder is resolved from where the command was typed.
+const input = process.argv[2] ? resolve(process.env.INIT_CWD ?? process.cwd(), process.argv[2]) : undefined;
 if (!input) {
   console.error("usage: pnpm art:import <folder>");
   process.exit(1);
@@ -23,8 +24,8 @@ let bytes = 0;
 const unknown: string[] = [];
 const warned: string[] = [];
 
-for (const name of readdirSync(resolve(input)).sort()) {
-  const path = join(resolve(input), name);
+for (const name of readdirSync(input).sort()) {
+  const path = join(input, name);
   if (!statSync(path).isFile()) continue;
   const id = fighterIdFromFileName(name);
   if (!id) continue;

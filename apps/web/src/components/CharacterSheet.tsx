@@ -105,7 +105,10 @@ export function CharacterSheet({ character, profile, mode, isFavorite, onToggleF
           abilityRevealed(ability, profile) ? (
             <li key={ability.id}>
               <Icon name={abilityIconName(ability)} size={20} />
-              <pre className="tooltip-text">{generateAbilityTooltip(ability)}</pre>
+              <div>
+                <strong>{ability.displayName}</strong>
+                <pre className="tooltip-text">{generateAbilityTooltip(ability)}</pre>
+              </div>
             </li>
           ) : (
             <li key={ability.id} className="undiscovered">
