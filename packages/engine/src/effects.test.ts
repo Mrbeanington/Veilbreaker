@@ -590,3 +590,20 @@ describe("applyEffect — damage with a self target (phase 13 regression)", () =
     expect(result.state.characters.b1?.currentHp).toBe(70);
   });
 });
+
+describe("applyEffect — status effects with a self target (phase 13 regression)", () => {
+  const self = { side: "self" as const, scope: "single" as const, count: 1, includeSelf: true, filterTags: [] };
+  it("applyStatus lands on the source, not the ability's target, when the effect says self", () => {
+    const state = stateWith([character("a1"), character("b1")]);
+    const result = applyEffect(state, { kind: "applyStatus", statusId: "status.untargetable", durationTurns: 1, target: self }, ctx({ sourceId: "a1", targetIds: ["b1"] }), createRng(1));
+    expect(hasStatus(result.state.characters.a1!, "status.untargetable")).toBe(true);
+    expect(hasStatus(result.state.characters.b1!, "status.untargetable")).toBe(false);
+  });
+  it("removeStatus cleanses the source when the effect says self", () => {
+    const state = stateWith([character("a1"), character("b1")]);
+    const withStun = applyEffect(state, { kind: "applyStatus", statusId: "status.stun", durationTurns: 2, target: self }, ctx({ sourceId: "a1", targetIds: ["b1"] }), createRng(1)).state;
+    const cleaned = applyEffect(withStun, { kind: "removeStatus", statusId: "status.stun", target: self }, ctx({ sourceId: "a1", targetIds: ["b1"] }), createRng(1));
+    expect(hasStatus(cleaned.state.characters.a1!, "status.stun")).toBe(false);
+  });
+});
+

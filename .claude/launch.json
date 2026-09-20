@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "veilbreak-web",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "@veilbreak/web", "run", "dev"],
+      "port": 5173
+    },
+    {
+      "name": "veilbreak-web-preview",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "@veilbreak/web", "exec", "vite", "preview", "--port", "4173"],
+      "port": 4173
+    }
+  ]
+}

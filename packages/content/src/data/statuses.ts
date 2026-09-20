@@ -357,6 +357,24 @@ export const FORETOLD = status({
   tooltip: "The next time this character takes damage, it takes 30 more, once.",
 });
 
+// phase-13 (Morrigan): a prophecy that only comes true for the wounded. At the
+// end of its holder's turn, if the holder is below half health the prophecy is
+// fulfilled (60 affliction damage) and consumed. A healthy holder keeps it until
+// it expires; healing, a dispel or simply staying above half escapes it.
+export const CROW_PROPHECY = status({
+  id: "status.crow-prophecy",
+  displayName: "Prophecy of Ruin",
+  duration: { turns: 3, permanent: false },
+  stackRule: "refresh",
+  triggerTiming: [{ event: "onTurnEnd", relation: "self", effectTarget: "subject", condition: { type: "hpBelowPercent", target: "self", percent: 50 } }],
+  effects: [
+    { kind: "removeStatus", statusId: "status.crow-prophecy" },
+    { kind: "damage", amount: 60, damageType: "affliction" },
+  ],
+  knowledgeLevel: "DISCOVERABLE",
+  tooltip: "If this character ends a turn below half health, the prophecy comes true for 60 damage. Healing, a dispel or staying healthy escapes it.",
+});
+
 export const STATUS_LIBRARY: Record<string, StatusDefinition> = Object.fromEntries(
   [
     STUN,
@@ -393,5 +411,6 @@ export const STATUS_LIBRARY: Record<string, StatusDefinition> = Object.fromEntri
     SOUL_CONSECRATION,
     ABILITY_LOCK,
     FORETOLD,
+    CROW_PROPHECY,
   ].map((def) => [def.id, def]),
 );

@@ -134,7 +134,7 @@ export function applyEffect(
       }
       let characters = state.characters;
       const events: AppliedEvent[] = [];
-      for (const targetId of ctx.targetIds) {
+      for (const targetId of resolveEffectTargets(effect.target, ctx)) {
         const target = characters[targetId];
         if (!target?.alive) continue;
         const param = resolveAbilityToken(effect.param, target);
@@ -161,7 +161,7 @@ export function applyEffect(
     case "removeStatus": {
       let characters = state.characters;
       const events: AppliedEvent[] = [];
-      for (const targetId of ctx.targetIds) {
+      for (const targetId of resolveEffectTargets(effect.target, ctx)) {
         const target = characters[targetId];
         if (!target) continue;
         if (effect.dispelAll) {

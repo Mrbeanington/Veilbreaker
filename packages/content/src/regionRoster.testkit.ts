@@ -15,12 +15,14 @@ export interface RegionSpec {
   /** Characters of the region that existed before it (earlier phases). */
   existing: string[];
   secrets: string[];
+  /** Legends among the added characters (spec/03: powerful but counterable). */
+  legends?: string[];
   /** Every character of the region carries this archetype tag. */
   tag: "MYTHOLOGY" | "FOLKLORE";
 }
 
 export function describeRegionRoster(spec: RegionSpec): void {
-  const { added, existing, secrets, tag } = spec;
+  const { added, existing, secrets, tag, legends = [] } = spec;
   describe(`roster: ${spec.name}`, () => {
     it("has every character of the region from spec/03, all playable", () => {
       for (const id of [...added, ...existing]) {
@@ -80,6 +82,7 @@ export function describeRegionRoster(spec: RegionSpec): void {
         expect(CHARACTER_ART_LIBRARY[id]!.secretSilhouettePrompt, id).toBeTruthy();
       }
       for (const id of added.filter((n) => !secrets.includes(n))) expect(CHARACTER_LIBRARY[id]!.rarity).not.toBe("SECRET");
+      for (const id of added.filter((n) => !legends.includes(n) && !secrets.includes(n))) expect(CHARACTER_LIBRARY[id]!.rarity, id).not.toBe("LEGENDARY");
     });
 
     it("every new character has a design note with identity, counterplay, readability and deviations", () => {
@@ -88,6 +91,26 @@ export function describeRegionRoster(spec: RegionSpec): void {
         expect(existsSync(path), id).toBe(true);
         const text = readFileSync(path, "utf8");
         for (const heading of ["## Identity / win condition", "## Counterplay", "## Readability", "## Deviations"]) expect(text, `${id} ${heading}`).toContain(heading);
+      }
+    });
+
+    it("Legends are LEGENDARY with a reveal prompt, a heavy cost or cooldown lever, and named roster counters", () => {
+      for (const id of legends) {
+        const c = CHARACTER_LIBRARY[id]!;
+        expect(c.rarity).toBe("LEGENDARY");
+        expect(c.tags).toContain("LEGENDARY");
+        expect(CHARACTER_ART_LIBRARY[id]!.legendRevealPrompt, id).toBeTruthy();
+        const heavy = c.abilityIds.some((a) => {
+          const ab = ABILITY_LIBRARY[a]!;
+          const total = Object.values(ab.cost).reduce((x, n) => x + n, 0);
+          return total >= 5 || ab.cooldown >= 5;
+        });
+        expect(heavy, `${id} needs a costly or long-cooldown ability`).toBe(true);
+        const note = readFileSync(`${notesDir}${id}.md`, "utf8");
+        expect(note, id).toContain("## Balance levers");
+        const counterSection = note.slice(note.indexOf("## Counterplay"));
+        const named = [...counterSection.matchAll(/[*][*]([^*]+)[*][*]/g)].map((m) => m[1]!.trim()).filter((n) => Object.values(CHARACTER_LIBRARY).some((x) => x.displayName === n || x.displayName.startsWith(n)));
+        expect(new Set(named).size, `${id} must name at least two roster counters`).toBeGreaterThanOrEqual(2);
       }
     });
   });

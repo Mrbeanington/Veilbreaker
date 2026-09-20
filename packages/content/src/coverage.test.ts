@@ -88,6 +88,20 @@ describe("coverage matrix", () => {
     expect(covers("fire")).toEqual(expect.arrayContaining(["zmey-gorynych", "the-firebird"]));
   });
 
+  it("credits region 4 (Northern / Celtic) with the mechanics it was written for", () => {
+    const covers = (mechanic: Parameters<typeof charactersCoveringMechanic>[0]) => charactersCoveringMechanic(mechanic).map((c) => c.id);
+    expect(covers("prophecy")).toContain("morrigan");
+    expect(covers("delayed attacks")).toContain("morrigan");
+    expect(covers("curses")).toEqual(expect.arrayContaining(["banshee", "the-dullahan"]));
+    expect(covers("target manipulation")).toContain("puca");
+    expect(covers("fear")).toEqual(expect.arrayContaining(["banshee", "the-berserker"]));
+    expect(covers("HP sacrifice")).toEqual(expect.arrayContaining(["the-berserker", "fenris"]));
+    expect(covers("silences")).toContain("banshee");
+    expect(covers("energy generation")).toContain("banshee");
+    expect(covers("anti-healing")).toContain("draugr");
+    expect(covers("randomness")).toContain("puca");
+  });
+
   it("generates a markdown table with a row per mechanic", () => {
     const markdown = generateCoverageMarkdown();
     expect(markdown).toContain("# Mechanical Coverage Matrix");

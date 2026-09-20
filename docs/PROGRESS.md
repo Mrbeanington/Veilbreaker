@@ -1,6 +1,6 @@
 # Progress
 
-**Current phase:** 13 in progress: regions 1-3 done (56 of 120 characters built). Next: region 4 (Northern / Celtic), one region per session.
+**Current phase:** 13 in progress: regions 1-4 done (67 of 120 characters built). Next: region 5 (Egypt / Desert / Ancient Kingdoms, 11 new), one region per session.
 
 | Phase | Title | Status |
 |---|---|---|
@@ -17,7 +17,7 @@
 | 10 | Friend matches (serverless) | ✅ done |
 | 11 | Local ranked | ✅ done |
 | 12 | Dev-mode balance tools & local analytics | ✅ done |
-| 13 | Scale the roster to 120 | 🔄 region 3 of 11 done |
+| 13 | Scale the roster to 120 | 🔄 region 4 of 11 done |
 | 14 | Art spec completion | ☐ |
 | 15 | Balance pass, polish, accessibility, offline/PWA, security | ☐ |
 
@@ -435,3 +435,6 @@ The Ranked section is now a working ladder against bots. Hidden Elo rating, 16 v
 
 ### 2026-09-20 — Phase 13, region 3 (Slavic / Russian Night)
 **10 new characters:** Leshy, Domovoi, Rusalka, Father Frost, The Birch Witch, Zmey Gorynych, The Firebird, One-Eyed Likho, Marya the Warrior, and the Secret The Midnight Tsar (Baba Yaga and Koschei already existed; region complete at 12). Data, art, design notes and 30 scenario tests each. **No engine changes**: the Firebird's rebirth reuses `onWouldDie` with `setHp`; Domovoi's shield uses a subject-targeted trigger; the Zmey's chain reuses the sequence condition. **Coverage:** the last uncovered mechanic (relics, The Midnight Tsar) is now covered, so **all 55 required mechanics have a character** and a test fails if that ever regresses. **Overlap:** Marya first overlapped Tortuga Rex by 75% and was reworked; no pair now exceeds 60%. **Simulation:** 5,000 matches, 0 engine errors, notes in `docs/balance/phase13-region3-notes.md` (Firebird 64%, Zmey 62%, Likho 42%). Ranked meta pool regenerated (56 characters). **Files:** ten `packages/content/src/data/characters/*.ts`, `index.ts`, `coverage.ts`, `coverage.test.ts`, `region3.roster.test.ts`, `packages/engine/src/scenarios/region3.scenario.test.ts`, `packages/ai/src/meta-pool.json`, design notes, `docs/balance/*`, docs. **Tests:** see CI (up from 724). ADR-024; OQ-80 to OQ-83. **Custom scripts:** none. **Recommended next step:** region 4, Northern / Celtic (11 characters; Morrigan [Legend] is not built yet either, so 11 are new).
+
+### 2026-09-20 — Phase 13, region 4 (Northern / Celtic)
+**11 new characters:** Draugr, Shieldmaiden Yrsa, The Berserker, Banshee, The Dullahan, Puca, Frost Jotunn, The Valkyrie, Fenris, the Secret The Wild Huntsman, and the Legend Morrigan, Mother of Crows (region complete at 11). Data, art, design notes and 32 scenario tests. **New:** `status.crow-prophecy` (35 statuses), Morrigan's Legend trial (`trial.morrigan`, seven Legends built), Legend checks in the shared roster test kit. **Engine fix:** `applyStatus` and `removeStatus` now honour an effect's `target` override (regression tests). **Checks:** coverage matrix regenerated with region 4 assertions, template overlap (no pair over 70%), 5,000-match simulation with 0 engine errors (notes in `docs/balance/phase13-region4-notes.md`), ranked meta pool regenerated for 67 characters. **Files:** eleven `packages/content/src/data/characters/*.ts`, `characters/index.ts`, `data/statuses.ts` (+ test), `coverage.test.ts`, `regionRoster.testkit.ts`, `region4.roster.test.ts`, `packages/engine/src/effects.ts` (+ test, `scenarios/region4.scenario.test.ts`), `apps/web/src/game/progression.ts`, `packages/ai/src/meta-pool.json`, `packages/content/coverage.md`, eleven design notes, `docs/balance/*`, docs. ADR-025; OQ-84 to OQ-86. **Custom scripts:** none. **Recommended next step:** region 5, Egypt / Desert / Ancient Kingdoms (11 new: Jackal Guardian, Scarab King, The Mummy Prince, Desert Djinn, Ifrit, The Sphinx, Sand Assassin, The Pharaoh Without a Tomb, The Living Sarcophagus, Anubian Judge [Secret], Aurelia [Legend]).

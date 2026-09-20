@@ -88,3 +88,7 @@ The source spec leaves these ambiguous. Each has a **proposed default** so work 
 | OQ-82 | (Phase 13, region 3) The Firebird's rebirth sets her health (a `setHp` heal), so Anti-Heal and Healing Reduction cannot stop it. Only erasure and two lethal hits in one turn beat it. | Accepted as counterplay; review with real players. |
 | OQ-83 | (Phase 13, region 3) Relics are a resource, not objects: the Tsar's relics cannot be stolen or destroyed by the enemy. | See OQ-32 (targetable summons and objects). |
 
+| OQ-84 | (Phase 13, region 4) The Valkyrie (65%), Shieldmaiden Yrsa (63%) and Draugr (62%) are above the 60% flag after tuning; Púca (38%) and Banshee (42%) are below 40-45%. | Phase 15. |
+| OQ-85 | (Phase 13, region 4) Morrigan's prophecy is affliction damage and cannot be dodged with Invulnerable; the only counters are staying above half health, healing, dispel, or stopping her set-up. Needs playtesting for feel. | Review with real players. |
+| OQ-86 | (Phase 13, region 4) Fear and Curse are still marker statuses with no engine hook (Banshee, The Dullahan). | Phase 15: give Fear a real rule (for example a chance to lose an action). |
+| OQ-87 | (Phase 13, region 4) With 67 characters the ranked bots' Gold and Apex drafts average nearly the same measured win rate (56.1 vs 56.1), so the ladder test now only requires Apex > Bronze + 1 and Apex > Gold - 1. High divisions are not clearly stronger by character choice. | Phase 15: weight the meta pool by trio strength or raise the quality curve. |
