@@ -126,6 +126,14 @@ describe("coverage matrix", () => {
     expect(covers("combo sequences")).toContain("the-storyteller");
   });
 
+  it("credits region 7 (Horror / Monsters / Dead) with the mechanics it was written for", () => {
+    const covers = (mechanic: Parameters<typeof charactersCoveringMechanic>[0]) => charactersCoveringMechanic(mechanic).map((c) => c.id);
+    expect(covers("resurrection")).toContain("the-grave-digger");
+    expect(covers("cooldown manipulation")).toContain("the-marionettist");
+    expect(covers("energy stealing")).toContain("the-collector");
+    expect(covers("summons")).toContain("the-marionettist");
+  });
+
   it("generates a markdown table with a row per mechanic", () => {
     const markdown = generateCoverageMarkdown();
     expect(markdown).toContain("# Mechanical Coverage Matrix");

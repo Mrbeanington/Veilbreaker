@@ -1,6 +1,6 @@
 # Progress
 
-**Current phase:** 13 in progress: regions 1-6 done (90 of 120 characters built). Next: region 7 (Horror / Monsters / Dead), one region per session.
+**Current phase:** 13 in progress: regions 1-7 done (98 of 120 characters built). Next: region 8 (Animals / Weird Characters), one region per session.
 
 | Phase | Title | Status |
 |---|---|---|
@@ -17,7 +17,7 @@
 | 10 | Friend matches (serverless) | ✅ done |
 | 11 | Local ranked | ✅ done |
 | 12 | Dev-mode balance tools & local analytics | ✅ done |
-| 13 | Scale the roster to 120 | 🔄 region 6 of 11 done |
+| 13 | Scale the roster to 120 | 🔄 region 7 of 11 done |
 | 14 | Art spec completion | ☐ |
 | 15 | Balance pass, polish, accessibility, offline/PWA, security | ☐ |
 
@@ -444,3 +444,6 @@ The Ranked section is now a working ladder against bots. Hidden Elo rating, 16 v
 
 ### 2026-09-20 — Phase 13, region 6 (World Folklore / Spirits / Tricksters)
 **12 new characters:** Anansi, The Moon Rabbit, Jiangshi, Dokkaebi, The White Fox, The Roc, The Ghoul, The Wandering Genie, The Storyteller, The Monkey Trickster, the Secret The Thousand-Faced Stranger, and the Legend Madame Fortuna (region complete at 12). Data, art, design notes and 33 scenario tests. **New:** Madame Fortuna's Legend trial (`trial.madame-fortuna`, nine Legends built) and Cheater rule-break; no new statuses and no engine changes. **Convention:** random-outcome branches are listed worst to best (region 5's Twisted Wish reordered). **Checks:** coverage matrix regenerated with region 6 assertions, template overlap (two pairs reworked, none over 70%), 5,000-match simulation with 0 engine errors (notes in `docs/balance/phase13-region6-notes.md`), ranked meta pool regenerated for 90 characters. **Files:** twelve `packages/content/src/data/characters/*.ts`, `characters/index.ts` and `desert-djinn.ts`, `coverage.test.ts`, `region6.roster.test.ts`, `packages/engine/src/scenarios/region6.scenario.test.ts`, `apps/web/src/game/progression.ts`, `packages/ai/src/meta-pool.json`, `packages/content/coverage.md`, twelve design notes, `docs/balance/*`, docs. **QR transfer** now shrinks its pair tables to fit one code (`packages/persistence/src/codec.ts` + test). ADR-027; OQ-92 to OQ-95. **Custom scripts:** none. **Recommended next step:** region 7, Horror / Monsters / Dead (spec/03 #77 onward).
+
+### 2026-09-20 — Phase 13, region 7 (Horror / Monsters / Dead)
+**8 new characters:** The Headless Bride, The Marionettist, The Scarecrow, The Grave Digger, The Vampire Countess, The Collector, Ashmouth and The Thing Beneath the Bed (Patient Zero, The Plague Doctor, Malachar and Behemoth already existed; region complete at 12). Data, art, design notes and 22 scenario tests. **No engine changes, no new statuses, no new Legend or Secret.** **Firsts:** a repeatable resurrection of another character (Exhume), Cooldown Increase and a team-wide Energy Cost Increase in kits. **Checks:** coverage matrix regenerated with region 7 assertions, template overlap (no pair over 70%), 5,000-match simulation with 0 engine errors (notes in `docs/balance/phase13-region7-notes.md`), ranked meta pool regenerated for 98 characters. **Files:** eight `packages/content/src/data/characters/*.ts`, `characters/index.ts`, `coverage.test.ts`, `region7.roster.test.ts`, `packages/engine/src/scenarios/region7.scenario.test.ts`, `packages/ai/src/meta-pool.json`, `packages/content/coverage.md`, eight design notes, `docs/balance/*`, docs. `packages/ai/src/ladder.test.ts` and `packages/persistence/src/codec.test.ts` thresholds loosened. ADR-028; OQ-96, OQ-97. **Custom scripts:** none. **Recommended next step:** region 8, Animals / Weird Characters (spec/03 #89 onward).

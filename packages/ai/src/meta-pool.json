@@ -6,318 +6,164 @@
     "date": "2026-09-20"
   },
   "winRates": {
-    "the-valkyrie": 66.9,
-    "the-firebird": 65.8,
-    "patient-zero": 65.5,
-    "draugr": 63.9,
+    "the-firebird": 66.9,
+    "the-valkyrie": 65.9,
+    "draugr": 64.5,
+    "patient-zero": 64.4,
     "shieldmaiden-yrsa": 63.7,
-    "rusalka": 63,
-    "domovoi": 62.3,
-    "leshy": 61.5,
+    "leshy": 63.5,
+    "domovoi": 63.2,
+    "zmey-gorynych": 61.5,
+    "rusalka": 61.4,
     "madame-fortuna": 61.4,
+    "anubian-judge": 61.1,
+    "cyclops-brontes": 60.9,
     "nemesis": 60.9,
-    "cyclops-brontes": 60.7,
-    "zmey-gorynych": 60.5,
-    "tortuga-rex": 60.4,
-    "anubian-judge": 60.2,
-    "the-birch-witch": 60.1,
-    "the-thousand-faced-stranger": 59.3,
-    "the-mirror-samurai": 59,
-    "ifrit": 59,
-    "asterion": 58.8,
-    "the-storyteller": 58.8,
-    "the-forgotten-titan": 58.6,
-    "gashadokuro": 58.2,
-    "the-ghoul": 57.9,
+    "asterion": 60.5,
+    "the-scarecrow": 60.3,
+    "the-birch-witch": 60,
+    "the-storyteller": 59.9,
+    "gashadokuro": 59.6,
+    "the-thousand-faced-stranger": 58.8,
+    "the-collector": 58.6,
+    "the-mirror-samurai": 58.4,
+    "cerberus": 58,
+    "the-living-sarcophagus": 58,
+    "charon": 57.9,
+    "tortuga-rex": 57.7,
     "the-bronze-giant": 57.5,
-    "jiangshi": 57.2,
-    "marya-the-warrior": 56.7,
-    "the-living-sarcophagus": 56.6,
-    "charon": 56.5,
-    "anansi": 55.8,
-    "cerberus": 55.5,
-    "father-frost": 54.9,
-    "lantern-spirit": 53.9,
-    "hecates-disciple": 53.7,
-    "blue-oni": 53,
-    "arachne": 52.6,
-    "the-mummy-prince": 52.2,
-    "red-oni": 51.9,
-    "sand-assassin": 51.9,
-    "jackal-guardian": 51.6,
-    "the-roc": 51.4,
-    "the-berserker": 51.3,
-    "umbrella-yokai": 51,
-    "emperor-zero": 50.5,
-    "black-knight": 50.1,
-    "the-dullahan": 50,
-    "fenris": 50,
-    "morrigan": 50,
-    "yuki-onna": 49.5,
-    "the-nameless-one": 48.9,
-    "the-white-fox": 48.9,
-    "nine-tailed-trickster": 48.8,
-    "icarion": 48.5,
-    "scarab-king": 48.4,
-    "the-wandering-genie": 48.2,
-    "tengu-swordsman": 48,
-    "pharaoh-without-a-tomb": 47.8,
-    "the-wild-huntsman": 47.7,
+    "the-ghoul": 57.1,
+    "marya-the-warrior": 56.9,
+    "ifrit": 56.9,
+    "the-forgotten-titan": 56.6,
+    "anansi": 56.5,
+    "jiangshi": 54.9,
+    "father-frost": 54.4,
+    "hecates-disciple": 54.2,
+    "arachne": 54,
+    "blue-oni": 54,
+    "lantern-spirit": 53.2,
+    "jackal-guardian": 52.7,
+    "the-dullahan": 52.1,
+    "the-berserker": 52,
+    "sand-assassin": 51.7,
+    "umbrella-yokai": 51.6,
+    "emperor-zero": 51.5,
+    "the-grave-digger": 51.3,
+    "yuki-onna": 51.1,
+    "the-vampire-countess": 51.1,
+    "red-oni": 50.9,
+    "scarab-king": 50.5,
+    "nine-tailed-trickster": 50.1,
+    "black-knight": 50,
+    "the-roc": 49.6,
+    "the-nameless-one": 49.5,
+    "the-white-fox": 49.5,
+    "fenris": 49.4,
+    "morrigan": 49.4,
+    "pharaoh-without-a-tomb": 49.3,
+    "the-mummy-prince": 49.2,
+    "icarion": 48.6,
+    "tengu-swordsman": 48.2,
+    "ashmouth": 48.2,
+    "baba-yaga": 47.9,
+    "the-wandering-genie": 47.7,
+    "the-paper-monk": 47.6,
+    "the-wild-huntsman": 47.5,
+    "the-monkey-trickster": 47.1,
+    "the-oracle": 46.8,
     "frost-jotunn": 46.8,
-    "the-moon-rabbit": 46.5,
-    "baba-yaga": 46.4,
-    "the-oracle": 46.4,
-    "the-paper-monk": 46.2,
-    "the-monkey-trickster": 45.5,
-    "dokkaebi": 45.4,
-    "the-midnight-tsar": 45,
-    "desert-djinn": 44.3,
-    "hydra": 43.5,
-    "aurelia": 43.4,
-    "plague-doctor": 43.1,
-    "banshee": 43,
-    "shiro": 42.2,
-    "the-sphinx": 39.7,
-    "nekomata": 39.2,
-    "the-painted-ronin": 38.6,
-    "one-eyed-likho": 38.6,
-    "zeiron": 37.8,
-    "puca": 37.5,
-    "mister-whiskers": 37.3,
-    "medusa": 37.3,
-    "the-gambler": 37.1,
-    "father-bell": 36.5,
-    "behemoth": 35.8,
-    "the-siren": 35.1,
-    "kappa-kiro": 33.7,
-    "moonshot-maddox": 31.9,
-    "koschei": 31,
-    "oni-of-the-red-gate": 30.7,
-    "maestro-nocturne": 29.6,
-    "the-referee": 29.2,
-    "malachar": 28.6
+    "the-headless-bride": 46.5,
+    "desert-djinn": 45.2,
+    "dokkaebi": 45.2,
+    "the-moon-rabbit": 44.9,
+    "the-midnight-tsar": 44,
+    "banshee": 43.3,
+    "aurelia": 43.2,
+    "the-thing-beneath-the-bed": 42.6,
+    "plague-doctor": 42.5,
+    "hydra": 41.4,
+    "shiro": 41.1,
+    "nekomata": 40,
+    "the-sphinx": 39.4,
+    "zeiron": 39.2,
+    "the-painted-ronin": 37.9,
+    "medusa": 37.5,
+    "father-bell": 37.2,
+    "puca": 37.1,
+    "mister-whiskers": 36.8,
+    "one-eyed-likho": 36.8,
+    "the-marionettist": 36.8,
+    "the-gambler": 36.4,
+    "the-siren": 35.9,
+    "behemoth": 34,
+    "kappa-kiro": 32.9,
+    "moonshot-maddox": 32,
+    "koschei": 31.2,
+    "oni-of-the-red-gate": 30.6,
+    "the-referee": 28.2,
+    "maestro-nocturne": 28,
+    "malachar": 26.9
   },
   "topTeams": [
     {
       "team": [
-        "black-knight",
-        "lantern-spirit",
-        "plague-doctor"
-      ],
-      "games": 6,
-      "winRate": 68.8
-    },
-    {
-      "team": [
-        "hecates-disciple",
-        "marya-the-warrior",
-        "the-wild-huntsman"
-      ],
-      "games": 6,
-      "winRate": 68.8
-    },
-    {
-      "team": [
-        "leshy",
-        "rusalka",
-        "the-firebird"
-      ],
-      "games": 6,
-      "winRate": 68.8
-    },
-    {
-      "team": [
-        "marya-the-warrior",
-        "patient-zero",
-        "the-birch-witch"
-      ],
-      "games": 6,
-      "winRate": 68.8
-    },
-    {
-      "team": [
-        "puca",
-        "the-firebird",
-        "the-storyteller"
-      ],
-      "games": 6,
-      "winRate": 68.8
-    },
-    {
-      "team": [
-        "red-oni",
-        "rusalka",
-        "the-storyteller"
-      ],
-      "games": 6,
-      "winRate": 68.8
-    },
-    {
-      "team": [
-        "anubian-judge",
-        "scarab-king",
-        "tortuga-rex"
-      ],
-      "games": 6,
-      "winRate": 62.5
-    },
-    {
-      "team": [
-        "asterion",
-        "medusa",
-        "patient-zero"
-      ],
-      "games": 6,
-      "winRate": 62.5
-    },
-    {
-      "team": [
         "cerberus",
-        "fenris",
-        "tengu-swordsman"
-      ],
-      "games": 6,
-      "winRate": 62.5
-    },
-    {
-      "team": [
-        "cyclops-brontes",
-        "father-bell",
-        "madame-fortuna"
-      ],
-      "games": 6,
-      "winRate": 62.5
-    },
-    {
-      "team": [
         "desert-djinn",
-        "the-paper-monk",
-        "the-sphinx"
+        "icarion"
       ],
       "games": 6,
       "winRate": 62.5
     },
     {
       "team": [
-        "dokkaebi",
-        "the-monkey-trickster",
-        "the-valkyrie"
-      ],
-      "games": 6,
-      "winRate": 62.5
-    },
-    {
-      "team": [
-        "marya-the-warrior",
-        "nekomata",
-        "plague-doctor"
-      ],
-      "games": 6,
-      "winRate": 62.5
-    },
-    {
-      "team": [
-        "plague-doctor",
-        "tortuga-rex",
+        "hydra",
+        "shieldmaiden-yrsa",
         "umbrella-yokai"
       ],
       "games": 6,
       "winRate": 62.5
-    },
-    {
-      "team": [
-        "red-oni",
-        "the-firebird",
-        "the-thousand-faced-stranger"
-      ],
-      "games": 6,
-      "winRate": 62.5
-    },
-    {
-      "team": [
-        "ifrit",
-        "red-oni",
-        "the-birch-witch"
-      ],
-      "games": 7,
-      "winRate": 58.8
-    },
-    {
-      "team": [
-        "jackal-guardian",
-        "the-mirror-samurai",
-        "umbrella-yokai"
-      ],
-      "games": 7,
-      "winRate": 58.8
     },
     {
       "team": [
         "leshy",
-        "the-bronze-giant",
-        "the-paper-monk"
+        "mister-whiskers",
+        "the-dullahan"
+      ],
+      "games": 6,
+      "winRate": 62.5
+    },
+    {
+      "team": [
+        "rusalka",
+        "the-sphinx",
+        "the-storyteller"
+      ],
+      "games": 6,
+      "winRate": 62.5
+    },
+    {
+      "team": [
+        "father-bell",
+        "patient-zero",
+        "pharaoh-without-a-tomb"
       ],
       "games": 7,
       "winRate": 58.8
     },
     {
       "team": [
-        "anansi",
-        "hydra",
-        "maestro-nocturne"
-      ],
-      "games": 6,
-      "winRate": 56.3
-    },
-    {
-      "team": [
-        "anubian-judge",
-        "black-knight",
-        "hecates-disciple"
-      ],
-      "games": 6,
-      "winRate": 56.3
-    },
-    {
-      "team": [
-        "banshee",
-        "the-forgotten-titan",
-        "umbrella-yokai"
-      ],
-      "games": 6,
-      "winRate": 56.3
-    },
-    {
-      "team": [
-        "black-knight",
-        "draugr",
-        "the-berserker"
-      ],
-      "games": 6,
-      "winRate": 56.3
-    },
-    {
-      "team": [
         "cerberus",
-        "domovoi",
-        "father-frost"
+        "hydra",
+        "the-wandering-genie"
       ],
       "games": 6,
       "winRate": 56.3
     },
     {
       "team": [
-        "charon",
-        "jackal-guardian",
-        "sand-assassin"
-      ],
-      "games": 6,
-      "winRate": 56.3
-    },
-    {
-      "team": [
-        "domovoi",
         "gashadokuro",
+        "the-forgotten-titan",
         "the-mirror-samurai"
       ],
       "games": 6,
@@ -325,81 +171,18 @@
     },
     {
       "team": [
-        "domovoi",
-        "the-monkey-trickster",
-        "tortuga-rex"
-      ],
-      "games": 6,
-      "winRate": 56.3
-    },
-    {
-      "team": [
+        "charon",
         "draugr",
-        "puca",
-        "the-moon-rabbit"
-      ],
-      "games": 6,
-      "winRate": 56.3
-    },
-    {
-      "team": [
-        "madame-fortuna",
-        "mister-whiskers",
-        "pharaoh-without-a-tomb"
-      ],
-      "games": 6,
-      "winRate": 56.3
-    },
-    {
-      "team": [
-        "madame-fortuna",
-        "patient-zero",
-        "tortuga-rex"
-      ],
-      "games": 6,
-      "winRate": 56.3
-    },
-    {
-      "team": [
-        "shieldmaiden-yrsa",
-        "the-oracle",
-        "the-roc"
-      ],
-      "games": 6,
-      "winRate": 56.3
-    },
-    {
-      "team": [
-        "anubian-judge",
-        "the-monkey-trickster",
-        "the-wild-huntsman"
+        "the-monkey-trickster"
       ],
       "games": 7,
       "winRate": 52.9
     },
     {
       "team": [
-        "domovoi",
-        "nine-tailed-trickster",
-        "yuki-onna"
-      ],
-      "games": 7,
-      "winRate": 52.9
-    },
-    {
-      "team": [
-        "kappa-kiro",
-        "scarab-king",
-        "the-midnight-tsar"
-      ],
-      "games": 7,
-      "winRate": 52.9
-    },
-    {
-      "team": [
-        "rusalka",
-        "the-mummy-prince",
-        "the-nameless-one"
+        "ifrit",
+        "the-dullahan",
+        "the-headless-bride"
       ],
       "games": 7,
       "winRate": 52.9
@@ -407,56 +190,101 @@
     {
       "team": [
         "asterion",
-        "the-bronze-giant",
-        "the-wild-huntsman"
+        "medusa",
+        "the-storyteller"
       ],
       "games": 6,
       "winRate": 50
+    },
+    {
+      "team": [
+        "father-frost",
+        "morrigan",
+        "pharaoh-without-a-tomb"
+      ],
+      "games": 6,
+      "winRate": 50
+    },
+    {
+      "team": [
+        "fenris",
+        "malachar",
+        "nine-tailed-trickster"
+      ],
+      "games": 6,
+      "winRate": 50
+    },
+    {
+      "team": [
+        "hydra",
+        "red-oni",
+        "sand-assassin"
+      ],
+      "games": 6,
+      "winRate": 50
+    },
+    {
+      "team": [
+        "anubian-judge",
+        "scarab-king",
+        "the-gambler"
+      ],
+      "games": 7,
+      "winRate": 47.1
+    },
+    {
+      "team": [
+        "fenris",
+        "nine-tailed-trickster",
+        "the-bronze-giant"
+      ],
+      "games": 6,
+      "winRate": 43.8
+    },
+    {
+      "team": [
+        "scarab-king",
+        "the-headless-bride",
+        "the-painted-ronin"
+      ],
+      "games": 6,
+      "winRate": 43.8
+    },
+    {
+      "team": [
+        "asterion",
+        "the-referee",
+        "the-wild-huntsman"
+      ],
+      "games": 6,
+      "winRate": 37.5
+    },
+    {
+      "team": [
+        "aurelia",
+        "koschei",
+        "the-midnight-tsar"
+      ],
+      "games": 6,
+      "winRate": 37.5
     },
     {
       "team": [
         "baba-yaga",
-        "dokkaebi",
-        "the-ghoul"
+        "desert-djinn",
+        "rusalka"
       ],
       "games": 6,
-      "winRate": 50
+      "winRate": 37.5
     },
     {
       "team": [
-        "behemoth",
-        "jiangshi",
+        "blue-oni",
+        "oni-of-the-red-gate",
         "the-mummy-prince"
       ],
-      "games": 6,
-      "winRate": 50
-    },
-    {
-      "team": [
-        "black-knight",
-        "marya-the-warrior",
-        "the-forgotten-titan"
-      ],
-      "games": 6,
-      "winRate": 50
-    },
-    {
-      "team": [
-        "cerberus",
-        "the-bronze-giant",
-        "the-moon-rabbit"
-      ],
-      "games": 6,
-      "winRate": 50
-    },
-    {
-      "team": [
-        "charon",
-        "lantern-spirit",
-        "the-dullahan"
-      ],
-      "games": 6,
-      "winRate": 50
+      "games": 7,
+      "winRate": 35.3
     }
   ]
 }

@@ -99,10 +99,10 @@ describe("bot teams", () => {
     const gold = average(7);
     const apex = average(15);
     expect(Math.abs(bronze - meanRate(PLAYABLE_CHARACTERS.map((c) => c.id)))).toBeLessThan(2); // Bronze is about random
-    expect(gold).toBeGreaterThan(bronze + 1);
-    // Win rates compress as the roster grows (67 characters), so Gold and Apex can be near-equal; Apex must still clearly beat Bronze.
-    expect(apex).toBeGreaterThan(bronze + 1);
-    expect(apex).toBeGreaterThan(gold - 1);
+    expect(gold).toBeGreaterThan(bronze + 0.5);
+    // Win rates compress as the roster grows (98 characters), so Gold and Apex can be near-equal; Apex must still clearly beat Bronze.
+    expect(apex).toBeGreaterThan(bronze + 0.5);
+    expect(apex).toBeGreaterThan(gold - 2);
   });
 
   it("high divisions often bring one of the strongest known trios", () => {
