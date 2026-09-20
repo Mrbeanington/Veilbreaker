@@ -7,6 +7,7 @@ export default tseslint.config(
     ignores: [
       "**/dist/**",
       "**/dist-single/**",
+      "scripts/manual/**",
       "**/node_modules/**",
       "**/coverage/**",
       "**/.vite/**",

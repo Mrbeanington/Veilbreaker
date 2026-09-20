@@ -28,6 +28,10 @@ if (!html.includes('id="root"')) problems.push("no #root element");
 if (!/<script type="module">/.test(html)) problems.push("no inline module script");
 if (/serviceWorker\.register\(["']\.\/sw\.js/.test(html)) problems.push("the single file registers a service worker");
 
+// A module worker made from a blob does not start when the page is opened from disk (found with a real
+// file:// test in Chromium), so the inlined worker must be a classic one.
+if (/new Worker\([^)]*type:"module"/.test(html)) problems.push("an inlined worker is a module worker, which fails from file://");
+
 if (problems.length > 0) {
   console.error(`verify-single-file: FAILED\n - ${problems.join("\n - ")}`);
   process.exit(1);

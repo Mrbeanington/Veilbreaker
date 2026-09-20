@@ -74,7 +74,7 @@ export default defineConfig(({ mode }) => {
   },
   base: "./",
   plugins: single ? [react()] : [react(), veilbreakServiceWorkerPlugin()],
-  worker: single ? { format: "es" } : undefined,
+  worker: single ? { format: "iife" } : undefined,
   build: {
     outDir: single ? "dist-single" : "dist",
     ...(single ? { assetsInlineLimit: 100_000_000, cssCodeSplit: false } : {}),
