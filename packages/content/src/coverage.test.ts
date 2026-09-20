@@ -152,6 +152,14 @@ describe("coverage matrix", () => {
     expect(covers("counterattacks")).toEqual(expect.arrayContaining(["the-contender", "ace"]));
   });
 
+  it("credits region 10 (Music / Entertainment / Chaos) with the mechanics it was written for", () => {
+    const covers = (mechanic: Parameters<typeof charactersCoveringMechanic>[0]) => charactersCoveringMechanic(mechanic).map((c) => c.id);
+    expect(covers("transformations")).toContain("chef-ramble");
+    expect(covers("combo sequences")).toEqual(expect.arrayContaining(["chef-ramble", "dj-cataclysm"]));
+    expect(covers("HP sacrifice")).toContain("johnny-feedback");
+    expect(covers("silences")).toEqual(expect.arrayContaining(["dj-cataclysm", "the-mime"]));
+  });
+
   it("generates a markdown table with a row per mechanic", () => {
     const markdown = generateCoverageMarkdown();
     expect(markdown).toContain("# Mechanical Coverage Matrix");

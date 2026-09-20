@@ -18,7 +18,7 @@ export interface RegionSpec {
   /** Legends among the added characters (spec/03: powerful but counterable). */
   legends?: string[];
   /** Every character of the region carries this archetype tag. */
-  tag: "MYTHOLOGY" | "FOLKLORE" | "ATHLETE";
+  tag: "MYTHOLOGY" | "FOLKLORE" | "ATHLETE" | "MUSIC";
 }
 
 export function describeRegionRoster(spec: RegionSpec): void {

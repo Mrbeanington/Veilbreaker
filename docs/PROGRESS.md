@@ -1,6 +1,6 @@
 # Progress
 
-**Current phase:** 13 in progress: regions 1-9 done (110 of 120 characters built). Next: region 10 (Music / Entertainment / Chaos), one region per session.
+**Current phase:** 13 in progress: regions 1-10 done (115 of 120 characters built). Next: region 11, the Final Seven (Father Bell, The Tax Collector, The Lawyer, Calypsa, Emperor Zero, The Gatekeeper, The Nameless One), one region per session.
 
 | Phase | Title | Status |
 |---|---|---|
@@ -17,7 +17,7 @@
 | 10 | Friend matches (serverless) | ✅ done |
 | 11 | Local ranked | ✅ done |
 | 12 | Dev-mode balance tools & local analytics | ✅ done |
-| 13 | Scale the roster to 120 | 🔄 region 9 of 11 done |
+| 13 | Scale the roster to 120 | 🔄 region 10 of 11 done |
 | 14 | Art spec completion | ☐ |
 | 15 | Balance pass, polish, accessibility, offline/PWA, security | ☐ |
 
@@ -453,3 +453,6 @@ The Ranked section is now a working ladder against bots. Hidden Elo rating, 16 v
 
 ### 2026-09-20 — Phase 13, region 9 (Sports / Fighters)
 **5 new characters:** Fourth & One, The Gunslinger QB, El Magnífico, The Contender and Ace (Mason "Moonshot" Maddox, The Referee and The Black Knight already existed; region complete at 8). Data, art, design notes and 14 scenario tests. **No engine changes, no new statuses, no new Legend or Secret.** **Checks:** coverage matrix regenerated with region 9 assertions, template overlap (no pair over 70%), 5,000-match simulation with 0 engine errors (notes in `docs/balance/phase13-region9-notes.md`), ranked meta pool regenerated for 110 characters. **Files:** five `packages/content/src/data/characters/*.ts`, `characters/index.ts`, `coverage.test.ts`, `regionRoster.testkit.ts` (ATHLETE tag), `region9.roster.test.ts`, `packages/engine/src/scenarios/region9.scenario.test.ts`, `packages/ai/src/meta-pool.json`, `packages/content/coverage.md`, five design notes, `docs/balance/*`, docs. ADR-030; OQ-100. **Custom scripts:** none. **Recommended next step:** region 10, Music / Entertainment / Chaos (spec/03 #107 onward).
+
+### 2026-09-20 — Phase 13, region 10 (Music / Entertainment / Chaos)
+**5 new characters:** Johnny Feedback, DJ Cataclysm, The Mime, Chef Ramble and the Legend Orpheon, the Final Song (Maestro Nocturne and The Gambler already existed; region complete at 7). Data, art, design notes and 22 scenario tests. **New:** Orpheon's Legend trial (`trial.orpheon`, eleven Legends built) and his interruptible performance; Chef Ramble's transformation into **The Five-Star Fiend** (OQ-10 resolved: the Michelin Monster rename). No new statuses and no engine changes. **Checks:** coverage matrix regenerated with region 10 assertions, template overlap (the Mime reworked, none over 70%), 5,000-match simulation with 0 engine errors (notes in `docs/balance/phase13-region10-notes.md`), ranked meta pool regenerated for 115 characters. **Files:** five `packages/content/src/data/characters/*.ts`, `characters/index.ts`, `coverage.test.ts`, `regionRoster.testkit.ts` (MUSIC tag), `region10.roster.test.ts`, `packages/engine/src/scenarios/region10.scenario.test.ts`, `apps/web/src/game/progression.ts`, `packages/ai/src/meta-pool.json`, `packages/content/coverage.md`, five design notes, `docs/balance/*`, docs. ADR-031; OQ-101, OQ-10 resolved. **Custom scripts:** none. **Recommended next step:** region 11, the Final Seven (spec/03 #114-120; Father Bell, Emperor Zero and The Nameless One already exist; The Tax Collector, The Lawyer, Calypsa and The Gatekeeper are new).
