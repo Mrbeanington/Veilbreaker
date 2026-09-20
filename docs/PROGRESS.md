@@ -1,6 +1,6 @@
 # Progress
 
-**Current phase:** 13 in progress: regions 1-10 done (115 of 120 characters built). Next: region 11, the Final Seven (Father Bell, The Tax Collector, The Lawyer, Calypsa, Emperor Zero, The Gatekeeper, The Nameless One), one region per session.
+**Current phase:** 14 (Art spec completion) is next. Phase 13 is complete: the roster is 120 character definitions (119 playable), including all twelve Legends.
 
 | Phase | Title | Status |
 |---|---|---|
@@ -17,7 +17,7 @@
 | 10 | Friend matches (serverless) | ✅ done |
 | 11 | Local ranked | ✅ done |
 | 12 | Dev-mode balance tools & local analytics | ✅ done |
-| 13 | Scale the roster to 120 | 🔄 region 10 of 11 done |
+| 13 | Scale the roster to 120 | ✅ done |
 | 14 | Art spec completion | ☐ |
 | 15 | Balance pass, polish, accessibility, offline/PWA, security | ☐ |
 
@@ -456,3 +456,6 @@ The Ranked section is now a working ladder against bots. Hidden Elo rating, 16 v
 
 ### 2026-09-20 — Phase 13, region 10 (Music / Entertainment / Chaos)
 **5 new characters:** Johnny Feedback, DJ Cataclysm, The Mime, Chef Ramble and the Legend Orpheon, the Final Song (Maestro Nocturne and The Gambler already existed; region complete at 7). Data, art, design notes and 22 scenario tests. **New:** Orpheon's Legend trial (`trial.orpheon`, eleven Legends built) and his interruptible performance; Chef Ramble's transformation into **The Five-Star Fiend** (OQ-10 resolved: the Michelin Monster rename). No new statuses and no engine changes. **Checks:** coverage matrix regenerated with region 10 assertions, template overlap (the Mime reworked, none over 70%), 5,000-match simulation with 0 engine errors (notes in `docs/balance/phase13-region10-notes.md`), ranked meta pool regenerated for 115 characters. **Files:** five `packages/content/src/data/characters/*.ts`, `characters/index.ts`, `coverage.test.ts`, `regionRoster.testkit.ts` (MUSIC tag), `region10.roster.test.ts`, `packages/engine/src/scenarios/region10.scenario.test.ts`, `apps/web/src/game/progression.ts`, `packages/ai/src/meta-pool.json`, `packages/content/coverage.md`, five design notes, `docs/balance/*`, docs. ADR-031; OQ-101, OQ-10 resolved. **Custom scripts:** none. **Recommended next step:** region 11, the Final Seven (spec/03 #114-120; Father Bell, Emperor Zero and The Nameless One already exist; The Tax Collector, The Lawyer, Calypsa and The Gatekeeper are new).
+
+### 2026-09-20 — Phase 13, region 11 (the Final Seven) — Phase 13 complete
+**4 new characters:** The Tax Collector, the Secret The Lawyer, the Legend Calypsa, Queen Beneath the Sea, and the Secret The Gatekeeper (Father Bell, Emperor Zero and The Nameless One already existed; region complete at 7). Data, art, design notes and 22 scenario tests. **New:** Calypsa's Legend trial (`trial.calypsa`): **all twelve Legends are built**. No new statuses and no engine changes. **Checks:** coverage matrix regenerated with region 11 assertions, template overlap (no pair over 70%), 5,000-match simulation with 0 engine errors (notes in `docs/balance/phase13-region11-notes.md`), ranked meta pool regenerated for 119 characters. **Phase 13 end-of-phase report:** `docs/balance/phase13-summary.md` (120 definitions, 119 playable: 23 Core, 70 Rare, 14 Secret, 12 Legendary; per-region results; engine changes; guard tests; balance pattern; open items). **Files:** four `packages/content/src/data/characters/*.ts`, `characters/index.ts`, `coverage.test.ts`, `region11.roster.test.ts`, `packages/engine/src/scenarios/region11.scenario.test.ts`, `apps/web/src/game/progression.ts`, `packages/ai/src/meta-pool.json`, `packages/content/coverage.md`, four design notes, `docs/balance/*`, docs. ADR-032; OQ-102, OQ-103. **Custom scripts:** none. **Recommended next step:** Phase 14, art spec completion (`docs/phases/phase-14-art-specs.md`).

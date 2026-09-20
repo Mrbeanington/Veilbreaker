@@ -160,6 +160,14 @@ describe("coverage matrix", () => {
     expect(covers("silences")).toEqual(expect.arrayContaining(["dj-cataclysm", "the-mime"]));
   });
 
+  it("credits region 11 (the Final Seven) with the mechanics it was written for", () => {
+    const covers = (mechanic: Parameters<typeof charactersCoveringMechanic>[0]) => charactersCoveringMechanic(mechanic).map((c) => c.id);
+    expect(covers("energy stealing")).toEqual(expect.arrayContaining(["the-tax-collector", "the-lawyer"]));
+    expect(covers("target manipulation")).toContain("the-lawyer");
+    expect(covers("water/tides")).toContain("calypsa");
+    expect(covers("silences")).toContain("the-lawyer");
+  });
+
   it("generates a markdown table with a row per mechanic", () => {
     const markdown = generateCoverageMarkdown();
     expect(markdown).toContain("# Mechanical Coverage Matrix");
