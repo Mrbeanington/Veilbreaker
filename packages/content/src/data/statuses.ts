@@ -375,6 +375,20 @@ export const CROW_PROPHECY = status({
   tooltip: "If this character ends a turn below half health, the prophecy comes true for 60 damage. Healing, a dispel or staying healthy escapes it.",
 });
 
+// phase-13 (Aurelia): a standing floor, unlike Death Prevention (one save). While
+// it lasts the holder cannot fall below 1 health, however many blows land. It
+// delays a death rather than stopping it: when it ends the holder is still at 1.
+// The hook is in packages/engine/src/damage.ts (applyHp).
+export const SUN_GUARD = status({
+  id: "status.sun-guard",
+  displayName: "Sun Guard",
+  defaultTarget: allyTarget,
+  duration: { turns: 2, permanent: false },
+  stackRule: "refresh",
+  knowledgeLevel: "PUBLIC",
+  tooltip: "This character cannot fall below 1 health while Sun Guard lasts. A dispel or erasure ends it.",
+});
+
 export const STATUS_LIBRARY: Record<string, StatusDefinition> = Object.fromEntries(
   [
     STUN,
@@ -412,5 +426,6 @@ export const STATUS_LIBRARY: Record<string, StatusDefinition> = Object.fromEntri
     ABILITY_LOCK,
     FORETOLD,
     CROW_PROPHECY,
+    SUN_GUARD,
   ].map((def) => [def.id, def]),
 );

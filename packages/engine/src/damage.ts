@@ -9,6 +9,7 @@ import {
   INVULNERABLE,
   REFLECT,
   SHIELD,
+  SUN_GUARD,
   UNHEALABLE,
   WEAKNESS,
   type CharacterRuntimeState,
@@ -67,6 +68,13 @@ function applyHp(
 ): { characters: Record<string, CharacterRuntimeState>; events: AppliedEvent[] } {
   const target = getOrThrow(characters, targetId, "applyHp");
   const rawNewHp = Math.max(0, target.currentHp - amount);
+  // Sun Guard (Aurelia): a standing floor of 1 HP, not consumed by the blow.
+  if (rawNewHp <= 0 && target.currentHp > 0 && hasStatus(target, SUN_GUARD.id)) {
+    return {
+      characters: { ...characters, [targetId]: { ...target, currentHp: 1 } },
+      events: [{ type: "deathPrevented", targetId, payload: { wouldHaveTakenHpTo: rawNewHp, reason: "sun-guard" } }],
+    };
+  }
   if (rawNewHp > 0 || !hasStatus(target, DEATH_PREVENTION.id)) {
     return { characters: { ...characters, [targetId]: { ...target, currentHp: rawNewHp } }, events: [] };
   }

@@ -80,8 +80,16 @@ function conditionStateOf(state: EffectState, ctx: EffectContext): ConditionStat
  * falls back to the ability's shared targets otherwise. See docs/DECISIONS.md
  * ADR-011 and OQ-36 for why the other TargetRule sides aren't supported here.
  */
-function resolveEffectTargets(target: TargetRule | undefined, ctx: EffectContext): string[] {
-  return target?.side === "self" ? [ctx.sourceId] : ctx.targetIds;
+function resolveEffectTargets(target: TargetRule | undefined, ctx: EffectContext, characters?: Record<string, CharacterRuntimeState>): string[] {
+  if (target?.side === "self") return [ctx.sourceId];
+  // An effect can widen itself to every living enemy (a passive that curses the
+  // whole enemy team when its holder falls has no ability target to inherit).
+  if (target?.side === "enemy" && target.scope === "all" && characters) {
+    const ownTeam = ownerOf(ctx.teams, ctx.sourceId);
+    const enemyTeam = ctx.teams.find((team) => team.playerId !== ownTeam);
+    return (enemyTeam?.characterIds ?? []).filter((id) => characters[id]?.alive);
+  }
+  return ctx.targetIds;
 }
 
 /**
@@ -103,7 +111,7 @@ export function applyEffect(
       let characters = state.characters;
       let summons = state.summons;
       const events: AppliedEvent[] = [];
-      for (const targetId of resolveEffectTargets(effect.target, ctx)) {
+      for (const targetId of resolveEffectTargets(effect.target, ctx, state.characters)) {
         // The schema defaults damageType to "normal" at parse time, but the
         // hand-written Effect union still marks it optional (a raw literal
         // built without going through the schema, as tests sometimes do,
@@ -119,7 +127,7 @@ export function applyEffect(
     case "heal": {
       let characters = state.characters;
       const events: AppliedEvent[] = [];
-      for (const targetId of resolveEffectTargets(effect.target, ctx)) {
+      for (const targetId of resolveEffectTargets(effect.target, ctx, state.characters)) {
         const result = resolveHeal(characters, ctx.sourceId, targetId, effect.amount, effect.healingClass);
         characters = result.characters;
         events.push(...result.events);
@@ -134,7 +142,7 @@ export function applyEffect(
       }
       let characters = state.characters;
       const events: AppliedEvent[] = [];
-      for (const targetId of resolveEffectTargets(effect.target, ctx)) {
+      for (const targetId of resolveEffectTargets(effect.target, ctx, state.characters)) {
         const target = characters[targetId];
         if (!target?.alive) continue;
         const param = resolveAbilityToken(effect.param, target);
@@ -161,7 +169,7 @@ export function applyEffect(
     case "removeStatus": {
       let characters = state.characters;
       const events: AppliedEvent[] = [];
-      for (const targetId of resolveEffectTargets(effect.target, ctx)) {
+      for (const targetId of resolveEffectTargets(effect.target, ctx, state.characters)) {
         const target = characters[targetId];
         if (!target) continue;
         if (effect.dispelAll) {
@@ -184,7 +192,7 @@ export function applyEffect(
       const definition = ctx.resourceLibrary[effect.resourceId];
       let characters = state.characters;
       const events: AppliedEvent[] = [];
-      for (const targetId of resolveEffectTargets(effect.target, ctx)) {
+      for (const targetId of resolveEffectTargets(effect.target, ctx, state.characters)) {
         const target = characters[targetId];
         if (!target) continue;
         const current = target.resources[effect.resourceId] ?? definition?.startingValue ?? 0;

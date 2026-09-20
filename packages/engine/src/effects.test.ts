@@ -607,3 +607,14 @@ describe("applyEffect — status effects with a self target (phase 13 regression
   });
 });
 
+
+describe("applyEffect — an all-enemies target on an effect (phase 13 regression)", () => {
+  const allEnemies = { side: "enemy" as const, scope: "all" as const, count: 1, includeSelf: false, filterTags: [] };
+  it("applyStatus lands on every living enemy of the source, whatever targets the trigger supplied", () => {
+    const state = stateWith([character("a1"), character("b1"), character("b2")]);
+    const result = applyEffect(state, { kind: "applyStatus", statusId: "status.weakness", magnitude: 10, durationTurns: 2, target: allEnemies }, ctx({ sourceId: "a1", targetIds: ["a1"], teams: [{ playerId: "playerA", characterIds: ["a1"] }, { playerId: "playerB", characterIds: ["b1", "b2"] }] }), createRng(1));
+    expect(hasStatus(result.state.characters.b1!, "status.weakness")).toBe(true);
+    expect(hasStatus(result.state.characters.b2!, "status.weakness")).toBe(true);
+    expect(hasStatus(result.state.characters.a1!, "status.weakness")).toBe(false);
+  });
+});

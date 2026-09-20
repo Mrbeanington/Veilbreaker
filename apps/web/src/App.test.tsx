@@ -224,6 +224,8 @@ describe("favorites", () => {
     const user = userEvent.setup();
     const store = await renderApp();
     await user.click(screen.getByRole("button", { name: "Characters" }));
+    // The first fighter alphabetically can be a Secret (shown as a silhouette), so pick a public one explicitly.
+    await user.click(await screen.findByRole("button", { name: /Tortuga Rex/ }));
     await user.click(await screen.findByRole("button", { name: /Add to favorites/ }));
     await waitFor(async () => expect((await loadProfile(store)).profile.favorites).toHaveLength(1));
   });

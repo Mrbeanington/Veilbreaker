@@ -102,6 +102,19 @@ describe("coverage matrix", () => {
     expect(covers("randomness")).toContain("puca");
   });
 
+  it("credits region 5 (Egypt / Desert / Ancient Kingdoms) with the mechanics it was written for", () => {
+    const covers = (mechanic: Parameters<typeof charactersCoveringMechanic>[0]) => charactersCoveringMechanic(mechanic).map((c) => c.id);
+    expect(covers("fire")).toContain("ifrit");
+    expect(covers("randomness")).toEqual(expect.arrayContaining(["desert-djinn", "the-sphinx"]));
+    expect(covers("poison")).toContain("sand-assassin");
+    expect(covers("energy stealing")).toContain("pharaoh-without-a-tomb");
+    expect(covers("curses")).toContain("the-mummy-prince");
+    expect(covers("summons")).toEqual(expect.arrayContaining(["scarab-king", "pharaoh-without-a-tomb"]));
+    expect(covers("reflection")).toContain("the-living-sarcophagus");
+    expect(covers("counterattacks")).toContain("jackal-guardian");
+    expect(covers("silences")).toContain("the-sphinx");
+  });
+
   it("generates a markdown table with a row per mechanic", () => {
     const markdown = generateCoverageMarkdown();
     expect(markdown).toContain("# Mechanical Coverage Matrix");

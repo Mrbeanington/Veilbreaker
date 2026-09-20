@@ -140,7 +140,7 @@ function refs(table: readonly string[]): { toRef: (id: string) => Ref; fromRef: 
 const SETTINGS_ORDER = ["animationSpeed", "reducedMotion", "turnTimer", "uiScale", "highContrast", "soundEnabled", "soundVolume", "showAllCharacters", "botLevel"] as const;
 
 /** A transfer code has to fit one QR code, and pair tables grow with the square of the roster (120 characters is 14,000 pairs), so each table sends only its strongest pairs. Backups carry everything. */
-export const MAX_TRANSFER_PAIRS = 300;
+export const MAX_TRANSFER_PAIRS = 250;
 
 function packPairs(table: Profile["beat"], toRef: (id: string) => Ref) {
   const entries: [string, string, number][] = [];
