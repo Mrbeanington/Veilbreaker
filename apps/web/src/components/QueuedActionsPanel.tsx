@@ -20,7 +20,9 @@ export function QueuedActionsPanel({ actions, skipped, readyCharacterIds, onCanc
 
   return (
     <div className="panel">
-      <div className="section-title">Queued actions</div>
+      <div className="section-title" role="heading" aria-level={3}>
+        Queued actions
+      </div>
       {readyCharacterIds.length === 0 && <p className="hp-text">No one on this team can act this turn.</p>}
       {readyCharacterIds.map((characterId) => {
         const action = actions[characterId];

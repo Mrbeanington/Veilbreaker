@@ -175,3 +175,31 @@ describe("MatchScreen — turn timer (spec/05, spec/06 OQ-08)", () => {
     }
   });
 });
+
+describe("MatchScreen — keyboard and screen-reader focus (ADR-043)", () => {
+  it("moves focus to the target prompt, then to the next fighter, so the page never drops to the top", async () => {
+    const user = userEvent.setup();
+    renderMatch();
+    await user.click(screen.getByRole("button", { name: /I'm Player 1 — Ready/i }));
+
+    await user.click(screen.getByRole("button", { name: /Shell Bash/i }));
+    expect(document.activeElement).toHaveTextContent(/Choose a target for Shell Bash/i);
+
+    await user.click(screen.getByRole("button", { name: /Patient Zero/i }));
+    expect(document.activeElement).toHaveTextContent(/Moonshot.* Maddox.s action/i);
+  });
+
+  it("puts focus on the turn heading when a new turn begins", async () => {
+    const user = userEvent.setup();
+    renderMatch();
+    await user.click(screen.getByRole("button", { name: /I'm Player 1 — Ready/i }));
+    // Everyone passes, then both players lock in.
+    for (let i = 0; i < 3; i += 1) await user.click(screen.getByRole("button", { name: /^Pass/ }));
+    await user.click(screen.getByRole("button", { name: /Confirm turn/i }));
+    await user.click(screen.getByRole("button", { name: /I'm Player 2 — Ready/i }));
+    for (let i = 0; i < 3; i += 1) await user.click(screen.getByRole("button", { name: /^Pass/ }));
+    await user.click(screen.getByRole("button", { name: /Confirm turn/i }));
+    await user.click(screen.getByRole("button", { name: /I'm Player 1 — Ready/i }));
+    expect(screen.getByRole("heading", { name: /Turn 2/ })).toHaveFocus();
+  });
+});

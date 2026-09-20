@@ -49,6 +49,18 @@ describe("automated accessibility audit of every main screen", () => {
   }
 });
 
+describe("the match screen", () => {
+  it("the tutorial match has no axe violations, a labelled energy pool and headings for its panels", async () => {
+    const user = userEvent.setup();
+    await renderApp();
+    await user.click(await screen.findByRole("button", { name: "Start the tutorial" }));
+    await screen.findByRole("complementary", { name: "Tutorial tip" });
+    expect(screen.getByRole("group", { name: "Energy pool" })).toBeInTheDocument();
+    for (const name of ["Player 1's team", "Player 2's team", "Queued actions", "Battle log"]) expect(screen.getByRole("heading", { name })).toBeInTheDocument();
+    expect(await violations()).toEqual([]);
+  });
+});
+
 describe("codex reference pages", () => {
   for (const part of ["Rules", "Statuses"]) {
     it(`Codex ${part} has no axe violations`, async () => {

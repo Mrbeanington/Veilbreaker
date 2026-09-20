@@ -77,6 +77,14 @@ export function MatchScreen({ mode, teamAIds, teamBIds, seed, botLevel, onMatchO
   const { turnTimerEnabled: timerSetting, settings } = useSettings();
   const turnTimerEnabled = timerSetting && !tutorial;
   const turnLog = useRef<RecordedTurn[]>([]);
+  // Keyboard and screen-reader users keep their place (ADR-043): when the turn advances, the next
+  // fighter's action list appears, or a target is being chosen, the panel that replaced the focused
+  // control takes focus instead of the page dropping back to the top.
+  const turnHeadingRef = useRef<HTMLHeadingElement>(null);
+  const actionTitleRef = useRef<HTMLElement | null>(null);
+  const wantHeadingFocus = useRef(false);
+  const lastTurn = useRef(battleState.turn);
+  const lastPanel = useRef({ turn: battleState.turn, rest: "" });
 
   const deps = useMemo(() => matchDeps(energyRules), [energyRules]);
 
@@ -99,6 +107,27 @@ export function MatchScreen({ mode, teamAIds, teamBIds, seed, botLevel, onMatchO
     // once, the moment the countdown reaches zero — not on every render
     // where `step`, `confirmTurn`, or the queued actions happen to change.
   }, [secondsLeft]);
+
+  useEffect(() => {
+    if (lastTurn.current !== battleState.turn) {
+      lastTurn.current = battleState.turn;
+      wantHeadingFocus.current = true;
+    }
+    // In hotseat the heading only exists after the hand-over screen, so the wish waits for it.
+    if (wantHeadingFocus.current && turnHeadingRef.current) {
+      turnHeadingRef.current.focus({ preventScroll: true });
+      wantHeadingFocus.current = false;
+    }
+  }, [battleState.turn, step]);
+
+  const queuedCount = Object.keys(pendingActionsA).length + Object.keys(pendingActionsB).length + skippedA.size + skippedB.size;
+  useEffect(() => {
+    const rest = `${pendingAbility?.ability.id ?? ""}|${queuedCount}`;
+    const before = lastPanel.current;
+    lastPanel.current = { turn: battleState.turn, rest };
+    // A new turn is handled by the heading above; here only choices inside the same turn move focus.
+    if (before.turn === battleState.turn && before.rest !== rest) actionTitleRef.current?.focus({ preventScroll: true });
+  }, [pendingAbility, queuedCount, battleState.turn]);
 
   function actingCharacterIds(playerId: string): string[] {
     const team = battleState.teams.find((t) => t.playerId === playerId);
@@ -286,10 +315,11 @@ export function MatchScreen({ mode, teamAIds, teamBIds, seed, botLevel, onMatchO
 
   const decided = readyIds.filter((id) => actionsFor(playerId)[id] || skips.has(id)).length;
 
+
   return (
     <div>
       {tutorial && <TutorialCoach tip={tutorialTip({ turn: battleState.turn, choosingTarget: pendingAbility !== null, ready: readyIds.length, decided })} onSkip={tutorial.onSkip} />}
-      <h2 className="title" style={{ fontSize: "1.4rem" }}>
+      <h2 className="title" style={{ fontSize: "1.4rem" }} tabIndex={-1} ref={turnHeadingRef}>
         Turn {battleState.turn} — {PLAYER_LABELS[playerId]}'s move {turnTimerEnabled && <TurnTimer secondsLeft={secondsLeft} />}
       </h2>
       {error && (
@@ -302,7 +332,7 @@ export function MatchScreen({ mode, teamAIds, teamBIds, seed, botLevel, onMatchO
 
       <div className="match-grid">
         <div className="team-column">
-          <div className="section-title">Player 1's team</div>
+          <div className="section-title" role="heading" aria-level={3}>Player 1's team</div>
           {battleState.teams[0]!.characterIds.map((id) => (
             <CharacterCard
               key={id}
@@ -315,7 +345,7 @@ export function MatchScreen({ mode, teamAIds, teamBIds, seed, botLevel, onMatchO
           ))}
         </div>
         <div className="team-column">
-          <div className="section-title">Player 2's team</div>
+          <div className="section-title" role="heading" aria-level={3}>Player 2's team</div>
           {battleState.teams[1]!.characterIds.map((id) => (
             <CharacterCard
               key={id}
@@ -332,7 +362,7 @@ export function MatchScreen({ mode, teamAIds, teamBIds, seed, botLevel, onMatchO
       <div className="panel">
         {pendingAbility ? (
           <>
-            <div className="section-title">
+            <div className="section-title" role="heading" aria-level={3} tabIndex={-1} ref={(node) => { actionTitleRef.current = node; }}>
               Choose a target for {pendingAbility.ability.displayName} ({CHARACTER_LIBRARY[pendingAbility.characterId]?.displayName})
             </div>
             <p className="hp-text">Click a character above.</p>
@@ -342,7 +372,9 @@ export function MatchScreen({ mode, teamAIds, teamBIds, seed, botLevel, onMatchO
           </>
         ) : activeCharacter && activeCharacterId ? (
           <>
-            <div className="section-title">{CHARACTER_LIBRARY[activeCharacterId]?.displayName}'s action</div>
+            <div className="section-title" role="heading" aria-level={3} tabIndex={-1} ref={(node) => { actionTitleRef.current = node; }}>
+              {CHARACTER_LIBRARY[activeCharacterId]?.displayName}'s action
+            </div>
             <AbilityList
               abilities={activeCharacter.abilityIds.map((id) => ABILITY_LIBRARY[id]).filter((a): a is Ability => !!a)}
               actor={activeCharacter}
@@ -355,7 +387,9 @@ export function MatchScreen({ mode, teamAIds, teamBIds, seed, botLevel, onMatchO
             </button>
           </>
         ) : (
-          <p>Every action is queued.</p>
+          <p tabIndex={-1} ref={(node) => { actionTitleRef.current = node; }}>
+            Every action is queued.
+          </p>
         )}
       </div>
 
@@ -367,10 +401,14 @@ export function MatchScreen({ mode, teamAIds, teamBIds, seed, botLevel, onMatchO
         onConfirm={() => confirmTurn(playerId)}
       />
 
-      {isResolving && <p className="subtitle">The bot is thinking…</p>}
+      {isResolving && (
+        <p className="subtitle" role="status">
+          The bot is thinking…
+        </p>
+      )}
 
       <div className="panel">
-        <div className="section-title">Battle log</div>
+        <div className="section-title" role="heading" aria-level={3}>Battle log</div>
         <BattleLog events={battleState.eventLog} />
       </div>
     </div>

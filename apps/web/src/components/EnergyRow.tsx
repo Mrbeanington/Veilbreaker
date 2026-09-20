@@ -4,7 +4,7 @@ const FAMILY_LABELS: Record<keyof EnergyPool, string> = { MIGHT: "Might", FOCUS:
 
 export function EnergyRow({ pool }: { pool: EnergyPool }) {
   return (
-    <div className="energy-row" aria-label="Energy pool">
+    <div className="energy-row" role="group" aria-label="Energy pool">
       {(Object.keys(FAMILY_LABELS) as (keyof EnergyPool)[]).map((family) => (
         <span key={family} className="energy-chip">
           {FAMILY_LABELS[family]}: {pool[family]}
