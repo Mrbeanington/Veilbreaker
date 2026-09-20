@@ -143,6 +143,15 @@ describe("coverage matrix", () => {
     expect(covers("counterattacks")).toContain("sir-hopsalot");
   });
 
+  it("credits region 9 (Sports / Fighters) with the mechanics it was written for", () => {
+    const covers = (mechanic: Parameters<typeof charactersCoveringMechanic>[0]) => charactersCoveringMechanic(mechanic).map((c) => c.id);
+    expect(covers("sports mechanics")).toEqual(expect.arrayContaining(["moonshot-maddox"]));
+    expect(covers("randomness")).toContain("the-gunslinger-qb");
+    expect(covers("HP sacrifice")).toContain("the-gunslinger-qb");
+    expect(covers("stuns")).toContain("el-magnifico");
+    expect(covers("counterattacks")).toEqual(expect.arrayContaining(["the-contender", "ace"]));
+  });
+
   it("generates a markdown table with a row per mechanic", () => {
     const markdown = generateCoverageMarkdown();
     expect(markdown).toContain("# Mechanical Coverage Matrix");

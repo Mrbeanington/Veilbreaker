@@ -1,6 +1,6 @@
 # Progress
 
-**Current phase:** 13 in progress: regions 1-8 done (105 of 120 characters built). Next: region 9 (Sports / Fighters), one region per session.
+**Current phase:** 13 in progress: regions 1-9 done (110 of 120 characters built). Next: region 10 (Music / Entertainment / Chaos), one region per session.
 
 | Phase | Title | Status |
 |---|---|---|
@@ -17,7 +17,7 @@
 | 10 | Friend matches (serverless) | ✅ done |
 | 11 | Local ranked | ✅ done |
 | 12 | Dev-mode balance tools & local analytics | ✅ done |
-| 13 | Scale the roster to 120 | 🔄 region 8 of 11 done |
+| 13 | Scale the roster to 120 | 🔄 region 9 of 11 done |
 | 14 | Art spec completion | ☐ |
 | 15 | Balance pass, polish, accessibility, offline/PWA, security | ☐ |
 
@@ -450,3 +450,6 @@ The Ranked section is now a working ladder against bots. Hidden Elo rating, 16 v
 
 ### 2026-09-20 — Phase 13, region 8 (Animals / Weird Characters)
 **7 new characters:** Sir Hopsalot, General Goose, The Honey Badger, Professor Octopus, King Croak, The Albino Gorilla and the Legend The Minotaur King (Tortuga Rex and Mister Whiskers already existed; Whiskers, Devourer of Worlds is a transformation stage of Mister Whiskers; region complete at 10). Data, art, design notes and 23 scenario tests. **New:** The Minotaur King's Legend trial (`trial.minotaur-king`, ten Legends built); no new statuses and no engine changes. **Checks:** coverage matrix regenerated with region 8 assertions, template overlap (three pairs reworked, none over 70%), 5,000-match simulation with 0 engine errors (notes in `docs/balance/phase13-region8-notes.md`), ranked meta pool regenerated for 105 characters. **Files:** seven `packages/content/src/data/characters/*.ts`, `characters/index.ts`, `coverage.test.ts`, `region8.roster.test.ts`, `packages/engine/src/scenarios/region8.scenario.test.ts`, `apps/web/src/game/progression.ts`, `packages/ai/src/meta-pool.json`, `packages/content/coverage.md`, seven design notes, `docs/balance/*`, docs. **Scale fixes:** `packages/persistence/src/codec.ts` (+ test) packs long id lists as bitsets; `packages/ai/scripts/meta.ts` minimum-games floor 3. ADR-029; OQ-98, OQ-99. **Custom scripts:** none. **Recommended next step:** region 9, Sports / Fighters (spec/03 #99 onward).
+
+### 2026-09-20 — Phase 13, region 9 (Sports / Fighters)
+**5 new characters:** Fourth & One, The Gunslinger QB, El Magnífico, The Contender and Ace (Mason "Moonshot" Maddox, The Referee and The Black Knight already existed; region complete at 8). Data, art, design notes and 14 scenario tests. **No engine changes, no new statuses, no new Legend or Secret.** **Checks:** coverage matrix regenerated with region 9 assertions, template overlap (no pair over 70%), 5,000-match simulation with 0 engine errors (notes in `docs/balance/phase13-region9-notes.md`), ranked meta pool regenerated for 110 characters. **Files:** five `packages/content/src/data/characters/*.ts`, `characters/index.ts`, `coverage.test.ts`, `regionRoster.testkit.ts` (ATHLETE tag), `region9.roster.test.ts`, `packages/engine/src/scenarios/region9.scenario.test.ts`, `packages/ai/src/meta-pool.json`, `packages/content/coverage.md`, five design notes, `docs/balance/*`, docs. ADR-030; OQ-100. **Custom scripts:** none. **Recommended next step:** region 10, Music / Entertainment / Chaos (spec/03 #107 onward).
