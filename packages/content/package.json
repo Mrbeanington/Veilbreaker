@@ -10,7 +10,8 @@
     "test": "vitest run",
     "generate-coverage": "tsx scripts/generate-coverage.ts",
     "art-audit": "tsx scripts/art-audit.ts",
-    "export-art-specs": "tsx scripts/export-art-specs.ts"
+    "export-art-specs": "tsx scripts/export-art-specs.ts",
+    "export-portrait-prompts": "tsx scripts/export-portrait-prompts.ts"
   },
   "dependencies": {
     "zod": "^3.23.8"

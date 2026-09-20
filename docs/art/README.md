@@ -24,5 +24,16 @@ The audit checks the prompts. It cannot check that finished images match, so a p
 ## Cultural review (OQ-12)
 `culturalGroups` lists the reviewers' work, high priority first. The high-priority groups are Japanese, Slavic, Egyptian and desert, and World Folklore (which covers several cultures under one label, so each needs its own reviewer). Nothing may be promoted from `draft` to `reviewed` or `final` without that review.
 
-## Placeholder art
-The game still shows initials on a regional colour. Nothing in this pipeline changes that until real art is added.
+## Portraits: prompts and getting them into the game
+`portrait-prompts.md` holds all 119 portrait prompts, ready to paste into an image generator (ChatGPT works). The shared style block appears once at the top, so each prompt is only the character. Regenerate it with `pnpm art:portraits`; never edit it by hand. It also lists the four-fighter reference set to approve first.
+
+Save each approved image as `<fighter-id>.portrait.png` (square, 512 pixels or more) in one folder, then:
+
+```bash
+pnpm art:import <folder>   # shrinks to 256 px WebP into apps/web/src/art/portraits, reports problems and what is missing
+pnpm art:status            # how many fighters have a portrait, by rarity
+```
+
+A fighter with a portrait file shows the picture everywhere (roster, team picker, match, Codex); a fighter without one keeps the initials badge, so art can arrive a few fighters at a time. Files are cached for offline play and included in the single-file build. `pnpm verify-bundle-budget` caps all portrait files together at 6 MB (about 30 KB each is typical).
+
+Commit the resulting `.webp` files. Keep the originals somewhere else; they are too large for the repository.

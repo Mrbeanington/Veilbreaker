@@ -11,7 +11,7 @@ import { gzipSync } from "node:zlib";
 
 const DIST = join("apps", "web", "dist", "assets");
 const KB = 1024;
-const BUDGETS = { initialGzip: 340 * KB, workerGzip: 190 * KB };
+const BUDGETS = { initialGzip: 340 * KB, workerGzip: 190 * KB, imagesTotal: 6144 * KB };
 
 let names;
 try {
@@ -32,7 +32,13 @@ for (const name of names) {
 }
 console.log(rows.join("\n"));
 console.log(`initial: ${(initial / KB).toFixed(1)} KB gzip (budget ${BUDGETS.initialGzip / KB} KB); worker: ${(worker / KB).toFixed(1)} KB gzip (budget ${BUDGETS.workerGzip / KB} KB)`);
+// ADR-042: portrait pictures are precached for offline play, so their total size is capped too.
+const images = (await readdir(DIST)).filter((n) => /.(webp|png|jpe?g)$/i.test(n));
+let imageBytes = 0;
+for (const n of images) imageBytes += (await readFile(join(DIST, n))).length;
+console.log(`images: ${images.length} file(s), ${(imageBytes / KB).toFixed(0)} KB (budget ${BUDGETS.imagesTotal / KB} KB)`);
 const failures = [];
+if (imageBytes > BUDGETS.imagesTotal) failures.push("portrait images are over budget");
 if (initial > BUDGETS.initialGzip) failures.push("initial bundle is over budget");
 if (worker > BUDGETS.workerGzip) failures.push("bot worker is over budget");
 if (failures.length > 0) {
