@@ -1,4 +1,5 @@
 import { CHARACTER_LIBRARY } from "@veilbreak/content";
+import { ScreenBar } from "../components/ScreenBar";
 import { Icon } from "../components/Icon";
 import { isDiscovered } from "../game/knowledge";
 import { LEGEND_TRIALS, legendUnlocked, trialAvailable, type LegendTrial } from "../game/progression";
@@ -17,6 +18,7 @@ export function TrialsScreen({ onStart, onBack }: TrialsScreenProps) {
   const { profile } = useProfile();
   return (
     <div>
+      <ScreenBar onBack={onBack} />
       <h2 className="title small">Legend trials</h2>
       <p className="subtitle">Win a trial to unlock its Legend for your teams. You choose your own three fighters.</p>
       <div className="mode-grid">
@@ -40,11 +42,6 @@ export function TrialsScreen({ onStart, onBack }: TrialsScreenProps) {
             </div>
           );
         })}
-      </div>
-      <div className="button-row" style={{ marginTop: 16 }}>
-        <button type="button" className="btn" onClick={onBack}>
-          Back
-        </button>
       </div>
     </div>
   );

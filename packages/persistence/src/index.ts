@@ -86,6 +86,7 @@ export {
   type ReplayDecode,
   type TransferResult,
 } from "./codec";
+export { resetProfile, clearReplays, type ResetKind } from "./reset";
 export { MAX_STORED_REPLAYS, listReplays, loadReplay, replayRecordSchema, saveReplay, type ReplayRecord } from "./replay";
 export { decodeQr, qrMatrix, renderQrRgba, renderQrSvg, type QrMatrix, type RgbaImage } from "./qr";
 export { checksumOf, crc32 } from "./bytes";

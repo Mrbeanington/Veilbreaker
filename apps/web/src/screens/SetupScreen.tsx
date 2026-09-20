@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ScreenBar } from "../components/ScreenBar";
 import { TeamPicker } from "../components/TeamPicker";
 import { PICKABLE_CHARACTERS, TEAM_SIZE } from "../game/roster";
 
@@ -30,6 +31,11 @@ export function SetupScreen({ mode, opponentIds, title, onReady, onBack }: Setup
 
   return (
     <div>
+      <ScreenBar
+        onBack={onBack}
+        status={`${teamA.length} of ${TEAM_SIZE} picked${mode === "hotseat" ? ` · ${teamB.length} of ${TEAM_SIZE}` : ""}`}
+        action={{ label: "Start match", onClick: handleContinue, disabled: !teamAReady || !teamBReady }}
+      />
       <h2 className="title" style={{ fontSize: "1.6rem" }}>
         {title ?? `Choose your team${mode === "hotseat" ? "s" : ""}`}
       </h2>
@@ -38,14 +44,6 @@ export function SetupScreen({ mode, opponentIds, title, onReady, onBack }: Setup
       <TeamPicker label="Player 1" picked={teamA} onChange={setTeamA} />
       {mode === "hotseat" && <TeamPicker label="Player 2" picked={teamB} onChange={setTeamB} />}
 
-      <div className="button-row">
-        <button type="button" className="btn" onClick={onBack}>
-          Back
-        </button>
-        <button type="button" className="btn primary" disabled={!teamAReady || !teamBReady} onClick={handleContinue}>
-          Start match
-        </button>
-      </div>
     </div>
   );
 }

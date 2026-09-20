@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ScreenBar } from "../components/ScreenBar";
 import { ABILITY_LIBRARY, CHARACTER_LIBRARY, type Ability } from "@veilbreak/content";
 import { canAct, getEffectiveCost, payCost, validateAction } from "@veilbreak/engine";
 import { saveReplay, type HistoryEntry } from "@veilbreak/persistence";
@@ -71,6 +72,7 @@ export function FriendScreen({ initialCode, onBack }: FriendScreenProps) {
 
   return (
     <div>
+      {view.name === "menu" && <ScreenBar onBack={onBack} />}
       <h2 className="title small">Friend match</h2>
       <p className="subtitle">Play a friend without any account or server: you swap short codes by message, email or any chat. {COMMIT_REVEAL_TEXT}</p>
       {view.name === "menu" && (
@@ -103,11 +105,6 @@ export function FriendScreen({ initialCode, onBack }: FriendScreenProps) {
                 ))}
               </ul>
             )}
-          </div>
-          <div className="button-row" style={{ marginTop: 16 }}>
-            <button type="button" className="btn" onClick={onBack}>
-              Back
-            </button>
           </div>
         </div>
       )}
@@ -168,6 +165,7 @@ function HostSetup({ onCancel, onCreated }: { onCancel: () => void; onCreated: (
 
   return (
     <div>
+      <ScreenBar onBack={onCancel} status={`${team.length} of ${TEAM_SIZE} picked`} action={{ label: "Create invite", onClick: () => void create(), disabled: team.length !== TEAM_SIZE }} />
       <div className="panel">
         <div className="section-title">Unlock rule</div>
         {(["all", "own"] as const).map((r) => (
@@ -181,14 +179,6 @@ function HostSetup({ onCancel, onCreated }: { onCancel: () => void; onCreated: (
       </div>
       <TeamPicker label="Your team" picked={team} onChange={setTeam} everythingUnlocked={rule === "all"} />
       {error && <div className="error-banner" role="alert">{error}</div>}
-      <div className="button-row">
-        <button type="button" className="btn" onClick={onCancel}>
-          Back
-        </button>
-        <button type="button" className="btn primary" disabled={team.length !== TEAM_SIZE} onClick={() => void create()}>
-          Create invite
-        </button>
-      </div>
     </div>
   );
 }
@@ -209,6 +199,7 @@ function JoinSetup({ initialCode, onCancel, onJoined }: { initialCode: string; o
 
   return (
     <div>
+      <ScreenBar onBack={onCancel} status={invite ? `${team.length} of ${TEAM_SIZE} picked` : undefined} action={{ label: "Join match", onClick: () => void join(), disabled: !invite || team.length !== TEAM_SIZE }} />
       <div className="panel">
         <label htmlFor="invite-code">Invite code or link from your friend</label>
         <textarea id="invite-code" rows={3} value={code} onChange={(e) => { setCode(e.target.value); setError(null); }} />
@@ -224,14 +215,6 @@ function JoinSetup({ initialCode, onCancel, onJoined }: { initialCode: string; o
       </div>
       {invite && <TeamPicker label="Your team" picked={team} onChange={setTeam} everythingUnlocked={invite.unlockRule === "all"} />}
       {error && <div className="error-banner" role="alert">{error}</div>}
-      <div className="button-row">
-        <button type="button" className="btn" onClick={onCancel}>
-          Back
-        </button>
-        <button type="button" className="btn primary" disabled={!invite || team.length !== TEAM_SIZE} onClick={() => void join()}>
-          Join match
-        </button>
-      </div>
     </div>
   );
 }

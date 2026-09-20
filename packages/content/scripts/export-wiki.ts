@@ -3,6 +3,7 @@ import { dirname, resolve } from "node:path";
 import { ABILITY_LIBRARY, CHARACTER_ART_LIBRARY, CHARACTER_LIBRARY, PASSIVE_LIBRARY, STUB_CHARACTER_IDS, TRANSFORMATION_LIBRARY } from "../src/data/characters/index";
 import { STATUS_LIBRARY } from "../src/data/statuses";
 import { defaultEnergyRules } from "../src/balance";
+import { CHARACTER_LORE } from "../src/data/lore";
 import { generateAbilityTooltip } from "../src/tooltip";
 import { culturalGroupOf } from "../src/artExport";
 
@@ -26,6 +27,7 @@ const characters = Object.values(CHARACTER_LIBRARY)
       hp: c.baseHp,
       origin: culturalGroupOf(art?.region).label,
       theme: art?.visualTheme ?? "",
+      lore: CHARACTER_LORE[c.id] ?? "",
       palette: (art?.colorPalette ?? []).slice(0, 3),
       cheater: c.isCheater ? { rule: c.cheaterRuleBreak ?? "", counterplay: c.counterplay ?? "" } : null,
       abilities: c.abilityIds.map((id) => {

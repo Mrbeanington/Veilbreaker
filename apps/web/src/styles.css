@@ -903,3 +903,29 @@ textarea {
   white-space: nowrap;
   border: 0;
 }
+
+/* Back and the main action, pinned under the main nav on long pages (ADR-037) */
+.screen-bar {
+  position: sticky;
+  z-index: 15;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  margin-bottom: 10px;
+  background: color-mix(in srgb, var(--bg) 94%, transparent);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(6px);
+}
+.screen-bar-status {
+  flex: 1;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  text-align: right;
+}
+.screen-bar > .btn:last-child:not(:first-child) {
+  margin-left: auto;
+}
+.screen-bar-status + .btn {
+  margin-left: 0;
+}

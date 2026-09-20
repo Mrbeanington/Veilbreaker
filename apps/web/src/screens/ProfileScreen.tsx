@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   QR_MAX_BYTES,
+  clearReplays,
+  resetProfile,
+  type ResetKind,
   decodeTransfer,
   encodeTransfer,
   exportBackup,
@@ -51,6 +54,7 @@ export function ProfileScreen({ initialTransferCode, initialReplayCode }: Profil
   const [pasted, setPasted] = useState(initialTransferCode ?? "");
   const [scanning, setScanning] = useState(false);
   const [autosave, setAutosave] = useState(false);
+  const [resetting, setResetting] = useState<ResetKind | null>(null);
   const env = useMemo(() => readEnv(), []);
   const platform = useMemo(() => detectPlatform(env), [env]);
   const move = offerMoveProgress(profile, env, platform);
@@ -128,6 +132,15 @@ export function ProfileScreen({ initialTransferCode, initialReplayCode }: Profil
     for (const r of incoming.replays) await saveReplay(store, r);
     setMessage("Your progress has been replaced.");
     setIncoming(null);
+  }
+
+  async function confirmReset() {
+    if (!resetting) return;
+    // `replace` writes the save being replaced to an automatic backup first.
+    replace(resetProfile(profile, resetting));
+    await clearReplays(store);
+    setMessage(resetting === "progress" ? "Progress reset. Your unlocked fighters are still yours." : "Everything was erased. You are a brand-new player.");
+    setResetting(null);
   }
 
   async function toggleAutosave() {
@@ -257,6 +270,51 @@ export function ProfileScreen({ initialTransferCode, initialReplayCode }: Profil
               {autosave ? "Stop auto-saving to a file" : "Auto-save to a file I choose"}
             </button>
             <p className="hp-text">Pick a file in a cloud folder (Dropbox, OneDrive) and it is kept up to date after every save. Optional.</p>
+          </div>
+        )}
+      </div>
+
+      <div className="panel">
+        <div className="section-title">Start over</div>
+        <p className="hp-text">Both options keep your current save as an automatic backup, so a slip can be undone from Restore.</p>
+        <div className="button-row">
+          <button type="button" className="btn" onClick={() => setResetting("progress")}>
+            Reset progress, keep my fighters
+          </button>
+          <button type="button" className="btn" onClick={() => setResetting("everything")}>
+            Erase everything
+          </button>
+        </div>
+        {resetting && (
+          <div className="panel" role="alertdialog" aria-labelledby="reset-title" aria-describedby="reset-body">
+            <div className="section-title" id="reset-title">
+              {resetting === "progress" ? "Reset your progress?" : "Erase everything?"}
+            </div>
+            <div id="reset-body">
+              {resetting === "progress" ? (
+                <>
+                  <p>
+                    <strong>Goes back to the start:</strong> level and XP, wins and losses, fighter mastery, missions, achievements, match history, saved replays and your ranked ladder.
+                  </p>
+                  <p>
+                    <strong>Stays:</strong> every Legend and fighter you have unlocked or discovered, your settings, favorites and team presets.
+                  </p>
+                </>
+              ) : (
+                <p>
+                  You will be a brand-new player: no unlocks, nothing discovered, no history, no favorites or presets, and default settings. Only the install prompt state is kept.
+                </p>
+              )}
+              <p className="hp-text">Now: {describe(summarizeProfile(profile))}</p>
+            </div>
+            <div className="button-row">
+              <button type="button" className="btn primary" onClick={() => void confirmReset()}>
+                {resetting === "progress" ? "Reset progress" : "Erase everything"}
+              </button>
+              <button type="button" className="btn" onClick={() => setResetting(null)}>
+                Cancel
+              </button>
+            </div>
           </div>
         )}
       </div>
