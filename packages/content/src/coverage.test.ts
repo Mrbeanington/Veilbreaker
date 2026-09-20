@@ -115,6 +115,17 @@ describe("coverage matrix", () => {
     expect(covers("silences")).toContain("the-sphinx");
   });
 
+  it("credits region 6 (World Folklore / Spirits / Tricksters) with the mechanics it was written for", () => {
+    const covers = (mechanic: Parameters<typeof charactersCoveringMechanic>[0]) => charactersCoveringMechanic(mechanic).map((c) => c.id);
+    expect(covers("probability manipulation")).toContain("madame-fortuna");
+    expect(covers("randomness")).toEqual(expect.arrayContaining(["dokkaebi", "madame-fortuna"]));
+    expect(covers("cooldown manipulation")).toContain("anansi");
+    expect(covers("energy stealing")).toContain("jiangshi");
+    expect(covers("anti-healing")).toContain("the-ghoul");
+    expect(covers("summons")).toContain("the-monkey-trickster");
+    expect(covers("combo sequences")).toContain("the-storyteller");
+  });
+
   it("generates a markdown table with a row per mechanic", () => {
     const markdown = generateCoverageMarkdown();
     expect(markdown).toContain("# Mechanical Coverage Matrix");

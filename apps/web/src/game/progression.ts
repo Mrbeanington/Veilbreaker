@@ -23,7 +23,7 @@ const isLegend = (id: string): boolean => CHARACTER_LIBRARY[id]?.rarity === "LEG
 
 // ------------------------------------------------------------------ Legends
 
-/** spec/03 "The Twelve Legends", in chamber order. Eight are built; the rest are placeholders until they are. */
+/** spec/03 "The Twelve Legends", in chamber order. Nine are built; the rest are placeholders until they are. */
 export const LEGEND_ORDER = [
   "zeiron",
   "shiro",
@@ -51,6 +51,7 @@ export const LEGEND_TRIALS: readonly LegendTrial[] = [
   { id: "trial.zeiron", legendId: "zeiron", enemyTeam: ["zeiron", "tortuga-rex", "plague-doctor"] },
   { id: "trial.morrigan", legendId: "morrigan", enemyTeam: ["morrigan", "the-valkyrie", "banshee"] },
   { id: "trial.aurelia", legendId: "aurelia", enemyTeam: ["aurelia", "the-sphinx", "sand-assassin"] },
+  { id: "trial.madame-fortuna", legendId: "madame-fortuna", enemyTeam: ["madame-fortuna", "the-gambler", "the-referee"] },
   { id: "trial.shiro", legendId: "shiro", enemyTeam: ["shiro", "mister-whiskers", "nine-tailed-trickster"] },
   { id: "trial.behemoth", legendId: "behemoth", enemyTeam: ["behemoth", "father-bell", "baba-yaga"] },
   { id: "trial.black-knight", legendId: "black-knight", enemyTeam: ["black-knight", "tortuga-rex", "mister-whiskers"] },

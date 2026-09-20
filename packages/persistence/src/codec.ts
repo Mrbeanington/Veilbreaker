@@ -142,17 +142,31 @@ const SETTINGS_ORDER = ["animationSpeed", "reducedMotion", "turnTimer", "uiScale
 /** A transfer code has to fit one QR code, and pair tables grow with the square of the roster (120 characters is 14,000 pairs), so each table sends only its strongest pairs. Backups carry everything. */
 export const MAX_TRANSFER_PAIRS = 250;
 
-function packPairs(table: Profile["beat"], toRef: (id: string) => Ref) {
+function packPairs(table: Profile["beat"], toRef: (id: string) => Ref, limit: number) {
   const entries: [string, string, number][] = [];
   for (const [a, row] of Object.entries(table)) for (const [b, n] of Object.entries(row)) if (n > 0) entries.push([a, b, Math.min(COUNT_CAP, n)]);
   // Keep the largest counts first (the Codex only reads "2 or more"), ties broken by id so the code is stable.
   entries.sort((x, y) => y[2] - x[2] || x[0].localeCompare(y[0]) || x[1].localeCompare(y[1]));
   const kept = new Map<string, [Ref, number][]>();
-  for (const [a, b, n] of entries.slice(0, MAX_TRANSFER_PAIRS)) kept.set(a, [...(kept.get(a) ?? []), [toRef(b), n]]);
+  for (const [a, b, n] of entries.slice(0, limit)) kept.set(a, [...(kept.get(a) ?? []), [toRef(b), n]]);
   return [...kept.entries()].map(([a, row]) => [toRef(a), row]);
 }
 
+/**
+ * Builds the transfer code, sending as many of the strongest pairs as fit one QR
+ * code: the pair limit halves until the code is small enough (the rest of the
+ * payload is small and fixed). Backups always carry everything.
+ */
 export function encodeTransfer(profile: Profile, idTable: readonly string[]): string {
+  let limit = MAX_TRANSFER_PAIRS;
+  for (;;) {
+    const code = encodeTransferWith(profile, idTable, limit);
+    if (code.length <= QR_MAX_BYTES || limit === 0) return code;
+    limit = Math.floor(limit * 0.8);
+  }
+}
+
+function encodeTransferWith(profile: Profile, idTable: readonly string[], pairLimit: number): string {
   const { toRef } = refs(idTable);
   const list = (ids: readonly string[]) => ids.map(toRef);
   const payload = {
@@ -167,8 +181,8 @@ export function encodeTransfer(profile: Profile, idTable: readonly string[]): st
     p: Object.entries(profile.played).map(([id, n]) => [toRef(id), n]),
     t: profile.presets.map((p) => [p.id, p.name, list(p.characterIds)]),
     d: [list(profile.discovered.characters), list(profile.discovered.abilities), list(profile.discovered.passives), list(profile.discovered.transformations)],
-    b: packPairs(profile.beat, toRef),
-    w: packPairs(profile.wonWith, toRef),
+    b: packPairs(profile.beat, toRef, pairLimit),
+    w: packPairs(profile.wonWith, toRef, pairLimit),
     u: [list(profile.unlocks.legends), profile.unlocks.namelessBossDefeated ? 1 : 0],
     tw: list(profile.trialsWon),
     ms: [Object.entries(profile.missions.progress).map(([id, n]) => [toRef(id), n]), list(profile.missions.completed)],

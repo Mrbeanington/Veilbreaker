@@ -47,9 +47,9 @@ export const TWISTED_WISH = ability({
       outcome: {
         rerollable: false,
         branches: [
-          { weight: 1, effects: [{ kind: "damage", amount: 40 }] },
-          { weight: 1, effects: [{ kind: "applyStatus", statusId: "status.stun", durationTurns: 1 }] },
           { weight: 1, effects: [{ kind: "heal", healingClass: "heal", amount: 20 }] },
+          { weight: 1, effects: [{ kind: "applyStatus", statusId: "status.stun", durationTurns: 1 }] },
+          { weight: 1, effects: [{ kind: "damage", amount: 40 }] },
         ],
       },
     },

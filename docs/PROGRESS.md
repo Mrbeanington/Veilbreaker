@@ -1,6 +1,6 @@
 # Progress
 
-**Current phase:** 13 in progress: regions 1-5 done (78 of 120 characters built). Next: region 6 (World Folklore / Spirits / Tricksters), one region per session.
+**Current phase:** 13 in progress: regions 1-6 done (90 of 120 characters built). Next: region 7 (Horror / Monsters / Dead), one region per session.
 
 | Phase | Title | Status |
 |---|---|---|
@@ -17,7 +17,7 @@
 | 10 | Friend matches (serverless) | ✅ done |
 | 11 | Local ranked | ✅ done |
 | 12 | Dev-mode balance tools & local analytics | ✅ done |
-| 13 | Scale the roster to 120 | 🔄 region 5 of 11 done |
+| 13 | Scale the roster to 120 | 🔄 region 6 of 11 done |
 | 14 | Art spec completion | ☐ |
 | 15 | Balance pass, polish, accessibility, offline/PWA, security | ☐ |
 
@@ -441,3 +441,6 @@ The Ranked section is now a working ladder against bots. Hidden Elo rating, 16 v
 
 ### 2026-09-20 — Phase 13, region 5 (Egypt / Desert / Ancient Kingdoms)
 **11 new characters:** Jackal Guardian, The Scarab King, The Mummy Prince, Desert Djinn, Ifrit, The Sphinx, Sand Assassin, The Pharaoh Without a Tomb, The Living Sarcophagus, the Secret Anubian Judge, and the Legend Aurelia, Empress of the Sun (region complete at 11). Data, art, design notes and 35 scenario tests. **New:** `status.sun-guard` (36 statuses; a standing 1-HP floor, hook in `applyHp`), Aurelia's Legend trial (`trial.aurelia`, eight Legends built), two pet summons. **Engine:** an effect's `target` may be an all-enemies rule, so death and other triggers can affect the whole enemy team (regression test). **Checks:** coverage matrix regenerated with region 5 assertions, template overlap (no pair over 70%), 5,000-match simulation with 0 engine errors (notes in `docs/balance/phase13-region5-notes.md`), ranked meta pool regenerated for 78 characters. **Files:** eleven `packages/content/src/data/characters/*.ts`, `characters/index.ts`, `data/statuses.ts` (+ test), `coverage.test.ts`, `region5.roster.test.ts`, `packages/engine/src/{damage,effects}.ts` (+ `effects.test.ts`, `scenarios/region5.scenario.test.ts`), `apps/web/src/game/progression.ts`, `packages/ai/src/meta-pool.json`, `packages/content/coverage.md`, eleven design notes, `docs/balance/*`, docs. QR transfer cap 300 to 250 pairs (`packages/persistence/src/codec.ts`), favorites test picks a public fighter (`apps/web/src/App.test.tsx`). ADR-026; OQ-88 to OQ-91. **Custom scripts:** none. **Recommended next step:** region 6, World Folklore / Spirits / Tricksters (spec/03 #65 onward).
+
+### 2026-09-20 — Phase 13, region 6 (World Folklore / Spirits / Tricksters)
+**12 new characters:** Anansi, The Moon Rabbit, Jiangshi, Dokkaebi, The White Fox, The Roc, The Ghoul, The Wandering Genie, The Storyteller, The Monkey Trickster, the Secret The Thousand-Faced Stranger, and the Legend Madame Fortuna (region complete at 12). Data, art, design notes and 33 scenario tests. **New:** Madame Fortuna's Legend trial (`trial.madame-fortuna`, nine Legends built) and Cheater rule-break; no new statuses and no engine changes. **Convention:** random-outcome branches are listed worst to best (region 5's Twisted Wish reordered). **Checks:** coverage matrix regenerated with region 6 assertions, template overlap (two pairs reworked, none over 70%), 5,000-match simulation with 0 engine errors (notes in `docs/balance/phase13-region6-notes.md`), ranked meta pool regenerated for 90 characters. **Files:** twelve `packages/content/src/data/characters/*.ts`, `characters/index.ts` and `desert-djinn.ts`, `coverage.test.ts`, `region6.roster.test.ts`, `packages/engine/src/scenarios/region6.scenario.test.ts`, `apps/web/src/game/progression.ts`, `packages/ai/src/meta-pool.json`, `packages/content/coverage.md`, twelve design notes, `docs/balance/*`, docs. **QR transfer** now shrinks its pair tables to fit one code (`packages/persistence/src/codec.ts` + test). ADR-027; OQ-92 to OQ-95. **Custom scripts:** none. **Recommended next step:** region 7, Horror / Monsters / Dead (spec/03 #77 onward).

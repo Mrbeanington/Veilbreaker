@@ -107,9 +107,10 @@ describe("device transfer code", () => {
     expect(p.settings).toEqual(profile.settings);
     expect(p.trialsWon).toEqual(profile.trialsWon);
     expect(p.matchesPlayed).toBe(profile.matchesPlayed);
-    // A maxed profile has every pair seen 40 times, far more than one QR code can hold: the strongest MAX_TRANSFER_PAIRS travel, clamped to 3 ("2 or more").
+    // A maxed profile has every pair seen 40 times, far more than one QR code can hold: only the strongest pairs travel (at most MAX_TRANSFER_PAIRS, fewer when the code would not fit), clamped to 3 ("2 or more").
     const pairs = Object.values(p.beat).flatMap((row) => Object.values(row));
-    expect(pairs).toHaveLength(MAX_TRANSFER_PAIRS);
+    expect(pairs.length).toBeGreaterThan(20);
+    expect(pairs.length).toBeLessThanOrEqual(MAX_TRANSFER_PAIRS);
     expect(pairs.every((n) => n === 3)).toBe(true);
     expect(p.history).toEqual([]); // match history is not transferred
   });
