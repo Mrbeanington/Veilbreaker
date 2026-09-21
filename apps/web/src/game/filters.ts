@@ -28,17 +28,16 @@ export const NO_FILTERS: CharacterFilters = {
 };
 
 /**
- * With `forPicking` (the team picker), "Unlocked" means a fighter the player can actually put on a team, and
- * "Locked" everything still waiting on a quest, a trial or a first meeting. Without it (the Characters screen),
- * "Unlocked" means known: its entry can be read.
+ * "Unlocked" always means a fighter the player can put on a team, and "Locked" everything still waiting on a
+ * quest, a trial or a first meeting. The list itself stays alphabetical: nothing is reordered until a filter is set.
  */
-export function filterCharacters(list: readonly CharacterDefinition[], filters: CharacterFilters, profile: Profile, forPicking = false): CharacterDefinition[] {
+export function filterCharacters(list: readonly CharacterDefinition[], filters: CharacterFilters, profile: Profile): CharacterDefinition[] {
   const needle = filters.search.trim().toLowerCase();
   return list.filter((c) => {
     const visibility = characterVisibility(c, profile);
     if (visibility === "hidden") return false; // absent entirely until met
     const unlocked = visibility === "full";
-    const usable = forPicking ? isPickable(c, profile) : unlocked;
+    const usable = isPickable(c, profile);
     if (filters.lock === "unlocked" && !usable) return false;
     if (filters.lock === "locked" && usable) return false;
     // A silhouette must not leak its name, role or origin through the filters.
@@ -52,11 +51,6 @@ export function filterCharacters(list: readonly CharacterDefinition[], filters: 
     if (filters.recentOnly && !profile.recent.includes(c.id)) return false;
     return true;
   });
-}
-
-/** Fighters the player can pick come first, keeping the order within each group (a stable split). */
-export function usableFirst(list: readonly CharacterDefinition[], profile: Profile): CharacterDefinition[] {
-  return [...list.filter((c) => isPickable(c, profile)), ...list.filter((c) => !isPickable(c, profile))];
 }
 
 /** The filter options actually present in the visible roster (never reveals a hidden character's origin or role). */

@@ -19,35 +19,29 @@ describe("level gates (ADR-044)", () => {
 });
 
 import { PLAYABLE_CHARACTERS } from "@veilbreak/content";
-import { NO_FILTERS, filterCharacters, usableFirst } from "./filters";
+import { NO_FILTERS, filterCharacters } from "./filters";
 import { isPickable } from "./knowledge";
 
-describe("team picker availability", () => {
+describe("availability filter (picker, Characters and Codex)", () => {
   const p = createDefaultProfile();
-  const all = [...PLAYABLE_CHARACTERS];
+  const all = [...PLAYABLE_CHARACTERS].sort((a, b) => a.displayName.localeCompare(b.displayName));
 
-  it('"Unlocked" in the picker shows only fighters that can be put on a team', () => {
-    const shown = filterCharacters(all, { ...NO_FILTERS, lock: "unlocked" }, p, true);
+  it("leaves the list alphabetical, with locked fighters in it, until a filter is set", () => {
+    const shown = filterCharacters(all, NO_FILTERS, p);
+    expect(shown.map((c) => c.id)).toEqual(all.filter((c) => shown.includes(c)).map((c) => c.id));
+    expect(shown.some((c) => c.id === "arachne")).toBe(true);
+    expect(shown.some((c) => isPickable(c, p))).toBe(true);
+  });
+  it('"Unlocked" shows only fighters that can be put on a team, and stays alphabetical', () => {
+    const shown = filterCharacters(all, { ...NO_FILTERS, lock: "unlocked" }, p);
     expect(shown.length).toBeGreaterThan(20);
     for (const c of shown) expect(isPickable(c, p), c.id).toBe(true);
-    // A Rare fighter that still needs its quest is not "unlocked", although its entry is visible.
     expect(shown.some((c) => c.id === "arachne")).toBe(false);
+    expect(shown.map((c) => c.displayName)).toEqual([...shown.map((c) => c.displayName)].sort((a, b) => a.localeCompare(b)));
   });
-  it('"Locked" in the picker shows fighters still waiting on something, quest fighters included', () => {
-    const shown = filterCharacters(all, { ...NO_FILTERS, lock: "locked" }, p, true);
+  it('"Locked" shows everything still waiting on a quest, trial or first meeting', () => {
+    const shown = filterCharacters(all, { ...NO_FILTERS, lock: "locked" }, p);
     expect(shown.some((c) => c.id === "arachne")).toBe(true);
     for (const c of shown) expect(isPickable(c, p), c.id).toBe(false);
-  });
-  it("on the Characters screen the old meaning stays: known fighters", () => {
-    const shown = filterCharacters(all, { ...NO_FILTERS, lock: "unlocked" }, p);
-    expect(shown.some((c) => c.id === "arachne")).toBe(true);
-  });
-  it("puts usable fighters first without reordering within each group", () => {
-    const list = usableFirst(all, p);
-    const firstLocked = list.findIndex((c) => !isPickable(c, p));
-    expect(list.slice(0, firstLocked).every((c) => isPickable(c, p))).toBe(true);
-    expect(list.slice(firstLocked).every((c) => !isPickable(c, p))).toBe(true);
-    const ids = (xs: typeof list) => xs.map((c) => c.id);
-    expect(ids(list.slice(0, firstLocked))).toEqual(ids(all.filter((c) => isPickable(c, p))));
   });
 });
