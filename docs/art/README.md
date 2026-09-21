@@ -37,3 +37,6 @@ pnpm art:status            # how many fighters have a portrait, by rarity
 A fighter with a portrait file shows the picture everywhere (roster, team picker, match, Codex); a fighter without one keeps the initials badge, so art can arrive a few fighters at a time. Files are cached for offline play and included in the single-file build. `pnpm verify-bundle-budget` caps all portrait files together at 6 MB (about 30 KB each is typical).
 
 Commit the resulting `.webp` files. Keep the originals somewhere else; they are too large for the repository.
+
+## Splashes
+`splash-prompts.md` (from `pnpm art:splashes`) has a tall 2:3 full-body prompt per fighter, Legends first, to be made after the portraits so the face matches. Save as `<id>.splash.png` (768 pixels or more on the short side); `pnpm art:import` shrinks them to 400 by 600 into `apps/web/src/art/splashes`. A splash shows at the top of the fighter's sheet. Portraits and splashes together are capped at 10 MB by `pnpm verify-bundle-budget`.

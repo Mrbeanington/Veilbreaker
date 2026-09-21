@@ -13,6 +13,8 @@ import {
   rolesOf,
 } from "../game/knowledge";
 import { unlockHint } from "../game/quests";
+import { masteryRing } from "../game/rewards";
+import { splashUrl } from "../art/splashes";
 import { Icon, type IconName } from "./Icon";
 import { Portrait } from "./Portrait";
 
@@ -70,8 +72,13 @@ export function CharacterSheet({ character, profile, mode, isFavorite, onToggleF
 
   return (
     <article className="sheet" aria-labelledby={`sheet-${character.id}`}>
+      {splashUrl(character.id) && (
+        <div className="sheet-splash">
+          <img src={splashUrl(character.id)} alt="" width={400} height={600} loading="lazy" decoding="async" draggable={false} />
+        </div>
+      )}
       <header className="sheet-head">
-        <Portrait characterId={character.id} displayName={character.displayName} size={72} />
+        <Portrait characterId={character.id} displayName={character.displayName} size={72} ring={masteryRing(mastery)} />
         <div>
           <h3 id={`sheet-${character.id}`} className="sheet-name">
             {name}

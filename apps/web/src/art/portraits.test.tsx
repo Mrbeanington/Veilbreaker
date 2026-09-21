@@ -35,12 +35,32 @@ describe("portrait files", () => {
   });
   it("warns about small or non-square sources", () => {
     expect(checkSource(1024, 1024).warnings).toEqual([]);
-    expect(checkSource(MIN_SOURCE_SIZE - 1, MIN_SOURCE_SIZE - 1).warnings[0]).toMatch(/pixels or more/);
+    expect(checkSource(MIN_SOURCE_SIZE - 1, MIN_SOURCE_SIZE - 1).warnings[0]).toMatch(/pixels on the short side/);
     expect(checkSource(1536, 1024).warnings[0]).toMatch(/not square/);
   });
   it("only ever stores art for fighters that exist", async () => {
     const ids = new Set(PLAYABLE_CHARACTERS.map((c) => c.id));
     const real = await vi.importActual<typeof import("./portraits")>("./portraits");
     for (const id of real.portraitIds()) expect(ids.has(id), id).toBe(true);
+  });
+});
+
+describe("splash art files (ADR-047)", () => {
+  it("tells splashes from portraits by file name", async () => {
+    const { parseArtFileName } = await import("./portraitFiles");
+    expect(parseArtFileName("zeiron.splash.png")).toEqual({ id: "zeiron", kind: "splash" });
+    expect(parseArtFileName("Zeiron.PORTRAIT.jpg")).toEqual({ id: "zeiron", kind: "portrait" });
+    expect(parseArtFileName("zeiron.png")).toEqual({ id: "zeiron", kind: "portrait" });
+    expect(parseArtFileName("notes.txt")).toBeUndefined();
+  });
+  it("wants a tall 2:3 source for a splash", () => {
+    expect(checkSource(1024, 1536, "splash").warnings).toEqual([]);
+    expect(checkSource(1024, 1024, "splash").warnings.join(" ")).toMatch(/2:3/);
+    expect(checkSource(500, 750, "splash").warnings.join(" ")).toMatch(/pixels on the short side/);
+  });
+  it("only ever stores splashes for fighters that exist", async () => {
+    const ids = new Set(PLAYABLE_CHARACTERS.map((c) => c.id));
+    const real = await vi.importActual<typeof import("./splashes")>("./splashes");
+    for (const id of real.splashIds()) expect(ids.has(id), id).toBe(true);
   });
 });

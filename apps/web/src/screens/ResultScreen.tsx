@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import type { MatchOutcome } from "./MatchScreen";
 import { CHARACTER_LIBRARY } from "@veilbreak/content";
 import { achievementById, missionById, type ProgressReport } from "../game/progression";
+import { newRewards } from "../game/rewards";
 
 interface ResultScreenProps {
   outcome: MatchOutcome;
@@ -33,6 +34,11 @@ export function ResultScreen({ outcome, revealed = [], report, extra, playAgainL
             {report.levelAfter > report.levelBefore ? ` · Level up! You are now level ${report.levelAfter}.` : ` · Level ${report.levelAfter}`}
           </p>
           {report.legendUnlocked && <p><strong>Legend unlocked: {CHARACTER_LIBRARY[report.legendUnlocked]?.displayName ?? report.legendUnlocked}!</strong></p>}
+          {(() => {
+            const gained = newRewards(report.levelBefore, report.levelAfter);
+            const names = [...gained.titles.map((t) => `title ${t.name}`), ...gained.frames.map((f) => `${f.name} frame`)];
+            return names.length > 0 ? <p><strong>New reward{names.length === 1 ? "" : "s"}: {names.join(", ")}.</strong> Choose them on your Profile.</p> : null;
+          })()}
           {report.fightersUnlocked.length > 0 && <p><strong>Fighter unlocked: {report.fightersUnlocked.map((id) => CHARACTER_LIBRARY[id]?.displayName ?? id).join(", ")}!</strong></p>}
           {report.missionsCompleted.length > 0 && <p>Missions complete: {report.missionsCompleted.map((id) => missionById(id)?.title ?? id).join(", ")}.</p>}
           {report.achievements.length > 0 && <p>Secret achievement{report.achievements.length === 1 ? "" : "s"}: {report.achievements.map((id) => achievementById(id)?.title ?? id).join(", ")}.</p>}

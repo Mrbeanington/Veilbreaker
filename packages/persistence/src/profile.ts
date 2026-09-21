@@ -110,6 +110,8 @@ export const profileSchema = z.object({
    * so it counts as done; a brand-new profile is "new" and is offered the tutorial.
    */
   tutorial: z.object({ status: z.enum(["new", "done", "skipped"]).default("done") }).default({}),
+  /** The title and portrait frame the player chose (ADR-046). Unset means the highest one their level allows. */
+  cosmetics: z.object({ title: z.string().max(40).optional(), frame: z.string().max(40).optional() }).default({}),
   // ---- v3
   ranked: rankedSchema.default({}),
 });

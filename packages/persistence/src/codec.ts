@@ -207,6 +207,7 @@ function encodeTransferWith(profile: Profile, idTable: readonly string[], pairLi
     // A finished mission's counter is implied by it being finished, so only unfinished counters travel.
     ms: [Object.entries(profile.missions.progress).filter(([id]) => !profile.missions.completed.includes(id)).map(([id, n]) => [toRef(id), n]), packIds(profile.missions.completed, idTable, toRef)],
     ac: list(profile.achievements),
+    cs: [profile.cosmetics.title ?? "", profile.cosmetics.frame ?? ""],
     i: [profile.install.installed ? 1 : 0, profile.install.asks, profile.install.firstLaunchHandled ? 1 : 0, TUTORIAL_CODES.indexOf(profile.tutorial.status)],
     // Ranked: the standing and personal bests travel; the recent list, usage table and past seasons stay in backups (like history).
     rk: [
@@ -282,6 +283,7 @@ export function decodeTransfer(code: string, idTable: readonly string[]): Transf
     const u = isArr(p.u) ? p.u : [];
     const ms = isArr(p.ms) ? p.ms : [];
     const inst = isArr(p.i) ? p.i : [];
+    const cs = isArr(p.cs) ? p.cs : [];
     const rk = isArr(p.rk) ? p.rk : [];
     const rb = isArr(rk[11]) ? rk[11] : [];
     const ranked = isArr(p.rk)
@@ -319,6 +321,7 @@ export function decodeTransfer(code: string, idTable: readonly string[]): Transf
       achievements: ids(p.ac),
       install: { installed: inst[0] === 1, asks: Number(inst[1] ?? 0), firstLaunchHandled: inst[2] === 1 },
       tutorial: { status: TUTORIAL_CODES[Number(inst[3])] ?? "done" },
+      cosmetics: { title: typeof cs[0] === "string" && cs[0] ? cs[0].slice(0, 40) : undefined, frame: typeof cs[1] === "string" && cs[1] ? cs[1].slice(0, 40) : undefined },
       ranked,
     };
     const parsed = profileSchema.safeParse(candidate);

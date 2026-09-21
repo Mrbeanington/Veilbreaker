@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { PICKABLE_CHARACTERS } from "../game/roster";
 import { filterCharacters, filterOptions, NO_FILTERS, type CharacterFilters } from "../game/filters";
 import { characterVisibility } from "../game/knowledge";
+import { ringFor } from "../game/rewards";
 import { unlockHint } from "../game/quests";
 import { useProfile } from "../profile/ProfileContext";
 import { CharacterFilterBar } from "./CharacterFilterBar";
@@ -48,7 +49,7 @@ export function CharacterBrowser({ mode, idPrefix }: { mode: "roster" | "codex";
                       <Icon name="lock" size={16} />
                     </span>
                   ) : (
-                    <Portrait characterId={c.id} displayName={c.displayName} size={36} />
+                    <Portrait characterId={c.id} displayName={c.displayName} size={36} ring={ringFor(profile, c.id)} />
                   )}
                   <span>{locked ? "Unknown fighter" : c.displayName}</span>
                   {!locked && profile.favorites.includes(c.id) && <Icon name="star" size={14} />}

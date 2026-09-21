@@ -960,3 +960,30 @@ textarea {
   object-fit: cover;
   display: block;
 }
+
+/* Mastery rings and profile frames (ADR-046) */
+.portrait.ring-bronze { box-shadow: 0 0 0 2px #b07a3f; }
+.portrait.ring-silver { box-shadow: 0 0 0 2px #b9c2d0; }
+.portrait.ring-gold { box-shadow: 0 0 0 2px #e0b34d, 0 0 8px 1px rgba(224, 179, 77, 0.55); }
+.cosmetic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin: 8px 0 14px; }
+.cosmetic { display: flex; align-items: center; gap: 10px; text-align: left; }
+.cosmetic .swatch { width: 22px; height: 22px; border-radius: 50%; flex: none; background: var(--surface-2); }
+.cosmetic:disabled { opacity: 0.55; }
+.profile-badge { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
+.profile-badge .portrait { width: 56px; height: 56px; font-size: 1.3rem; }
+
+/* Fighter splash art on the character sheet (ADR-047) */
+.sheet-splash {
+  margin: -4px -4px 12px;
+  max-height: 280px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--surface-2);
+}
+.sheet-splash img {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  object-position: top;
+  display: block;
+}

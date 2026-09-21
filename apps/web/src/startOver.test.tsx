@@ -90,3 +90,27 @@ describe("screen bar", () => {
     expect([back, start]).toEqual([1, 1]);
   });
 });
+
+describe("titles and frames (ADR-046)", () => {
+  it("lets a player pick an earned title and frame, and keeps locked ones disabled", async () => {
+    const user = userEvent.setup();
+    const store = createMemoryStore();
+    await saveProfile(store, { ...played(), xp: 4500 }); // level 10
+    render(
+      <SettingsProvider store={store}>
+        <ProfileProvider store={store}>
+          <ProfileScreen />
+        </ProfileProvider>
+      </SettingsProvider>,
+    );
+    await screen.findByText("Level 10", { selector: "strong" });
+    expect(screen.getByRole("button", { name: /Veilbreaker/ })).toBeDisabled();
+    await user.click(screen.getByRole("button", { name: "Apprentice" }));
+    await user.click(screen.getByRole("button", { name: /Bronze/ }));
+    await waitFor(async () => {
+      const saved = (await loadProfile(store)).profile;
+      expect(saved.cosmetics).toEqual({ title: "apprentice", frame: "bronze" });
+    });
+    expect(screen.getByRole("button", { name: "Apprentice" })).toHaveAttribute("aria-pressed", "true");
+  });
+});

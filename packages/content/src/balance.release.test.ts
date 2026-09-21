@@ -56,7 +56,7 @@ describe("the published release-2 patch", () => {
   it("is shipped, is the current version, and builds on release-1", () => {
     expect(patch).toBeDefined();
     expect(patch.baseVersionId).toBe(BASE_BALANCE_VERSION_ID);
-    expect(CURRENT_BALANCE_VERSION_ID).toBe("release-2");
+    expect(CURRENT_BALANCE_VERSION_ID).toBe("release-3");
   });
   it("applies cleanly: every change alters a number, stays in the damage language and passes its schema", () => {
     const applied = applyBalanceDraft(baseLibraries(), patch);
@@ -70,6 +70,25 @@ describe("the published release-2 patch", () => {
   });
   it("leaves release-1 exactly as released for old replays", () => {
     expect(balanceFingerprint(librariesForVersion(BASE_BALANCE_VERSION_ID)!)).toBe("bd1d5c96");
+  });
+});
+
+describe("the published release-3 patch", () => {
+  const patch = SHIPPED_BALANCE_PATCHES.find((p) => p.id === "release-3")!;
+  it("is the newest version and contains every release-2 change, so it can stand alone against release-1", () => {
+    expect(SHIPPED_BALANCE_PATCHES[SHIPPED_BALANCE_PATCHES.length - 1]).toBe(patch);
+    const release2 = SHIPPED_BALANCE_PATCHES.find((p) => p.id === "release-2")!;
+    const paths = new Set(patch.changes.map((c) => c.path));
+    for (const c of release2.changes) expect(paths.has(c.path), c.path).toBe(true);
+    expect(patch.changes.length).toBeGreaterThan(release2.changes.length);
+  });
+  it("applies cleanly with no damage-language warnings", () => {
+    const applied = applyBalanceDraft(baseLibraries(), patch);
+    expect(applied.ok).toBe(true);
+    if (applied.ok) expect(applied.warnings).toEqual([]);
+  });
+  it("has a pinned fingerprint", () => {
+    expect(balanceFingerprint(librariesForVersion("release-3")!)).toBe("987a9eeb");
   });
 });
 

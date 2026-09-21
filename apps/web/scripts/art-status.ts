@@ -13,7 +13,9 @@ for (const c of PLAYABLE_CHARACTERS) {
   if (have.has(c.id)) row.have += 1;
   byRarity.set(c.rarity, row);
 }
-console.log(`Portraits: ${have.size} of ${PLAYABLE_CHARACTERS.length}`);
+const splashDir = resolve(fileURLToPath(new URL("../src/art/splashes", import.meta.url)));
+const splashes = existsSync(splashDir) ? readdirSync(splashDir).filter((f) => f.endsWith(".webp")).length : 0;
+console.log(`Portraits: ${have.size} of ${PLAYABLE_CHARACTERS.length}. Splashes: ${splashes}.`);
 for (const [rarity, row] of byRarity) console.log(`  ${rarity}: ${row.have} of ${row.total}`);
 const stray = [...have].filter((id) => !PLAYABLE_CHARACTERS.some((c) => c.id === id));
 if (stray.length) console.log(`Files that match no fighter: ${stray.join(", ")}`);

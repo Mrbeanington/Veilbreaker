@@ -24,6 +24,7 @@ import { useProfile } from "../profile/ProfileContext";
 import { DELETE_WARNING, offerMoveProgress, readEnv, detectPlatform } from "../platform/install";
 import { backupFileName, chooseAutosaveFile, downloadText, hasAutosaveFile, readFileText, shareOrDownload, stopAutosave, supportsAutosave } from "../platform/files";
 import { protectionLabel } from "../platform/protection";
+import { FRAMES, TITLES, accountLevel, activeFrame, activeTitle, nextReward } from "../game/rewards";
 import { HistoryPanel } from "./HistoryPanel";
 import { StatsPanel } from "./StatsPanel";
 
@@ -45,7 +46,7 @@ interface ProfileScreenProps {
 }
 
 export function ProfileScreen({ initialTransferCode, initialReplayCode }: ProfileScreenProps) {
-  const { profile, replace, store, protection, persistent, loadInfo } = useProfile();
+  const { profile, replace, update, store, protection, persistent, loadInfo } = useProfile();
   const idTable = useMemo(() => buildIdTable(), []);
   const [incoming, setIncoming] = useState<Incoming | null>(null);
   const [message, setMessage] = useState<string | null>(null);
@@ -164,6 +165,17 @@ export function ProfileScreen({ initialTransferCode, initialReplayCode }: Profil
 
       <div className="panel">
         <div className="section-title">Progress</div>
+        <div className="profile-badge">
+          <span className="portrait" style={{ background: "var(--surface-2)", boxShadow: `0 0 0 3px ${activeFrame(profile).color}` }} aria-hidden="true">
+            {progress.level}
+          </span>
+          <div>
+            <div>
+              <strong>{activeTitle(profile).name}</strong>
+            </div>
+            <div className="hp-text">{activeFrame(profile).name} frame</div>
+          </div>
+        </div>
         <p>
           <strong>Level {progress.level}</strong> · {progress.into} / {progress.needed} to the next level
         </p>
@@ -171,6 +183,41 @@ export function ProfileScreen({ initialTransferCode, initialReplayCode }: Profil
           <div className="hp-bar-fill" style={{ width: `${Math.round((progress.into / progress.needed) * 100)}%` }} />
         </div>
         <p className="hp-text">{describe(summarizeProfile(profile))}</p>
+      </div>
+
+      <div className="panel">
+        <div className="section-title">Titles and frames</div>
+        <p className="hp-text">
+          Earned by leveling up. They are only for show, and nothing can be bought.
+          {nextReward(accountLevel(profile)) ? ` Next: the ${nextReward(accountLevel(profile))!.name} ${nextReward(accountLevel(profile))!.kind} at level ${nextReward(accountLevel(profile))!.level}.` : " You have every reward."}
+        </p>
+        <h3 className="sheet-section">Title</h3>
+        <div className="cosmetic-grid">
+          {TITLES.map((t) => {
+            const open = t.level <= accountLevel(profile);
+            const chosen = activeTitle(profile).id === t.id;
+            return (
+              <button key={t.id} type="button" className={`btn cosmetic${chosen ? " selected" : ""}`} disabled={!open} aria-pressed={chosen} onClick={() => update((p) => ({ ...p, cosmetics: { ...p.cosmetics, title: t.id } }))}>
+                {t.name}
+                {!open && <span className="hp-text"> Level {t.level}</span>}
+              </button>
+            );
+          })}
+        </div>
+        <h3 className="sheet-section">Frame</h3>
+        <div className="cosmetic-grid">
+          {FRAMES.map((f) => {
+            const open = f.level <= accountLevel(profile);
+            const chosen = activeFrame(profile).id === f.id;
+            return (
+              <button key={f.id} type="button" className={`btn cosmetic${chosen ? " selected" : ""}`} disabled={!open} aria-pressed={chosen} onClick={() => update((p) => ({ ...p, cosmetics: { ...p.cosmetics, frame: f.id } }))}>
+                <span className="swatch" style={{ boxShadow: `0 0 0 3px ${f.color}` }} aria-hidden="true" />
+                {f.name}
+                {!open && <span className="hp-text"> Level {f.level}</span>}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       <div className="panel">

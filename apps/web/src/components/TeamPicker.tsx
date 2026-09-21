@@ -3,6 +3,7 @@ import { PICKABLE_CHARACTERS, TEAM_SIZE } from "../game/roster";
 import { filterCharacters, filterOptions, NO_FILTERS, type CharacterFilters } from "../game/filters";
 import { characterVisibility, isUnlocked } from "../game/knowledge";
 import { lockedHint } from "../game/quests";
+import { ringFor } from "../game/rewards";
 import { useProfile } from "../profile/ProfileContext";
 import { CharacterFilterBar } from "./CharacterFilterBar";
 import { Icon } from "./Icon";
@@ -97,7 +98,7 @@ export function TeamPicker({ label, picked, onChange, showPresets = true, everyt
           if (legendLocked) {
             return (
               <div key={character.id} role="listitem" className="roster-card locked">
-                <Portrait characterId={character.id} displayName={character.displayName} size={56} />
+                <Portrait characterId={character.id} displayName={character.displayName} size={56} ring={ringFor(profile, character.id)} />
                 <span>{character.displayName}</span>
                 <span className="hp-text">{lockedHint(character, profile)}</span>
               </div>
@@ -112,7 +113,7 @@ export function TeamPicker({ label, picked, onChange, showPresets = true, everyt
                 disabled={!isPicked && picked.length >= size}
                 aria-pressed={isPicked}
               >
-                <Portrait characterId={character.id} displayName={character.displayName} size={56} />
+                <Portrait characterId={character.id} displayName={character.displayName} size={56} ring={ringFor(profile, character.id)} />
                 <span>{character.displayName}</span>
               </button>
               <button

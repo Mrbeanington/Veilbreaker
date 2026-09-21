@@ -6,15 +6,15 @@ Generated from the game data (119 playable fighters). Do not edit by hand: run `
 
 1. **Start a chat** with your image generator and paste the **style block** below as your first message. Say you will send characters one at a time and want a square 1:1 portrait for each.
 2. **Make the reference set first**: the four fighters listed below, one at a time. Look at all four together. If they do not look like one game, change the style block (never a single prompt) and redo them. Keep the four you approve.
-3. **Run the rest in batches** of one origin group per chat. Start each chat with the style block and attach one approved reference image, telling the generator to match its painting style, framing and lighting.
-4. For each fighter, paste its prompt. **Reject** any image with letters, a logo, a watermark or a signature, a cropped head, or extra or missing limbs, and ask for another.
+3. **Run the rest in batches** of one origin group per chat. Start each chat with the style block and attach one approved reference image.
+4. For each fighter, paste its prompt. **Reject** any image with letters, a logo, a watermark or a signature, a cropped head or feet, or extra or missing limbs, and ask for another.
 5. **Save each approved image** as `<id>.portrait.png` (the file name is under every heading), square, at least 512 pixels. Put them all in one folder and run `pnpm art:import <folder>`. It shrinks them to the game's size and reports anything missing.
 6. Groups marked **cultural review** draw on living traditions. Treat their art as a draft until someone from or expert in that tradition has looked at it (OQ-12).
 
 ## Style block (paste once at the start of every chat)
 
 ```text
-I am making portraits for an original 3v3 fantasy arena game. I will describe one character at a time. For each, make ONE square 1:1 image: a shoulders-up character portrait that reads clearly at small size, on a plain dark neutral background.
+I am making portrait art for an original 3v3 fantasy arena game. I will describe one character at a time. For each, make ONE square 1:1 image: a shoulders-up character portrait that reads clearly at small size, on a plain dark neutral background.
 
 Style, the same for every image: high-detail original 2D fantasy combat illustration, strong readable silhouette, dramatic graphic lighting, hand-painted texture, stylized anatomy, expressive faces, mythic atmosphere, clean ability-icon readability, dark neutral battlefield presentation, rich regional artistic inspiration where appropriate, modern competitive-game readability, no copyrighted logos, no modern franchise iconography, no text baked into character art.
 
