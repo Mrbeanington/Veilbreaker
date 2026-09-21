@@ -90,7 +90,17 @@ export function registerServiceWorker(): void {
   window.addEventListener("load", () => {
     navigator.serviceWorker
       .register("./sw.js")
-      .then((registration) => w.track(registration))
+      .then((registration) => {
+        w.track(registration);
+        // Look for a newer build when the player comes back to the tab and every 15 minutes, so the
+        // "Reload to update" banner appears without waiting for a full page load (the browser otherwise
+        // checks only on navigation).
+        const check = () => void registration.update().catch(() => undefined);
+        document.addEventListener("visibilitychange", () => {
+          if (document.visibilityState === "visible") check();
+        });
+        window.setInterval(check, 15 * 60 * 1000);
+      })
       .catch(() => {
         // Offline support degrading gracefully to "online-only" is acceptable;
         // there is nothing actionable a player could do about a failed
