@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { PICKABLE_CHARACTERS, TEAM_SIZE } from "../game/roster";
-import { filterCharacters, filterOptions, NO_FILTERS, type CharacterFilters } from "../game/filters";
-import { characterVisibility, isUnlocked } from "../game/knowledge";
+import { filterCharacters, filterOptions, NO_FILTERS, usableFirst, type CharacterFilters } from "../game/filters";
+import { characterVisibility, isPickable, isUnlocked } from "../game/knowledge";
 import { lockedHint } from "../game/quests";
 import { ringFor } from "../game/rewards";
 import { useProfile } from "../profile/ProfileContext";
@@ -37,7 +37,9 @@ export function TeamPicker({ label, picked, onChange, showPresets = true, everyt
   const [filters, setFilters] = useState<CharacterFilters>(NO_FILTERS);
   const idPrefix = useMemo(() => `picker-${label.replace(/\W+/g, "-").toLowerCase()}`, [label]);
   const options = useMemo(() => filterOptions(PICKABLE_CHARACTERS, profile), [profile]);
-  const visible = useMemo(() => filterCharacters(PICKABLE_CHARACTERS, filters, profile), [filters, profile]);
+  // Fighters that can be picked come first; the ones still waiting on a quest or trial follow.
+  const visible = useMemo(() => usableFirst(filterCharacters(PICKABLE_CHARACTERS, filters, profile, true), profile), [filters, profile]);
+  const readyCount = useMemo(() => visible.filter((c) => isPickable(c, profile)).length, [visible, profile]);
 
   function toggle(characterId: string) {
     if (picked.includes(characterId)) onChange(picked.filter((id) => id !== characterId));
@@ -77,6 +79,9 @@ export function TeamPicker({ label, picked, onChange, showPresets = true, everyt
         </div>
       )}
       <CharacterFilterBar filters={filters} options={options} onChange={setFilters} idPrefix={idPrefix} />
+      <p className="hp-text" role="status">
+        {readyCount} ready to pick{visible.length > readyCount ? ` · ${visible.length - readyCount} locked, shown after` : ""}
+      </p>
       <div className="roster-grid" role="list">
         {visible.length === 0 && <p className="hp-text">No characters match these filters.</p>}
         {visible.map((character) => {
