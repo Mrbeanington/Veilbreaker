@@ -12,6 +12,6 @@ apps/web/public/
 apps/web/dist-single/
 
 # Generated portrait originals (large); only the shrunk .webp files under apps/web/src/art/portraits are kept in git (ADR-042)
-docs/art/*.portrait.png
-docs/art/*.portrait.jpg
+docs/art/**/*.portrait.png
+docs/art/**/*.portrait.jpg
 docs/art/chatgptphotos/
