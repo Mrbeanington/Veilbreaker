@@ -1,3 +1,4 @@
+import { FeedbackPanel } from "../playtest/FeedbackPanel";
 import { useSettings } from "../settings/SettingsContext";
 import { useProfile } from "../profile/ProfileContext";
 import { soundBus } from "../sound/soundBus";
@@ -119,6 +120,8 @@ export function SettingsScreen({ install }: { install?: InstallInfo }) {
           <output htmlFor="setting-soundVolume">{settings.soundVolume}%</output>
         </div>
       </div>
+
+      <FeedbackPanel />
 
       <div className="panel">
         <div className="section-title">Play</div>

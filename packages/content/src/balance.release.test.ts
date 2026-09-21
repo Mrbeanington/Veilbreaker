@@ -56,7 +56,7 @@ describe("the published release-2 patch", () => {
   it("is shipped, is the current version, and builds on release-1", () => {
     expect(patch).toBeDefined();
     expect(patch.baseVersionId).toBe(BASE_BALANCE_VERSION_ID);
-    expect(CURRENT_BALANCE_VERSION_ID).toBe("release-3");
+    expect(CURRENT_BALANCE_VERSION_ID).toBe("release-4");
   });
   it("applies cleanly: every change alters a number, stays in the damage language and passes its schema", () => {
     const applied = applyBalanceDraft(baseLibraries(), patch);
@@ -75,8 +75,8 @@ describe("the published release-2 patch", () => {
 
 describe("the published release-3 patch", () => {
   const patch = SHIPPED_BALANCE_PATCHES.find((p) => p.id === "release-3")!;
-  it("is the newest version and contains every release-2 change, so it can stand alone against release-1", () => {
-    expect(SHIPPED_BALANCE_PATCHES[SHIPPED_BALANCE_PATCHES.length - 1]).toBe(patch);
+  it("is published and contains every release-2 change, so it can stand alone against release-1", () => {
+    expect(patch).toBeDefined();
     const release2 = SHIPPED_BALANCE_PATCHES.find((p) => p.id === "release-2")!;
     const paths = new Set(patch.changes.map((c) => c.path));
     for (const c of release2.changes) expect(paths.has(c.path), c.path).toBe(true);
@@ -89,6 +89,23 @@ describe("the published release-3 patch", () => {
   });
   it("has a pinned fingerprint", () => {
     expect(balanceFingerprint(librariesForVersion("release-3")!)).toBe("987a9eeb");
+  });
+});
+
+describe("the published release-4 patch", () => {
+  const patch = SHIPPED_BALANCE_PATCHES.find((p) => p.id === "release-4")!;
+  it("is the newest version and contains every release-3 change", () => {
+    expect(SHIPPED_BALANCE_PATCHES[SHIPPED_BALANCE_PATCHES.length - 1]).toBe(patch);
+    const paths = new Set(patch.changes.map((c) => c.path));
+    for (const c of SHIPPED_BALANCE_PATCHES.find((p) => p.id === "release-3")!.changes) expect(paths.has(c.path), c.path).toBe(true);
+  });
+  it("applies cleanly with no damage-language warnings", () => {
+    const applied = applyBalanceDraft(baseLibraries(), patch);
+    expect(applied.ok).toBe(true);
+    if (applied.ok) expect(applied.warnings).toEqual([]);
+  });
+  it("has a pinned fingerprint", () => {
+    expect(balanceFingerprint(librariesForVersion("release-4")!)).toBe("20e3f34a");
   });
 });
 

@@ -29,6 +29,7 @@ import { installPlan } from "./platform/install";
 import { requestPersistence } from "./platform/protection";
 import { useInstallPrompt } from "./platform/useInstallPrompt";
 import { writeAutosave } from "./platform/files";
+import { recordEvent } from "./playtest/log";
 
 // phase-12: developer mode. `__DEV_TOOLS__` is a build-time literal, so in a
 // normal production build this whole expression is `null` and the dev code is
@@ -63,6 +64,14 @@ type PlayFlow =
 function PlaySection({ onOpenReplays, onOpenRanked, initialMatchCode }: { onOpenReplays: () => void; onOpenRanked: () => void; initialMatchCode?: string }) {
   const { profile, update, store } = useProfile();
   const [flow, setFlow] = useState<PlayFlow>(initialMatchCode ? { name: "friend", code: initialMatchCode } : { name: "home" });
+  const matchStartedAt = useRef(0);
+
+  // Playtest log (ADR-049): a match beginning.
+  useEffect(() => {
+    if (flow.name !== "match") return;
+    matchStartedAt.current = Date.now();
+    void recordEvent(store, "match-start", { mode: flow.mode, tutorial: flow.tutorial === true });
+  }, [flow, store]);
 
   function onMatchFinished(current: Extract<PlayFlow, { name: "match" }>, outcome: MatchOutcome) {
     const done = finishMatch(
@@ -74,6 +83,11 @@ function PlaySection({ onOpenReplays, onOpenRanked, initialMatchCode }: { onOpen
     // A finished match is a milestone: save it (and rotate the backups) immediately.
     update(() => (current.tutorial ? { ...done.profile, tutorial: { status: "done" } } : done.profile), { milestone: true });
     if (done.replay) void saveReplay(store, done.replay).catch(() => undefined);
+    // Playtest log (ADR-049): how the match went, from the human side (Player 1) in one-person modes.
+    const human = current.mode === "hotseat" ? "n/a" : outcome.result === "draw" ? "draw" : outcome.winnerPlayerId === "playerA" ? "win" : "loss";
+    void recordEvent(store, "match-end", { mode: current.mode, result: human, turns: outcome.turns ?? 0, seconds: Math.round((Date.now() - matchStartedAt.current) / 1000), tutorial: current.tutorial === true, team: current.teamAIds.join(","), foe: current.teamBIds.join(",") });
+    if (current.tutorial) void recordEvent(store, "tutorial-done");
+    if (done.report.levelAfter > done.report.levelBefore) void recordEvent(store, "level-up", { level: done.report.levelAfter });
     const revealed = done.report.revealed.map((id) => CHARACTER_LIBRARY[id]?.displayName ?? id);
     setFlow({ name: "result", outcome, mode: current.mode, teamAIds: current.teamAIds, teamBIds: current.teamBIds, trial: current.trial, tutorial: current.tutorial, revealed, report: done.report });
   }
@@ -84,8 +98,11 @@ function PlaySection({ onOpenReplays, onOpenRanked, initialMatchCode }: { onOpen
         <PlayScreen
           showTutorialPitch={profile.tutorial.status === "new"}
           rankedOpensAtLevel={rankedGate(profile).locked ? RANKED_UNLOCK_LEVEL : undefined}
-          onSkipTutorial={() => update((p) => ({ ...p, tutorial: { status: "skipped" } }), { milestone: true })}
-          onStart={(mode) => (mode === "tutorial" ? setFlow({ name: "match", mode: "bot", teamAIds: [...TUTORIAL_TEAM], teamBIds: [...TUTORIAL_FOE], seed: Date.now(), tutorial: true }) : mode === "trials" ? setFlow({ name: "trials" }) : mode === "friend" ? setFlow({ name: "friend" }) : mode === "replays" ? onOpenReplays() : mode === "ranked" ? onOpenRanked() : setFlow({ name: "setup", mode }))}
+          onSkipTutorial={() => {
+            void recordEvent(store, "tutorial-skip", { from: "banner" });
+            update((p) => ({ ...p, tutorial: { status: "skipped" } }), { milestone: true });
+          }}
+          onStart={(mode) => (mode === "tutorial" ? (void recordEvent(store, "tutorial-start"), setFlow({ name: "match", mode: "bot", teamAIds: [...TUTORIAL_TEAM], teamBIds: [...TUTORIAL_FOE], seed: Date.now(), tutorial: true })) : mode === "trials" ? setFlow({ name: "trials" }) : mode === "friend" ? setFlow({ name: "friend" }) : mode === "replays" ? onOpenReplays() : mode === "ranked" ? onOpenRanked() : setFlow({ name: "setup", mode }))}
         />
       );
     case "setup":
@@ -119,6 +136,7 @@ function PlaySection({ onOpenReplays, onOpenRanked, initialMatchCode }: { onOpen
             flow.tutorial
               ? {
                   onSkip: () => {
+                    void recordEvent(store, "tutorial-skip", { from: "match" });
                     update((p) => (p.tutorial.status === "new" ? { ...p, tutorial: { status: "skipped" } } : p), { milestone: true });
                     setFlow({ name: "home" });
                   },
@@ -193,12 +211,27 @@ export function AppShell() {
     return () => clearTimeout(timer);
   }, [profile, ready, store]);
 
+  // Playtest log (ADR-049): the session opening, and any error the page reports.
+  useEffect(() => {
+    if (!ready) return;
+    void recordEvent(store, "open");
+    const onError = (e: ErrorEvent) => void recordEvent(store, "error", { message: e.message || "error" });
+    const onRejection = (e: PromiseRejectionEvent) => void recordEvent(store, "error", { message: String((e.reason as { message?: string } | undefined)?.message ?? e.reason ?? "rejection") });
+    window.addEventListener("error", onError);
+    window.addEventListener("unhandledrejection", onRejection);
+    return () => {
+      window.removeEventListener("error", onError);
+      window.removeEventListener("unhandledrejection", onRejection);
+    };
+  }, [ready, store]);
+
   const go = useCallback((next: SectionId) => {
+    void recordEvent(store, "screen", { name: next });
     setDev(false);
     setSection(next);
     // Move focus to the new page so keyboard and screen-reader users land on it.
     requestAnimationFrame(() => mainRef.current?.focus());
-  }, []);
+  }, [store]);
 
   const asked = (change: { installed?: boolean } = {}) =>
     update((p) => ({ ...p, install: { ...p.install, ...change, firstLaunchHandled: true, asks: p.install.asks + 1, lastAskAt: Date.now() } }));

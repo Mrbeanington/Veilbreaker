@@ -24,6 +24,7 @@
     "art:export": "pnpm --filter @veilbreak/content run export-art-specs",
     "art:portraits": "pnpm --filter @veilbreak/content run export-portrait-prompts",
     "art:splashes": "pnpm --filter @veilbreak/content run export-portrait-prompts splash",
+    "playtest:report": "pnpm --filter @veilbreak/web run playtest-report",
     "art:import": "pnpm --filter @veilbreak/web run art-import",
     "art:status": "pnpm --filter @veilbreak/web run art-status",
     "verify-bundle-budget": "node scripts/verify-bundle-budget.mjs"

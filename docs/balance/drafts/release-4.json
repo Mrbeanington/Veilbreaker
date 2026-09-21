@@ -1,0 +1,266 @@
+{
+ "format": "veilbreak-balance",
+ "formatVersion": 1,
+ "id": "release-4",
+ "baseVersionId": "release-1",
+ "createdAt": "2026-09-20T00:00:00.000Z",
+ "changeNotes": "Legends were the weakest group at both bot levels; buffs their signature moves and health, and trims The Firebird and Patient Zero.",
+ "changes": [
+  {
+   "path": "characters/shieldmaiden-yrsa/baseHp",
+   "value": 120
+  },
+  {
+   "path": "abilities/ability.shieldmaiden-yrsa.cover-an-ally/cooldown",
+   "value": 3
+  },
+  {
+   "path": "characters/domovoi/baseHp",
+   "value": 100
+  },
+  {
+   "path": "abilities/ability.domovoi.warm-hearth/cooldown",
+   "value": 3
+  },
+  {
+   "path": "passives/passive.the-valkyrie.chooser-of-the-slain/effects/0/amount",
+   "value": 10
+  },
+  {
+   "path": "abilities/ability.the-valkyrie.battle-cry/cooldown",
+   "value": 3
+  },
+  {
+   "path": "characters/el-magnifico/baseHp",
+   "value": 110
+  },
+  {
+   "path": "characters/the-living-sarcophagus/baseHp",
+   "value": 160
+  },
+  {
+   "path": "abilities/ability.madame-fortuna.turn-the-card/cooldown",
+   "value": 1
+  },
+  {
+   "path": "passives/passive.the-firebird.rise-from-ashes/effects/1/amount",
+   "value": 10
+  },
+  {
+   "path": "characters/king-croak/baseHp",
+   "value": 110
+  },
+  {
+   "path": "abilities/ability.king-croak.lily-pad-throne/effects/0/magnitude",
+   "value": 20
+  },
+  {
+   "path": "abilities/ability.the-ghoul.shroud-of-dirt/effects/0/magnitude",
+   "value": 20
+  },
+  {
+   "path": "abilities/ability.el-magnifico.second-wind/cooldown",
+   "value": 4
+  },
+  {
+   "path": "characters/malachar/baseHp",
+   "value": 140
+  },
+  {
+   "path": "abilities/ability.malachar.raise-the-forgotten/cooldown",
+   "value": 1
+  },
+  {
+   "path": "abilities/ability.kappa-kiro.riverbank-grab/effects/0/ifFalse/0/amount",
+   "value": 20
+  },
+  {
+   "path": "abilities/ability.kappa-kiro.drag-under/cooldown",
+   "value": 3
+  },
+  {
+   "path": "characters/the-gunslinger-qb/baseHp",
+   "value": 110
+  },
+  {
+   "path": "abilities/ability.the-gunslinger-qb.long-bomb/cost/focus",
+   "value": 0
+  },
+  {
+   "path": "abilities/ability.nekomata.claw-swipe/effects/0/amount",
+   "value": 30
+  },
+  {
+   "path": "characters/moonshot-maddox/baseHp",
+   "value": 120
+  },
+  {
+   "path": "abilities/ability.moonshot-maddox.double-down-the-line/cost/focus",
+   "value": 1
+  },
+  {
+   "path": "characters/the-painted-ronin/baseHp",
+   "value": 130
+  },
+  {
+   "path": "abilities/ability.the-sphinx.stone-silence/cooldown",
+   "value": 3
+  },
+  {
+   "path": "abilities/ability.medusa.snake-bite/effects/0/amount",
+   "value": 20
+  },
+  {
+   "path": "abilities/ability.medusa.gorgons-glare/cooldown",
+   "value": 5
+  },
+  {
+   "path": "characters/oni-of-the-red-gate/baseHp",
+   "value": 190
+  },
+  {
+   "path": "abilities/ability.the-painted-ronin.portrait-of-a-foe/cooldown",
+   "value": 2
+  },
+  {
+   "path": "abilities/ability.the-valkyrie.shield-of-the-slain/effects/0/magnitude",
+   "value": 10
+  },
+  {
+   "path": "abilities/ability.hydra.many-mouthed-lunge/cost/might",
+   "value": 2
+  },
+  {
+   "path": "abilities/ability.the-siren.lure/effects/0/amount",
+   "value": 20
+  },
+  {
+   "path": "characters/tortuga-rex/baseHp",
+   "value": 130
+  },
+  {
+   "path": "characters/asterion/baseHp",
+   "value": 150
+  },
+  {
+   "path": "abilities/ability.patient-zero.festering-wound/effects/1/stacks",
+   "value": 2
+  },
+  {
+   "path": "abilities/ability.moonshot-maddox.home-run-swing/effects/0/ifFalse/0/amount",
+   "value": 20
+  },
+  {
+   "path": "abilities/ability.the-gambler.cash-out/effects/0/ifFalse/0/amount",
+   "value": 20
+  },
+  {
+   "path": "abilities/ability.the-gambler.loaded-dice/cost/chaos",
+   "value": 1
+  },
+  {
+   "path": "abilities/ability.the-firebird.glowing-feather/cooldown",
+   "value": 4
+  },
+  {
+   "path": "abilities/ability.the-gatekeeper.halberd-thrust/cooldown",
+   "value": 2
+  },
+  {
+   "path": "abilities/ability.king-croak.poison-dart/cooldown",
+   "value": 2
+  },
+  {
+   "path": "characters/leshy/baseHp",
+   "value": 130
+  },
+  {
+   "path": "characters/the-honey-badger/baseHp",
+   "value": 110
+  },
+  {
+   "path": "abilities/ability.the-honey-badger.frenzied-bite/cooldown",
+   "value": 2
+  },
+  {
+   "path": "abilities/ability.rusalka.cold-whisper/cooldown",
+   "value": 2
+  },
+  {
+   "path": "characters/draugr/baseHp",
+   "value": 120
+  },
+  {
+   "path": "abilities/ability.fourth-and-one.go-for-it/cooldown",
+   "value": 2
+  },
+  {
+   "path": "abilities/ability.the-storyteller.once-upon-a-time/cooldown",
+   "value": 1
+  },
+  {
+   "path": "characters/shiro/baseHp",
+   "value": 120
+  },
+  {
+   "path": "abilities/ability.shiro.final-stroke/cost/focus",
+   "value": 2
+  },
+  {
+   "path": "abilities/ability.shiro.final-stroke/cooldown",
+   "value": 3
+  },
+  {
+   "path": "abilities/ability.aurelia.zenith-aegis/cooldown",
+   "value": 5
+  },
+  {
+   "path": "abilities/ability.aurelia.zenith-aegis/cost/spirit",
+   "value": 2
+  },
+  {
+   "path": "abilities/ability.aurelia.solar-mend/effects/0/amount",
+   "value": 30
+  },
+  {
+   "path": "abilities/ability.zeiron.wrath-of-the-unchained-sky/cost/might",
+   "value": 2
+  },
+  {
+   "path": "characters/aurelia/baseHp",
+   "value": 150
+  },
+  {
+   "path": "abilities/ability.aurelia.suns-vigil/cooldown",
+   "value": 3
+  },
+  {
+   "path": "abilities/ability.shiro.ink-veil/cost/spirit",
+   "value": 1
+  },
+  {
+   "path": "characters/morrigan/baseHp",
+   "value": 140
+  },
+  {
+   "path": "abilities/ability.morrigan.storm-of-crows/cooldown",
+   "value": 4
+  },
+  {
+   "path": "abilities/ability.emperor-zero.cold-logic/effects/0/amount",
+   "value": 30
+  },
+  {
+   "path": "abilities/ability.emperor-zero.revoke/cooldown",
+   "value": 4
+  },
+  {
+   "path": "abilities/ability.calypsa.maelstrom/cost/might",
+   "value": 2
+  },
+  {
+   "path": "abilities/ability.patient-zero.outbreak-pulse/cooldown",
+   "value": 3
+  }
+ ]
+}
