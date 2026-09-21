@@ -15,3 +15,5 @@ apps/web/dist-single/
 docs/art/**/*.portrait.png
 docs/art/**/*.portrait.jpg
 docs/art/chatgptphotos/
+docs/art/**/*.png
+docs/art/ref/*.keep
