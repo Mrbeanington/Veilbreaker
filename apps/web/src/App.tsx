@@ -23,6 +23,7 @@ import { TrialsScreen } from "./screens/TrialsScreen";
 import { FriendScreen } from "./friend/FriendScreen";
 import { finishMatch } from "./game/finishMatch";
 import type { LegendTrial, ProgressReport } from "./game/progression";
+import { RANKED_UNLOCK_LEVEL, rankedGate } from "./game/gates";
 import { TUTORIAL_BOT_LEVEL, TUTORIAL_FOE, TUTORIAL_TEAM } from "./game/tutorial";
 import { installPlan } from "./platform/install";
 import { requestPersistence } from "./platform/protection";
@@ -82,6 +83,7 @@ function PlaySection({ onOpenReplays, onOpenRanked, initialMatchCode }: { onOpen
       return (
         <PlayScreen
           showTutorialPitch={profile.tutorial.status === "new"}
+          rankedOpensAtLevel={rankedGate(profile).locked ? RANKED_UNLOCK_LEVEL : undefined}
           onSkipTutorial={() => update((p) => ({ ...p, tutorial: { status: "skipped" } }), { milestone: true })}
           onStart={(mode) => (mode === "tutorial" ? setFlow({ name: "match", mode: "bot", teamAIds: [...TUTORIAL_TEAM], teamBIds: [...TUTORIAL_FOE], seed: Date.now(), tutorial: true }) : mode === "trials" ? setFlow({ name: "trials" }) : mode === "friend" ? setFlow({ name: "friend" }) : mode === "replays" ? onOpenReplays() : mode === "ranked" ? onOpenRanked() : setFlow({ name: "setup", mode }))}
         />

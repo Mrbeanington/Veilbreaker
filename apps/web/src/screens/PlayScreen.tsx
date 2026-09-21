@@ -5,12 +5,14 @@ interface PlayScreenProps {
   onStart: (mode: "hotseat" | "bot" | "trials" | "replays" | "friend" | "ranked" | "tutorial") => void;
   /** A brand-new player is offered the tutorial first (ADR-039). */
   showTutorialPitch?: boolean;
+  /** Ranked's level requirement while it is still closed (ADR-044). */
+  rankedOpensAtLevel?: number;
   onSkipTutorial?: () => void;
 }
 
 // spec/05: PLAY offers Vs. AI, PvE/Trials, Local Hotseat, Friend Match and
 // Replays, and the Ranked ladder is one tap away too.
-export function PlayScreen({ onStart, showTutorialPitch = false, onSkipTutorial }: PlayScreenProps) {
+export function PlayScreen({ onStart, showTutorialPitch = false, onSkipTutorial, rankedOpensAtLevel }: PlayScreenProps) {
   return (
     <div>
       <h1 className="title">{GAME_TITLE}</h1>
@@ -62,7 +64,7 @@ export function PlayScreen({ onStart, showTutorialPitch = false, onSkipTutorial 
         <button type="button" className="mode-card" onClick={() => onStart("ranked")}>
           <Icon name="ranked" size={22} />
           <strong>Ranked Ladder</strong>
-          <span>Climb divisions against bots.</span>
+          <span>{rankedOpensAtLevel ? `Opens at level ${rankedOpensAtLevel}.` : "Climb divisions against bots."}</span>
         </button>
       </div>
     </div>

@@ -38,7 +38,8 @@ const placedAt = (rating: number, extra: Partial<RankedState> = {}): RankedState
 async function mount(ranked: RankedState | undefined, tweak: (p: Profile) => Profile = (p) => p) {
   const store = createMemoryStore();
   const base = createDefaultProfile();
-  await saveProfile(store, tweak({ ...base, install: { ...base.install, firstLaunchHandled: true }, ranked: ranked ?? base.ranked }));
+  // Ranked opens at level 3 (ADR-044); these tests are about the ladder, so they start at 300 xp.
+  await saveProfile(store, tweak({ ...base, xp: 300, install: { ...base.install, firstLaunchHandled: true }, ranked: ranked ?? base.ranked }));
   render(
     <SettingsProvider store={store}>
       <RankedScreen />

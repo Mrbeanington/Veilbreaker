@@ -52,9 +52,27 @@ describe("main navigation (spec/05)", () => {
     expect(screen.getByRole("button", { name: "Legends" })).toHaveAttribute("aria-current", "page");
   });
 
+  it("Ranked stays closed below level 3, and says how far away it is", async () => {
+    const user = userEvent.setup();
+    await renderApp(await seededStore((p) => ({ ...p, xp: 120 })));
+    await user.click(screen.getByRole("button", { name: "Play" }));
+    expect(screen.getByRole("button", { name: /Ranked Ladder/ })).toHaveTextContent("Opens at level 3");
+    await user.click(screen.getByRole("button", { name: "Ranked" }));
+    expect(await screen.findByText("Ranked opens at level 3")).toBeInTheDocument();
+    expect(screen.getByText(/You are level 2/)).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Play a ranked match" })).toBeNull();
+  });
+
+  it("Ranked is open to an older save at any level", async () => {
+    const user = userEvent.setup();
+    await renderApp(await seededStore((p) => ({ ...p, unlocks: { ...p.unlocks, model: 1 } })));
+    await user.click(screen.getByRole("button", { name: "Ranked" }));
+    expect(await screen.findByRole("button", { name: "Play a ranked match" })).toBeInTheDocument();
+  });
+
   it("Ranked opens the local ladder, and the Play screen has a card that goes there", async () => {
     const user = userEvent.setup();
-    await renderApp();
+    await renderApp(await seededStore((p) => ({ ...p, xp: 300 })));
     await user.click(screen.getByRole("button", { name: "Ranked" }));
     expect(await screen.findByText(/Placement matches: 0 of 5/)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Play a ranked match" })).toBeInTheDocument();

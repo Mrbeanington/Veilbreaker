@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { rankedGate } from "../game/gates";
 import { CHARACTER_LIBRARY } from "@veilbreak/content";
 import {
   DIVISIONS,
@@ -257,7 +258,28 @@ function BanScreen({ plan, playerDraft, onBan }: { plan: RankedPlan; playerDraft
 }
 
 /** Ranked: home, pick (and ban), match, result. */
+/** Ranked opens at an account level (ADR-044); before that this explains how to get there. */
 export function RankedScreen() {
+  const { profile } = useProfile();
+  const gate = rankedGate(profile);
+  if (gate.locked) {
+    return (
+      <div>
+        <h2 className="title small">Ranked</h2>
+        <div className="panel" role="status">
+          <div className="section-title">Ranked opens at level {gate.needLevel}</div>
+          <p>
+            You are level {gate.level}. Play {gate.xpToGo} more XP worth of matches, roughly {Math.max(1, Math.ceil(gate.xpToGo / 30))} win{Math.ceil(gate.xpToGo / 30) === 1 ? "" : "s"}, and the ladder unlocks. Missions and quests give extra XP.
+          </p>
+          <p className="hp-text">Ranked is the same game against a tougher opponent with a rating on the line. Use the wait to learn your team in normal matches.</p>
+        </div>
+      </div>
+    );
+  }
+  return <RankedLadder />;
+}
+
+function RankedLadder() {
   const { profile, update, store, ready } = useProfile();
   const [flow, setFlow] = useState<Flow>({ name: "home" });
   const [notice, setNotice] = useState<string | undefined>();
