@@ -36,35 +36,34 @@ export function CharacterCard({ character, displayName, targetable, acting, onCl
       <div className="hp-text">
         {character.currentHp} / {character.maxHp} HP
       </div>
-      {character.statuses.length > 0 && (
-        <div className="status-row">
-          {character.statuses.map((active) => {
-            const def = STATUS_LIBRARY[active.statusId];
-            const label = def?.displayName ?? active.statusId;
-            const magnitudeLabel = active.magnitude > 0 ? ` ${active.magnitude * active.stacks}` : "";
-            return (
-              <span key={active.statusId} className="status-chip" title={def?.tooltip}>
-                <Icon name={statusIconName(active.statusId)} size={12} /> {label}
-                {magnitudeLabel}
-                {active.remainingTurns !== null ? ` (${active.remainingTurns})` : ""}
-              </span>
-            );
-          })}
-        </div>
-      )}
-      {Object.entries(character.resources).some(([id]) => RESOURCE_LIBRARY[id]?.trackMode) && (
-        <div className="resource-row">
-          {Object.entries(character.resources).map(([id, value]) => {
-            const def = RESOURCE_LIBRARY[id];
-            if (!def?.trackMode) return null;
-            return (
-              <span key={id} className="resource-chip">
-                {def.displayName}: {value}
-              </span>
-            );
-          })}
-        </div>
-      )}
+      {/* Always rendered, even empty (spec/05 "clarity first" polish): a status or a mid-match
+          resource appearing/disappearing must not change the card's height turn to turn, or two
+          teams' cards drift out of alignment with each other. */}
+      <div className="status-row">
+        {character.statuses.map((active) => {
+          const def = STATUS_LIBRARY[active.statusId];
+          const label = def?.displayName ?? active.statusId;
+          const magnitudeLabel = active.magnitude > 0 ? ` ${active.magnitude * active.stacks}` : "";
+          return (
+            <span key={active.statusId} className="status-chip" title={def?.tooltip}>
+              <Icon name={statusIconName(active.statusId)} size={12} /> {label}
+              {magnitudeLabel}
+              {active.remainingTurns !== null ? ` (${active.remainingTurns})` : ""}
+            </span>
+          );
+        })}
+      </div>
+      <div className="resource-row">
+        {Object.entries(character.resources).map(([id, value]) => {
+          const def = RESOURCE_LIBRARY[id];
+          if (!def?.trackMode) return null;
+          return (
+            <span key={id} className="resource-chip">
+              {def.displayName}: {value}
+            </span>
+          );
+        })}
+      </div>
     </div>
   );
 

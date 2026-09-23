@@ -241,6 +241,9 @@ button {
   flex-wrap: wrap;
   gap: 4px;
   margin-top: 6px;
+  /* Reserves one chip's height even when empty, so a status appearing or clearing mid-match
+     never changes the card's height (both rows are now always rendered; see CharacterCard). */
+  min-height: 22px;
 }
 
 .status-chip {
