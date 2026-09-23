@@ -61,6 +61,10 @@ The code is past proof of concept. The game is not yet, and the gap to "indie AA
 - OQ-110: real playtests; a few fighters still sit far from 50% with bots.
 - A real screen-reader session.
 
+## Ideas not yet scheduled
+
+- **Selectable art themes** (owner idea, 2026-09-23): let a player pick a visual theme in Settings — today's painted/AI-generated style, plus e.g. a cartoon style — swapping portraits, splashes, and possibly the palette. Real upside: replayability, and an out for anyone who doesn't like generated art. Real cost: art volume roughly multiplies per theme (119 portraits + 119 splashes, each style), and every theme ships in the static build — the client-only rule means no per-theme CDN fetch, so `verify-bundle-budget.mjs`'s image budget needs watching as themes are added. Don't restructure `apps/web/src/art/portraits/` / `.../splashes/` ahead of time for this; when it actually starts, move the current set into a `default/` subfolder and add a second `<theme>/` alongside it — one new theme at a time, not several. Sequencing: finish splashes (119/119) for the one style already in progress before starting a second style.
+
 ## Tools that already exist
 
 - `pnpm sim`, `pnpm meta`: balance simulation and the ladder meta pool. `docs/design/balance-workflow.md`.
