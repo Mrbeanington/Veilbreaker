@@ -1,7 +1,7 @@
-import { RESOURCE_LIBRARY, STATUS_LIBRARY } from "@veilbreak/content";
+import { RESOURCE_LIBRARY } from "@veilbreak/content";
 import type { CharacterRuntimeState } from "@veilbreak/engine";
-import { Icon, statusIconName } from "./Icon";
 import { Portrait } from "./Portrait";
+import { StatusChip } from "./StatusChip";
 
 interface CharacterCardProps {
   character: CharacterRuntimeState;
@@ -40,18 +40,9 @@ export function CharacterCard({ character, displayName, targetable, acting, onCl
           resource appearing/disappearing must not change the card's height turn to turn, or two
           teams' cards drift out of alignment with each other. */}
       <div className="status-row">
-        {character.statuses.map((active) => {
-          const def = STATUS_LIBRARY[active.statusId];
-          const label = def?.displayName ?? active.statusId;
-          const magnitudeLabel = active.magnitude > 0 ? ` ${active.magnitude * active.stacks}` : "";
-          return (
-            <span key={active.statusId} className="status-chip" title={def?.tooltip}>
-              <Icon name={statusIconName(active.statusId)} size={12} /> {label}
-              {magnitudeLabel}
-              {active.remainingTurns !== null ? ` (${active.remainingTurns})` : ""}
-            </span>
-          );
-        })}
+        {character.statuses.map((active) => (
+          <StatusChip key={active.statusId} active={active} />
+        ))}
       </div>
       <div className="resource-row">
         {Object.entries(character.resources).map(([id, value]) => {
