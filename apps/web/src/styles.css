@@ -520,8 +520,12 @@ select {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 56px;
-  height: 56px;
+  /* Was hardcoded at 56px everywhere, so a locked row sat next to unlocked 36px portraits in
+     the Characters/Codex list looking oversized and misaligned. Each caller now sets this to
+     match its own Portrait size (TeamPicker's roster cards use the 56px default). */
+  width: var(--silhouette-size, 56px);
+  height: var(--silhouette-size, 56px);
+  flex-shrink: 0;
   border-radius: 50%;
   background: #0b0910;
   color: var(--text-muted);

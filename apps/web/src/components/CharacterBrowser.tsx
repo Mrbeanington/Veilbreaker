@@ -45,7 +45,7 @@ export function CharacterBrowser({ mode, idPrefix }: { mode: "roster" | "codex";
                   onClick={() => setSelectedId(c.id)}
                 >
                   {locked ? (
-                    <span className="portrait silhouette" aria-hidden="true">
+                    <span className="portrait silhouette" aria-hidden="true" style={{ "--silhouette-size": "36px" } as React.CSSProperties}>
                       <Icon name="lock" size={16} />
                     </span>
                   ) : (
