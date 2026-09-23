@@ -242,7 +242,7 @@ function BanScreen({ plan, playerDraft, onBan }: { plan: RankedPlan; playerDraft
         <div className="roster-grid" role="list">
           {plan.botDraft.map((id) => (
             <button key={id} type="button" role="listitem" className={`roster-card${chosen === id ? " picked" : ""}`} aria-pressed={chosen === id} onClick={() => setChosen(id)}>
-              <Portrait characterId={id} displayName={shown(id)} />
+              <Portrait characterId={id} displayName={shown(id)} size={56} />
               <span>Ban {shown(id)}</span>
             </button>
           ))}
