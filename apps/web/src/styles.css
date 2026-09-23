@@ -160,6 +160,10 @@ button {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
+  /* Without this, the grid's bottom edge sits flush against the next panel (the ability
+     list) — barely noticeable when cards were different heights, obvious now that every
+     card lines up on the same edge (ADR-051). */
+  margin-bottom: 16px;
 }
 
 @media (max-width: 720px) {
@@ -177,7 +181,7 @@ button {
 .character-card {
   display: flex;
   gap: 10px;
-  align-items: flex-start;
+  align-items: center;
   background: var(--surface-2);
   border: 2px solid var(--border);
   border-radius: 10px;

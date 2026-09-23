@@ -70,7 +70,7 @@ export function CharacterCard({ character, displayName, targetable, acting, onCl
   if (onClick) {
     return (
       <button type="button" className={classes.join(" ")} onClick={onClick} disabled={!targetable}>
-        <Portrait characterId={character.characterId} displayName={displayName} />
+        <Portrait characterId={character.characterId} displayName={displayName} size={60} />
         {body}
       </button>
     );
@@ -78,7 +78,7 @@ export function CharacterCard({ character, displayName, targetable, acting, onCl
 
   return (
     <div className={classes.join(" ")}>
-      <Portrait characterId={character.characterId} displayName={displayName} />
+      <Portrait characterId={character.characterId} displayName={displayName} size={60} />
       {body}
     </div>
   );
