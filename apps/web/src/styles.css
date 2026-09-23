@@ -1015,7 +1015,14 @@ textarea {
 .profile-badge { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
 .profile-badge .portrait { width: 56px; height: 56px; font-size: 1.3rem; }
 
-/* Fighter splash art on the character sheet (ADR-047) */
+/* Fighter splash art on the character sheet (ADR-047). `object-fit: cover` cropped
+   anything a splash's tall 2:3 source didn't concentrate in its top ~25% (this
+   280px-tall, full-width box), which is most of them: Hydra's five fanned heads span
+   close to half the image's height, so two of them were being cut off entirely. Every
+   splash is composed to keep "the complete character silhouette inside the frame"
+   (docs/art/splash-production-phases.md) — `contain` is the only fit that honors that
+   for an arbitrary composition, at the cost of letterboxing a wide fan shape smaller
+   within the fixed height rather than cropping it (ADR-060). */
 .sheet-splash {
   margin: -4px -4px 12px;
   max-height: 280px;
@@ -1026,7 +1033,7 @@ textarea {
 .sheet-splash img {
   width: 100%;
   height: 280px;
-  object-fit: cover;
-  object-position: top;
+  object-fit: contain;
+  object-position: center;
   display: block;
 }
