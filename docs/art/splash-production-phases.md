@@ -6,53 +6,53 @@ Each splash: one individual <id>.splash.png, tall 2:3, at least 768 pixels wide;
 
 Before generation, reconcile scene descriptions with the global plain-background requirement. Also resolve prompt requests for glyphs, notation or jersey numbers against the no-writing rule. Character-specific anatomy takes priority over generic human head-to-feet wording.
 
-## Phase 1 — Legends (do these first)
+## Phase 1 — Legends (do these first) — done (2026-09-23)
 
 12 new splash illustrations.
 
-- [ ] Aurelia, Empress of the Sun — aurelia.splash.png
-- [ ] Behemoth — behemoth.splash.png
-- [ ] Calypsa, Queen Beneath the Sea — calypsa.splash.png
-- [ ] Emperor Zero — emperor-zero.splash.png
-- [ ] Madame Fortuna — madame-fortuna.splash.png
-- [ ] Morrigan, Mother of Crows — morrigan.splash.png
-- [ ] Orpheon, the Final Song — orpheon.splash.png
-- [ ] Shiro, the Last Brush — shiro.splash.png
-- [ ] The Black Knight — black-knight.splash.png
-- [ ] The Minotaur King — minotaur-king.splash.png
-- [ ] The Nameless One — the-nameless-one.splash.png
-- [ ] Zeiron, the God Who Refused Olympus — zeiron.splash.png
+- [x] Aurelia, Empress of the Sun — aurelia.splash.png
+- [x] Behemoth — behemoth.splash.png
+- [x] Calypsa, Queen Beneath the Sea — calypsa.splash.png
+- [x] Emperor Zero — emperor-zero.splash.png
+- [x] Madame Fortuna — madame-fortuna.splash.png
+- [x] Morrigan, Mother of Crows — morrigan.splash.png
+- [x] Orpheon, the Final Song — orpheon.splash.png
+- [x] Shiro, the Last Brush — shiro.splash.png
+- [x] The Black Knight — black-knight.splash.png
+- [x] The Minotaur King — minotaur-king.splash.png
+- [x] The Nameless One — the-nameless-one.splash.png
+- [x] Zeiron, the God Who Refused Olympus — zeiron.splash.png
 
-## Phase 2 — Ancient Mediterranean
+## Phase 2 — Ancient Mediterranean — done (2026-09-23)
 
 14 new splash illustrations.
 
-- [ ] Arachne — arachne.splash.png
-- [ ] Asterion — asterion.splash.png
-- [ ] Cerberus — cerberus.splash.png
-- [ ] Charon — charon.splash.png
-- [ ] Cyclops Brontes — cyclops-brontes.splash.png
-- [ ] Hecate's Disciple — hecates-disciple.splash.png
-- [ ] Hydra — hydra.splash.png
-- [ ] Icarion — icarion.splash.png
-- [ ] Medusa — medusa.splash.png
-- [ ] Nemesis — nemesis.splash.png
-- [ ] The Bronze Giant — the-bronze-giant.splash.png
-- [ ] The Forgotten Titan — the-forgotten-titan.splash.png
-- [ ] The Oracle — the-oracle.splash.png
-- [ ] The Siren — the-siren.splash.png
+- [x] Arachne — arachne.splash.png
+- [x] Asterion — asterion.splash.png
+- [x] Cerberus — cerberus.splash.png
+- [x] Charon — charon.splash.png
+- [x] Cyclops Brontes — cyclops-brontes.splash.png
+- [x] Hecate's Disciple — hecates-disciple.splash.png
+- [x] Hydra — hydra.splash.png
+- [x] Icarion — icarion.splash.png
+- [x] Medusa — medusa.splash.png
+- [x] Nemesis — nemesis.splash.png
+- [x] The Bronze Giant — the-bronze-giant.splash.png
+- [x] The Forgotten Titan — the-forgotten-titan.splash.png
+- [x] The Oracle — the-oracle.splash.png
+- [x] The Siren — the-siren.splash.png
 Already assigned to Phase 1: Zeiron, the God Who Refused Olympus (zeiron.splash.png).
 
-## Phase 3 — Animal tall tales
+## Phase 3 — Animal tall tales — done (2026-09-23)
 
 6 new splash illustrations.
 
-- [ ] General Goose — general-goose.splash.png
-- [ ] King Croak — king-croak.splash.png
-- [ ] Professor Octopus — professor-octopus.splash.png
-- [ ] Sir Hopsalot — sir-hopsalot.splash.png
-- [ ] The Albino Gorilla — the-albino-gorilla.splash.png
-- [ ] The Honey Badger — the-honey-badger.splash.png
+- [x] General Goose — general-goose.splash.png
+- [x] King Croak — king-croak.splash.png
+- [x] Professor Octopus — professor-octopus.splash.png
+- [x] Sir Hopsalot — sir-hopsalot.splash.png
+- [x] The Albino Gorilla — the-albino-gorilla.splash.png
+- [x] The Honey Badger — the-honey-badger.splash.png
 Already assigned to Phase 1: The Minotaur King (minotaur-king.splash.png).
 
 ## Phase 4 — Egyptian and desert traditions (cultural review: high priority)
