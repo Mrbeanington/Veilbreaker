@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { generateAbilityTooltip } from "./tooltip";
 import { FORTRESS_SHELL, SHELL_BASH, SHELLQUAKE } from "./data/characters/tortuga-rex";
 import { BORROWED_LIFE } from "./data/characters/malachar";
+import { SERPENT_BITE } from "./data/characters/hydra";
 
 describe("generateAbilityTooltip", () => {
   it("states cost, cooldown, and the effect in plain English", () => {
@@ -14,12 +15,20 @@ describe("generateAbilityTooltip", () => {
     );
   });
 
-  it("describes a conditional effect's both branches", () => {
+  it("describes a conditional effect's both branches, naming the actual condition", () => {
     const tooltip = generateAbilityTooltip(SHELLQUAKE);
-    expect(tooltip).toContain("If a condition holds:");
+    expect(tooltip).toContain("If you have Damage Reduction:");
     expect(tooltip).toContain("Deal 40 normal damage.");
     expect(tooltip).toContain("Otherwise:");
     expect(tooltip).toContain("Deal 10 normal damage.");
+  });
+
+  it("names each branch of a nested conditional by its own condition, not a generic label", () => {
+    const tooltip = generateAbilityTooltip(SERPENT_BITE);
+    expect(tooltip).toContain("If your Heads is at least 5: Deal 40 normal damage.");
+    expect(tooltip).toContain("Otherwise: If your Heads is at least 3: Deal 25 normal damage.");
+    expect(tooltip).toContain("Otherwise: Deal 12 normal damage.");
+    expect(tooltip).not.toContain("a condition holds");
   });
 
   it("describes a multi-effect ability as a sequence of sentences", () => {
