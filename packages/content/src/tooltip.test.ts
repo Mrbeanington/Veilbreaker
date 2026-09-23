@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { generateAbilityTooltip } from "./tooltip";
+import { describeCondition, generateAbilityTooltip } from "./tooltip";
 import { FORTRESS_SHELL, SHELL_BASH, SHELLQUAKE } from "./data/characters/tortuga-rex";
 import { BORROWED_LIFE } from "./data/characters/malachar";
 import { SERPENT_BITE } from "./data/characters/hydra";
@@ -40,5 +40,26 @@ describe("generateAbilityTooltip", () => {
   it("stays numerically honest when an ability's numbers change (no hand-written duplicate to drift)", () => {
     const bumped = { ...SHELL_BASH, effects: [{ ...SHELL_BASH.effects[0]!, amount: 999 }] };
     expect(generateAbilityTooltip(bumped)).toContain("999");
+  });
+});
+
+describe("describeCondition — names option (ADR-056: the battle log's third-person phrasing)", () => {
+  it("defaults to second person, unchanged, for the tooltip's own use", () => {
+    expect(describeCondition({ type: "hasStatus", target: "self", statusId: "status.damage-reduction" })).toBe("you have Damage Reduction");
+  });
+
+  it("swaps in a real name for a TargetRef given in `names`, everywhere that TargetRef appears", () => {
+    const clause = describeCondition({ type: "resourceAtLeast", target: "self", resourceId: "resource.heads", amount: 5 }, { self: "Hydra" });
+    expect(clause).toBe("Hydra's Heads is at least 5");
+  });
+
+  it("uses singular 'has' (not 'have') once a real name replaces 'you'", () => {
+    const clause = describeCondition({ type: "hasStatus", target: "self", statusId: "status.damage-reduction" }, { self: "Tortuga Rex" });
+    expect(clause).toBe("Tortuga Rex has Damage Reduction");
+  });
+
+  it("leaves an un-named TargetRef on the generic default even when other refs are named", () => {
+    const clause = describeCondition({ type: "hasStatus", target: "enemy", statusId: "status.stun" }, { self: "Hydra" });
+    expect(clause).toBe("an enemy has Stun");
   });
 });

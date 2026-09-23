@@ -711,3 +711,99 @@ describe("resolveTurn — erasure bypasses onDeath triggers (spec/02)", () => {
     expect(result.events.some((e) => e.type === "energyModified")).toBe(false);
   });
 });
+
+describe("resolveTurn — a conditional ability effect logs which branch fired (ADR-056)", () => {
+  const conditionalStrike = ability({
+    id: "test.conditional-strike",
+    cost: { might: 1, focus: 0, spirit: 0, chaos: 0, neutral: 0 },
+    effects: [
+      {
+        kind: "conditional",
+        condition: { type: "hpBelowPercent", target: "self", percent: 50 },
+        ifTrue: [{ kind: "damage", amount: 40 }],
+        ifFalse: [{ kind: "damage", amount: 10 }],
+      },
+    ],
+  });
+
+  function freshBattleWithConditionalStrike() {
+    const teamA: CreateBattleTeamInput = {
+      playerId: "playerA",
+      characters: [{ characterId: "a1", maxHp: 100, abilityIds: [conditionalStrike.id] }],
+    };
+    const teamB: CreateBattleTeamInput = { playerId: "playerB", characters: [{ characterId: "b1", maxHp: 100, abilityIds: [] }] };
+    return createBattle([teamA, teamB], 1, { balanceVersionId: "test-balance-v1", matchFormat: defaultMatchFormat, energyRules: testEnergyRules });
+  }
+
+  function depsWithConditionalStrike() {
+    return { ...deps(), abilities: { [conditionalStrike.id]: conditionalStrike } };
+  }
+
+  it("logs the false branch (and its own damage number) when the condition doesn't hold", () => {
+    const state = freshBattleWithConditionalStrike(); // a1 starts at full HP
+    const result = resolveTurn(
+      state,
+      [{ playerId: "playerA", characterId: "a1", abilityId: conditionalStrike.id, targetIds: ["b1"] }],
+      [],
+      depsWithConditionalStrike(),
+    );
+    if (!result.ok) throw new Error("expected a legal turn");
+    const resolved = result.events.find((e) => e.type === "conditionResolved");
+    expect(resolved).toMatchObject({
+      sourceId: "a1",
+      targetId: "b1",
+      payload: { isTrue: false, abilityId: conditionalStrike.id, condition: { type: "hpBelowPercent", target: "self", percent: 50 } },
+    });
+    const damage = result.events.find((e) => e.type === "damageDealt");
+    expect(damage?.payload?.amount).toBe(10);
+    // The explanation comes before the effect it explains.
+    expect(result.events.indexOf(resolved!)).toBeLessThan(result.events.indexOf(damage!));
+  });
+
+  it("logs the true branch once the condition actually holds", () => {
+    const fresh = freshBattleWithConditionalStrike();
+    const belowHalf = { ...fresh, characters: { ...fresh.characters, a1: { ...fresh.characters.a1!, currentHp: 40 } } };
+    const result = resolveTurn(
+      belowHalf,
+      [{ playerId: "playerA", characterId: "a1", abilityId: conditionalStrike.id, targetIds: ["b1"] }],
+      [],
+      depsWithConditionalStrike(),
+    );
+    if (!result.ok) throw new Error("expected a legal turn");
+    expect(result.events.find((e) => e.type === "conditionResolved")).toMatchObject({ payload: { isTrue: true } });
+    expect(result.events.find((e) => e.type === "damageDealt")?.payload?.amount).toBe(40);
+  });
+
+  it("does not log a conditionResolved event for a passive's own internal conditional (scoped to ability effects only)", () => {
+    const gatedPassive: PassiveDefinition = passiveDefinitionSchema.parse({
+      id: "test.gated-passive",
+      displayName: "Gated Passive",
+      description: "test fixture: gains Might once below half HP",
+      trigger: { event: "onDamaged", relation: "self" },
+      effects: [
+        {
+          kind: "conditional",
+          condition: { type: "hpBelowPercent", target: "self", percent: 50 },
+          ifTrue: [{ kind: "modifyEnergy", family: "MIGHT", amount: 1 }],
+        },
+      ],
+    });
+    const teamA: CreateBattleTeamInput = {
+      playerId: "playerA",
+      characters: [{ characterId: "a1", maxHp: 100, passiveId: gatedPassive.id, abilityIds: [] }],
+    };
+    const teamB: CreateBattleTeamInput = { playerId: "playerB", characters: [{ characterId: "b1", maxHp: 100, abilityIds: [strike30.id] }] };
+    const fresh = createBattle([teamA, teamB], 1, { balanceVersionId: "test-balance-v1", matchFormat: defaultMatchFormat, energyRules: testEnergyRules });
+    // Already below half HP so the passive's own gate is true the moment b1's hit lands.
+    const state = { ...fresh, characters: { ...fresh.characters, a1: { ...fresh.characters.a1!, currentHp: 40 } } };
+    const result = resolveTurn(
+      state,
+      [],
+      [{ playerId: "playerB", characterId: "b1", abilityId: strike30.id, targetIds: ["a1"] }],
+      { ...deps(), passives: { [gatedPassive.id]: gatedPassive } },
+    );
+    if (!result.ok) throw new Error("expected a legal turn");
+    expect(result.events.some((e) => e.type === "energyModified")).toBe(true); // the passive's own conditional effect did fire...
+    expect(result.events.some((e) => e.type === "conditionResolved")).toBe(false); // ...but it isn't a top-level ability effect, so no log line
+  });
+});

@@ -24,6 +24,7 @@ import { resolveDamage, resolveHeal } from "./damage";
 import { canAct, computeTicks, decrementStatusDurations, getEffectiveMagnitude } from "./statuses";
 import { decrementSummonDurations } from "./summons";
 import { resolveTargets } from "./targeting";
+import { evaluateCondition } from "./conditions";
 import { deriveGameEvents, evaluateEvent, type GameEvent, type TriggerDeps } from "./triggers";
 import { createRng, nextUint32, type RngState } from "./rng";
 import { restoreFromSnapshot, snapshotBattleState } from "./snapshot";
@@ -408,6 +409,25 @@ export function resolveTurn(
       });
 
       for (const effect of ability.effects) {
+        // Playtest feedback / discoverability (CLAUDE.md rule 9): a top-level conditional
+        // effect (Hydra's Serpent Bite, Tortuga Rex's Shellquake) reads two or three very
+        // different outcomes in its tooltip, but the log only ever showed the outcome's own
+        // effect (a damage number), never *why* that branch fired. Evaluated separately from
+        // applyEffect's own (identical, side-effect-free) check purely so this stays scoped to
+        // an ability's own top-level branch — a passive's internal conditional gate doesn't
+        // get one of these lines, or every hit against a character like Hydra would log one.
+        if (effect.kind === "conditional") {
+          const isTrue = evaluateCondition(
+            { teams: state.teams, turn: state.turn, characters },
+            effect.condition,
+            { selfId: action.characterId, sourceId: action.characterId, targetId: targetResult.targetIds[0] },
+          );
+          pushEvent(tier.id, "conditionResolved", action.characterId, targetResult.targetIds[0], {
+            abilityId: ability.id,
+            condition: effect.condition,
+            isTrue,
+          });
+        }
         const result = applyEffect(
           { characters, energyPools, summons },
           effect,

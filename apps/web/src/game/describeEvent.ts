@@ -1,4 +1,4 @@
-import { ABILITY_LIBRARY, CHARACTER_LIBRARY, STATUS_LIBRARY } from "@veilbreak/content";
+import { ABILITY_LIBRARY, CHARACTER_LIBRARY, STATUS_LIBRARY, describeCondition, type Condition } from "@veilbreak/content";
 import type { BattleEvent } from "@veilbreak/engine";
 
 // CLAUDE.md rule 9 "Discoverability": the battle log is a first-class
@@ -106,6 +106,17 @@ export function describeBattleEvent(event: BattleEvent): string | null {
     case "abilityUsed":
     case "onAbilityUsed":
       return `${source} uses ${abilityName(payload.abilityId)}.`;
+    // ADR-056: a top-level conditional effect on an ability (Hydra's Serpent Bite, Tortuga
+    // Rex's Shellquake) picks between two or three quite different outcomes — the log used to
+    // show only the outcome (a damage number), never which branch produced it. Rendered in the
+    // third person via `describeCondition`'s `names` option, since this line is shared by both
+    // players and the tooltip's own "your"/"you" wording would be ambiguous here.
+    case "conditionResolved": {
+      const condition = payload.condition as Condition | undefined;
+      if (!condition) return null;
+      const clause = describeCondition(condition, { self: source, source, target });
+      return `${payload.isTrue ? "Condition met" : "Condition not met"}: ${clause}.`;
+    }
     default:
       return `${source} → ${target}: ${event.type}`;
   }

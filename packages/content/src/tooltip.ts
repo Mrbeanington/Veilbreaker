@@ -44,10 +44,17 @@ function tagLabel(tag: string): string {
   return tag.charAt(0) + tag.slice(1).toLowerCase();
 }
 
-// "self" reads as "you" from the ability's own perspective (the tooltip is
-// shown to the character's controller); every other TargetRef reads as a
-// third party, so "has"/"have" agreement only needs to branch on that one case.
-function targetLabel(target: TargetRef): string {
+// A Condition's `target` field is written from the ability's own perspective
+// ("self" = whoever owns the effect), which reads naturally as "you"/"your"
+// in a tooltip shown to that character's controller. The battle log instead
+// names real characters both players can see, so `names` lets a caller swap
+// in an actual display name per TargetRef (e.g. { self: "Hydra" }) — omitted,
+// every TargetRef falls back to the second-person tooltip wording below.
+export type ConditionNames = Partial<Record<TargetRef, string>>;
+
+function targetLabel(target: TargetRef, names?: ConditionNames): string {
+  const named = names?.[target];
+  if (named) return named;
   switch (target) {
     case "self":
       return "you";
@@ -64,7 +71,9 @@ function targetLabel(target: TargetRef): string {
   }
 }
 
-function targetPossessive(target: TargetRef): string {
+function targetPossessive(target: TargetRef, names?: ConditionNames): string {
+  const named = names?.[target];
+  if (named) return `${named}'s`;
   switch (target) {
     case "self":
       return "your";
@@ -81,7 +90,8 @@ function targetPossessive(target: TargetRef): string {
   }
 }
 
-function targetVerb(target: TargetRef): string {
+function targetVerb(target: TargetRef, names?: ConditionNames): string {
+  if (names?.[target]) return "has"; // a named third party is always singular, even for "self"
   return target === "self" ? "have" : "has";
 }
 
@@ -90,48 +100,50 @@ function targetVerb(target: TargetRef): string {
  * "you have Damage Reduction" — used without a leading capital so it can be
  * dropped straight into "If <clause>:". This is what closed the playtest gap
  * where nested conditionals only ever said "If a condition holds" with no
- * way to tell which condition (docs/DECISIONS.md ADR-054).
+ * way to tell which condition (docs/DECISIONS.md ADR-054). `names` renders it
+ * in the third person instead, for the battle log's "which branch fired"
+ * line (ADR-056), which both players read and where "your" would be ambiguous.
  */
-function describeCondition(condition: Condition): string {
+export function describeCondition(condition: Condition, names?: ConditionNames): string {
   switch (condition.type) {
     case "always":
       return "always";
     case "hpBelowPercent":
-      return `${targetPossessive(condition.target)} HP is below ${condition.percent}%`;
+      return `${targetPossessive(condition.target, names)} HP is below ${condition.percent}%`;
     case "hasStatus":
-      return `${targetLabel(condition.target)} ${targetVerb(condition.target)} ${statusLabel(condition.statusId)}`;
+      return `${targetLabel(condition.target, names)} ${targetVerb(condition.target, names)} ${statusLabel(condition.statusId)}`;
     case "hasTag":
-      return `${targetLabel(condition.target)} ${targetVerb(condition.target)} the ${tagLabel(condition.tag)} tag`;
+      return `${targetLabel(condition.target, names)} ${targetVerb(condition.target, names)} the ${tagLabel(condition.tag)} tag`;
     case "resourceAtLeast":
-      return `${targetPossessive(condition.target)} ${resourceLabel(condition.resourceId)} is at least ${condition.amount}`;
+      return `${targetPossessive(condition.target, names)} ${resourceLabel(condition.resourceId)} is at least ${condition.amount}`;
     case "turnAtLeast":
       return `it's turn ${condition.turn} or later`;
     case "damageReceivedAtLeast":
-      return `${targetLabel(condition.target)} ${targetVerb(condition.target)} taken at least ${condition.amount} damage this match`;
+      return `${targetLabel(condition.target, names)} ${targetVerb(condition.target, names)} taken at least ${condition.amount} damage this match`;
     case "damageDealtAtLeast":
-      return `${targetLabel(condition.target)} ${targetVerb(condition.target)} dealt at least ${condition.amount} damage this match`;
+      return `${targetLabel(condition.target, names)} ${targetVerb(condition.target, names)} dealt at least ${condition.amount} damage this match`;
     case "healingDoneAtLeast":
-      return `${targetLabel(condition.target)} ${targetVerb(condition.target)} healed at least ${condition.amount} HP this match`;
+      return `${targetLabel(condition.target, names)} ${targetVerb(condition.target, names)} healed at least ${condition.amount} HP this match`;
     case "deathCountAtLeast":
-      return `${targetLabel(condition.target)} ${targetVerb(condition.target)} died at least ${condition.count} time(s)`;
+      return `${targetLabel(condition.target, names)} ${targetVerb(condition.target, names)} died at least ${condition.count} time(s)`;
     case "killCountAtLeast":
-      return `${targetLabel(condition.target)} ${targetVerb(condition.target)} gotten at least ${condition.count} kill(s)`;
+      return `${targetLabel(condition.target, names)} ${targetVerb(condition.target, names)} gotten at least ${condition.count} kill(s)`;
     case "teamComposition":
       return `the ${condition.side} team is exactly ${condition.characterIds.join(", ")}`;
     case "usedAbilityLastTurn":
-      return `${targetLabel(condition.target)} ${targetVerb(condition.target)} used ${abilityLabel(condition.abilityId)} last turn`;
+      return `${targetLabel(condition.target, names)} ${targetVerb(condition.target, names)} used ${abilityLabel(condition.abilityId)} last turn`;
     case "abilitySequenceMatches":
-      return `${targetPossessive(condition.target)} last moves were ${condition.sequence.map(abilityLabel).join(" then ")}`;
+      return `${targetPossessive(condition.target, names)} last moves were ${condition.sequence.map(abilityLabel).join(" then ")}`;
     case "repeatedAbility":
-      return `${targetLabel(condition.target)} used the same ability twice in a row`;
+      return `${targetLabel(condition.target, names)} used the same ability twice in a row`;
     case "secretScript":
       return "a hidden condition is met";
     case "not":
-      return `NOT (${describeCondition(condition.condition)})`;
+      return `NOT (${describeCondition(condition.condition, names)})`;
     case "and":
-      return `(${condition.conditions.map(describeCondition).join(" AND ")})`;
+      return `(${condition.conditions.map((c) => describeCondition(c, names)).join(" AND ")})`;
     case "or":
-      return `(${condition.conditions.map(describeCondition).join(" OR ")})`;
+      return `(${condition.conditions.map((c) => describeCondition(c, names)).join(" OR ")})`;
   }
 }
 
