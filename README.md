@@ -8,7 +8,7 @@ An original, browser-based **3v3 turn-based arena game**. Draft three fighters f
 
 It runs entirely in your browser. There is no server, no account and no network needed once loaded. Progress is saved on your device, and the whole game also comes as a single `.html` file you can open from disk.
 
-> Status: playable, and feature-complete for a first playtest. Art is still being made (59 of 119 portraits so far), and real-player testing has not started. See [`docs/ROADMAP.md`](docs/ROADMAP.md).
+> Status: playable, and feature-complete for a first playtest. Portrait art is complete (all 119), and real-player testing has not started. See [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
 ![A tutorial match: two teams of three, energy, status icons and the ability list](docs/img/shot-match.jpg)
 
