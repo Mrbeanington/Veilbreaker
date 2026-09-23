@@ -196,7 +196,11 @@ function buildQuests(): Record<string, Quest> {
   const out: Record<string, Quest> = {};
   const byName = (a: CharacterDefinition, b: CharacterDefinition) => a.displayName.localeCompare(b.displayName);
 
-  const rares = PLAYABLE_CHARACTERS.filter((c) => c.rarity === "RARE" && !isStarter(c)).sort((a, b) => complexity(a) - complexity(b) || byName(a, b));
+  // ADR-058: a Core fighter that didn't make the curated starter list is not a Rare fighter,
+  // but it still needs a quest exactly like one — folded into the same complexity-tiered pool
+  // rather than given its own rule, so e.g. Mister Whiskers (a transforming Core) lands wherever
+  // his actual complexity score puts him, same as any other fighter.
+  const rares = PLAYABLE_CHARACTERS.filter((c) => (c.rarity === "RARE" || c.rarity === "CORE") && !isStarter(c)).sort((a, b) => complexity(a) - complexity(b) || byName(a, b));
   const perTier = Math.ceil(rares.length / RARE_TIER_LEVELS.length);
   rares.forEach((c, i) => {
     const tier = Math.min(RARE_TIER_LEVELS.length - 1, Math.floor(i / perTier));

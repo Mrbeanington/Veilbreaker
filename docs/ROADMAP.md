@@ -7,7 +7,7 @@ Written 2026-09-21, after Phase 15 and the release polish rounds (quests, tutori
 **Strong**
 - A deterministic, tested engine; 119 data-driven fighters; versioned balance patches; offline play; a single-file build.
 - About 1,180 tests, CI with security, accessibility, size and offline guards, Lighthouse 100/100/100, keyboard play works.
-- Progression: 24 starters, per-fighter unlock quests, Legend trials gated by level, ranked at level 3, cosmetic titles and frames, mastery rings.
+- Progression: a curated 12-fighter starter roster (ADR-058), per-fighter unlock quests, Legend trials gated by level, ranked at level 3, cosmetic titles and frames, mastery rings.
 - A portrait pipeline: prompt files for portraits and splashes, an importer, coverage status, size budgets.
 
 **Weak**

@@ -34,7 +34,7 @@ describe("availability filter (picker, Characters and Codex)", () => {
   });
   it('"Unlocked" shows only fighters that can be put on a team, and stays alphabetical', () => {
     const shown = filterCharacters(all, { ...NO_FILTERS, lock: "unlocked" }, p);
-    expect(shown.length).toBeGreaterThan(20);
+    expect(shown.length).toBeGreaterThan(9); // the curated starter roster (ADR-058), not "every Core fighter"
     for (const c of shown) expect(isPickable(c, p), c.id).toBe(true);
     expect(shown.some((c) => c.id === "arachne")).toBe(false);
     expect(shown.map((c) => c.displayName)).toEqual([...shown.map((c) => c.displayName)].sort((a, b) => a.localeCompare(b)));

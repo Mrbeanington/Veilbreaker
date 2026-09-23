@@ -46,16 +46,20 @@ function satisfyingTeam(step: (typeof QUEST_MISSIONS)[number]): string[] | undef
 }
 
 describe("the starter roster", () => {
-  it("is about two dozen fighters: every Core fighter plus a healer", () => {
-    expect(STARTER_IDS.length).toBeGreaterThanOrEqual(22);
-    expect(STARTER_IDS.length).toBeLessThanOrEqual(26);
-    for (const c of PLAYABLE_CHARACTERS.filter((x) => x.rarity === "CORE")) expect(STARTER_IDS).toContain(c.id);
-    expect(STARTER_IDS).toContain("the-moon-rabbit");
+  it("is a small, curated set (ADR-058) — not every Core fighter, so there is still plenty to unlock", () => {
+    expect(STARTER_IDS.length).toBeGreaterThanOrEqual(10);
+    expect(STARTER_IDS.length).toBeLessThanOrEqual(15);
+    // tortuga-rex, hydra and the-moon-rabbit are also TUTORIAL_TEAM — the tutorial needs them open.
+    for (const id of ["tortuga-rex", "hydra", "the-moon-rabbit"]) expect(STARTER_IDS).toContain(id);
+    // Mister Whiskers is a special transforming fighter, deliberately gated behind his own quest.
+    expect(STARTER_IDS).not.toContain("mister-whiskers");
   });
 
-  it("can field every main role, so a new player can build a real team", () => {
+  it("can field every main role except Assassin, so a new player can build a real team", () => {
     const roles = new Set(STARTER_IDS.flatMap((id) => rolesOf(CHARACTER_LIBRARY[id]!)));
-    for (const role of ["ATTACKER", "TANK", "DEFENDER", "CONTROLLER", "ASSASSIN", "BRUISER", "SUPPORT", "HEALER", "ANTI-HEALER"]) expect(roles.has(role), role).toBe(true);
+    // Assassin is deliberately absent at the start (ADR-058): Mister Whiskers is the way in.
+    for (const role of ["ATTACKER", "TANK", "DEFENDER", "CONTROLLER", "BRUISER", "SUPPORT", "HEALER", "ANTI-HEALER"]) expect(roles.has(role), role).toBe(true);
+    expect(roles.has("ASSASSIN")).toBe(false);
   });
 
   it("are the only fighters open on a new account, apart from Legends' trials", () => {

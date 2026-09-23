@@ -20,17 +20,44 @@ export function isDiscovered(profile: Profile, characterId: string): boolean {
   return profile.discovered.characters.includes(characterId);
 }
 
+/**
+ * A character's identity (name, portrait, kit) is hidden — a silhouette, "Unknown fighter" —
+ * until it is either owned (`isUnlocked`) or personally met in a match (`isDiscovered`),
+ * regardless of rarity (ADR-058). This used to only apply to Secrets and Legends, so a
+ * quest-locked Core or Rare fighter showed its full name and portrait next to a "Reach
+ * level N" hint — no mystery at all for most of the roster.
+ */
 export function characterVisibility(character: CharacterDefinition, profile: Profile): Visibility {
   if (profile.settings.showAllCharacters || isDiscovered(profile, character.id)) return "full";
   if (character.knowledgeLevel === "TRUE_SECRET") return "hidden";
-  if (character.rarity === "SECRET" || character.rarity === "LEGENDARY" || character.knowledgeLevel === "DISCOVERABLE") return "silhouette";
-  return "full";
+  if (isUnlocked(character, profile)) return "full";
+  return "silhouette";
 }
 
-/** The roster a new account starts with: every Core fighter, plus a healer so no team lacks one (ADR-038). */
-export const EXTRA_STARTERS: readonly string[] = ["the-moon-rabbit"];
+/**
+ * The roster a new account starts with (ADR-038; recurated ADR-058): a small, deliberately
+ * chosen set — not "every Core fighter" — so a new player still has real things to unlock.
+ * Covers every core team role except Assassin (reserved for Mister Whiskers' own quest — he's
+ * a special transforming character and meant to be worked for) and a spread of origins, so a
+ * starting team never feels one-note. `tortuga-rex`, `hydra` and `the-moon-rabbit` are also
+ * `TUTORIAL_TEAM` (game/tutorial.ts) and must stay here for the tutorial to have a legal team.
+ */
+export const STARTER_CHARACTER_IDS: readonly string[] = [
+  "blue-oni",
+  "cyclops-brontes",
+  "domovoi",
+  "hydra",
+  "jackal-guardian",
+  "moonshot-maddox",
+  "shieldmaiden-yrsa",
+  "plague-doctor",
+  "the-honey-badger",
+  "the-moon-rabbit",
+  "the-scarecrow",
+  "tortuga-rex",
+];
 export function isStarter(character: CharacterDefinition): boolean {
-  return character.rarity === "CORE" || EXTRA_STARTERS.includes(character.id);
+  return STARTER_CHARACTER_IDS.includes(character.id);
 }
 
 /**
