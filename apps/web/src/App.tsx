@@ -73,6 +73,13 @@ function PlaySection({ onOpenReplays, onOpenRanked, initialMatchCode }: { onOpen
     void recordEvent(store, "match-start", { mode: flow.mode, tutorial: flow.tutorial === true });
   }, [flow, store]);
 
+  // Each step here (home, setup, match, result, ...) is its own screen, but they all share
+  // this one scroll container — without this, picking a team from partway down a long roster
+  // left the match screen opening already scrolled down too.
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [flow.name]);
+
   function onMatchFinished(current: Extract<PlayFlow, { name: "match" }>, outcome: MatchOutcome) {
     const done = finishMatch(
       profile,
@@ -229,6 +236,10 @@ export function AppShell() {
     void recordEvent(store, "screen", { name: next });
     setDev(false);
     setSection(next);
+    // A tall list left scrolled down (Characters, Codex, ...) otherwise stays scrolled
+    // on the next section too, which can land its heading half under the sticky nav —
+    // easy to miss on a tall phone, much harder to miss on a short/square one.
+    window.scrollTo(0, 0);
     // Move focus to the new page so keyboard and screen-reader users land on it.
     requestAnimationFrame(() => mainRef.current?.focus());
   }, [store]);

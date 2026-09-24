@@ -287,6 +287,13 @@ function RankedLadder() {
   const ranked = profile.ranked;
   const settled = useRef(false);
 
+  // Picking a team, banning, and the match itself are all one scroll container — without
+  // this, opening the ban screen (say) from partway down a long roster left it opening
+  // already scrolled down too.
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [flow.name]);
+
   // On opening: enter the current season, and settle a match that was left unfinished as a loss.
   useEffect(() => {
     if (!ready || flow.name !== "home") return;

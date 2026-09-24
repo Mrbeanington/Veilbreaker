@@ -11,6 +11,10 @@ export default tseslint.config(
       "**/node_modules/**",
       "**/coverage/**",
       "**/.vite/**",
+      // Native Capacitor platform projects (ADR-061): entirely generated/native code, not
+      // ours to lint — includes a synced copy of the web build under android/app/.../assets.
+      "**/android/**",
+      "**/ios/**",
     ],
   },
   js.configs.recommended,

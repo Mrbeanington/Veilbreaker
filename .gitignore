@@ -15,6 +15,11 @@ apps/web/public/
 
 apps/web/dist-single/
 
+# The native Capacitor project's own copy of the web build (ADR-061): `npx cap sync android`
+# regenerates this from apps/web/dist on every build, so committing it would just be a second,
+# driftable copy of the same bundle.
+apps/web/android/app/src/main/assets/public/
+
 # Generated portrait originals (large); only the shrunk .webp files under apps/web/src/art/portraits are kept in git (ADR-042)
 docs/art/**/*.portrait.png
 docs/art/**/*.portrait.jpg
