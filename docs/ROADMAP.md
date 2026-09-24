@@ -56,7 +56,7 @@ The code is past proof of concept. The game is not yet, and the gap to "indie AA
 
 ## Standing open items (from `docs/OPEN-QUESTIONS.md`)
 
-- Android packaging (step 6) has started: Capacitor is set up and `apps/web/android` is scaffolded and builds up to the point of needing Android Studio installed (ADR-061). Not yet done: an actual compiled APK, or a check on a real device (the owner's is an unusually square-screened Unihertz Titan 2 — a rough layout check on an estimated matching viewport found no breakage, but the real device hasn't run it yet).
+- Android packaging (step 6) is well underway: Capacitor is set up and the first debug APK built successfully (ADR-061, ADR-062; recipe in `docs/ANDROID-BUILD.md`). Not yet done: running it on a real device (the owner's is an unusually square-screened Unihertz Titan 2 — a rough layout check on an estimated matching viewport found no breakage, but the real device hasn't confirmed it), and release signing / a Play Store `.aab` if that's ever wanted.
 - OQ-106: Firefox, a real iPhone and a real Android device are untested.
 - OQ-105 and OQ-12: finish portraits; cultural review.
 - OQ-110: real playtests; a few fighters still sit far from 50% with bots.
