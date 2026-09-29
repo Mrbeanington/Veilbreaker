@@ -58,7 +58,7 @@ The code is past proof of concept. The game is not yet, and the gap to "indie AA
 
 - Android packaging (step 6) is well underway: Capacitor is set up and the first debug APK built successfully (ADR-061, ADR-062; recipe in `docs/ANDROID-BUILD.md`). Not yet done: running it on a real device (the owner's is an unusually square-screened Unihertz Titan 2 — a rough layout check on an estimated matching viewport found no breakage, but the real device hasn't confirmed it), and release signing / a Play Store `.aab` if that's ever wanted.
 - OQ-106: Firefox, a real iPhone and a real Android device are untested.
-- OQ-105 and OQ-12: portraits and splashes are both done (119 of 119); cultural review is still outstanding.
+- OQ-105 and OQ-12: portraits and splashes are both done (119 of 119). A first-pass AI-assisted audit (ADR-064, `docs/design/cultural-review-pass-1.md`) found 10 concrete issues to check with real reviewers; human cultural review itself is still outstanding.
 - OQ-110: real playtests; a few fighters still sit far from 50% with bots.
 - A real screen-reader session.
 
