@@ -13,7 +13,7 @@ Written 2026-09-21, after Phase 15 and the release polish rounds (quests, tutori
 **Weak**
 - Nobody outside development has played it. Every design number (quest pacing, level gates, balance) is validated only by bots.
 - Presentation: matches are health bars and a text log. No animation, no sound assets.
-- Art coverage: portraits 36 of 119; no splashes, ability icons, status icons or backgrounds yet.
+- Art coverage: portraits 119 of 119, splashes 119 of 119 (2026-09-28); no ability icons, status icons or backgrounds yet.
 - Online play is code swapping; there is no live or matchmade play.
 
 The code is past proof of concept. The game is not yet, and the gap to "indie AAA" is art, audio, feel and validation, not engineering.
@@ -22,7 +22,7 @@ The code is past proof of concept. The game is not yet, and the gap to "indie AA
 
 1. **Prove the fun.** 10 to 20 real players through the tutorial and several matches. Watch where they get confused or quit. Everything else depends on this.
 2. **Presentation and game feel.** Hit and damage animations, floating numbers, ability effects, transitions, characters shown on the board with their splash art, a proper visual design pass on the whole UI.
-3. **Finish the art.** 119 portraits, 119 splashes, about 480 ability icons, status icons, backgrounds, UI kit. Cultural review for the Japanese, Slavic, Egyptian and world-folklore designs (OQ-12).
+3. **Finish the art.** Portraits and splashes are done (119 of 119 each, 2026-09-28); still needed: about 480 ability icons, status icons, backgrounds, UI kit. Cultural review for the Japanese, Slavic, Egyptian and world-folklore designs (OQ-12).
 4. **Audio.** Music and sound effects. The sound system exists (`soundBus`) but has no assets.
 5. **Live play.** Peer-to-peer or a small server, decided on purpose (see below).
 6. **Content depth.** Campaign or story mode, daily and weekly challenges, draft-and-ban, seasons. A tighter, fully polished launch roster can beat 119 fighters with initials.
@@ -58,7 +58,7 @@ The code is past proof of concept. The game is not yet, and the gap to "indie AA
 
 - Android packaging (step 6) is well underway: Capacitor is set up and the first debug APK built successfully (ADR-061, ADR-062; recipe in `docs/ANDROID-BUILD.md`). Not yet done: running it on a real device (the owner's is an unusually square-screened Unihertz Titan 2 — a rough layout check on an estimated matching viewport found no breakage, but the real device hasn't confirmed it), and release signing / a Play Store `.aab` if that's ever wanted.
 - OQ-106: Firefox, a real iPhone and a real Android device are untested.
-- OQ-105 and OQ-12: finish portraits; cultural review.
+- OQ-105 and OQ-12: portraits and splashes are both done (119 of 119); cultural review is still outstanding.
 - OQ-110: real playtests; a few fighters still sit far from 50% with bots.
 - A real screen-reader session.
 
